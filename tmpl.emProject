@@ -1,0 +1,119 @@
+<!DOCTYPE CrossStudio_Project_File>
+<solution Name="tmpl" target="8" version="2">
+  <project Name="tmpl">
+    <configuration
+      CMSIS_CORE="Yes"
+      Name="Common"
+      Placement="Flash"
+      Target="nRF51822_xxAA"
+      arm_architecture="v6M"
+      arm_compiler_variant="SEGGER"
+      arm_core_type="Cortex-M0"
+      arm_endian="Little"
+      arm_fp_abi="Soft"
+      arm_fpu_type="None"
+      arm_interwork="No"
+      arm_linker_heap_size="2048"
+      arm_linker_process_stack_size="0"
+      arm_linker_stack_size="2048"
+      arm_linker_variant="SEGGER"
+      arm_simulator_memory_simulation_parameter="ROM1;0x00000000;0x00040000;RAM1;0x20000000;0x00004000;"
+      arm_target_debug_interface_type="ADIv5"
+      arm_target_device_name="nRF51822_xxAA"
+      arm_target_interface_type="SWD"
+      c_preprocessor_definitions="__nRF_FAMILY;NRF51822_XXAA;NRF51822;ARM_MATH_CM0;FLASH_PLACEMENT=1;BOARD_PCA10028;CONFIG_GPIO_AS_PINRESET;SOFTDEVICE_PRESENT;S130"
+      c_user_include_directories="$(ProjectDir)/nRF/Device/Include;components/boards;components/drivers_nrf/hal;components/libraries/util;components/softdevice/s130/headers;config;components/libraries/bsp;components/libraries/button;components/libraries/timer;components/ble/common;components/drivers_nrf/clock;components/drivers_nrf/common;components/drivers_nrf/gpiote;components/drivers_nrf/uart;components/libraries/log;components/libraries/log/src;components/softdevice/common/softdevice_handler"
+      debug_register_definition_file="$(ProjectDir)/nRF/Device/nrf51.svd"
+      debug_start_from_entry_point_symbol="No"
+      debug_target_connection="J-Link"
+      gcc_entry_point="Reset_Handler"
+      link_linker_script_file="$(ProjectDir)/nRF/Device/Linker/ses_nrf51822_xxaa.icf"
+      linker_memory_map_file="$(ProjectDir)/nRF/Device/MemoryMap/nRF51822_xxAA_MemoryMap.xml"
+      linker_output_format="None"
+      linker_section_placement_file="$(ProjectDir)/flash_placement.xml"
+      macros="NRFHeaderFile=$(PackagesDir)/nRF/Device/Include/nrf.h;DeviceHeaderFile=$(PackagesDir)/nRF/Device/Include/nrf51.h;DeviceSystemFile=$(PackagesDir)/nRF/Device/Source/system_nrf51.c;DeviceVectorsFile=$(PackagesDir)/nRF/Device/Startup/ses_startup_nrf51.s;DeviceLinkerScript=$(PackagesDir)/nRF/Device/Linker/ses_nrf51822_xxaa.icf;DeviceMemoryMap=$(PackagesDir)/nRF/Device/MemoryMap/nRF51822_xxAA_MemoryMap.xml;DeviceLibraryIdentifier=M0l;DeviceFamily=nRF;Target=nRF51822_xxAA;Placement=Flash"
+      package_dependencies="CMSIS-CORE_V5"
+      project_directory=""
+      project_type="Executable"
+      target_reset_script="Reset();"
+      target_script_file="$(ProjectDir)/nRF/Scripts/nRF_Target.js"
+      target_trace_initialize_script="EnableTrace(&quot;$(TraceInterfaceType)&quot;)" />
+    <folder Name="CMSIS Files">
+      <file file_name="nRF/Device/Include/nrf.h" />
+      <file file_name="nRF/Device/Include/nrf51.h" />
+      <file file_name="nRF/Device/Source/system_nrf51.c">
+        <configuration
+          Name="Common"
+          default_code_section=".init"
+          default_const_section=".init_rodata" />
+      </file>
+    </folder>
+    <folder Name="RTT Files">
+      <file file_name="Segger/SEGGER_RTT.c" />
+      <file file_name="Segger/SEGGER_RTT.h" />
+      <file file_name="Segger/SEGGER_RTT_Conf.h" />
+      <file file_name="Segger/SEGGER_RTT_SES.c" />
+    </folder>
+    <folder Name="Script Files">
+      <file file_name="nRF/Scripts/nRF_Target.js">
+        <configuration Name="Common" file_type="Reset Script" />
+      </file>
+      <file file_name="nRF/Device/Linker/ses_nrf51822_xxaa.icf">
+        <configuration Name="Common" file_type="Linker Script" />
+      </file>
+      <file file_name="nRF/Device/MemoryMap/nRF51822_xxAA_MemoryMap.xml">
+        <configuration Name="Common" file_type="Memory Map" />
+      </file>
+    </folder>
+    <folder Name="Appliczation">
+      <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc" />
+      <file file_name="Application/main.c" />
+      <file file_name="config/sdk_config.h" />
+    </folder>
+    <folder Name="System Files">
+      <file file_name="nRF/Device/Startup/ses_startup_nrf_common.s" />
+      <file file_name="nRF/Device/Startup/ses_startup_nrf51.s">
+        <configuration Name="Common" file_type="Assembly" />
+      </file>
+      <file file_name="Segger/SEGGER_THUMB_Startup.s" />
+    </folder>
+    <configuration
+      Name="Debug"
+      c_additional_options=""
+      debug_target_connection="J-Link" />
+    <folder Name="Board Definition">
+      <file file_name="components/boards/boards.c" />
+    </folder>
+    <folder Name="Board Support">
+      <file file_name="components/libraries/bsp/bsp.c" />
+      <file file_name="components/libraries/bsp/bsp_nfc.c" />
+    </folder>
+    <folder Name="nRF_BLE">
+      <file file_name="components/ble/common/ble_advdata.c" />
+      <file file_name="components/ble/common/ble_srv_common.c" />
+    </folder>
+    <folder Name="nRF_Drivers">
+      <file file_name="components/drivers_nrf/clock/nrf_drv_clock.c" />
+      <file file_name="components/drivers_nrf/gpiote/nrf_drv_gpiote.c" />
+      <file file_name="components/drivers_nrf/common/nrf_drv_common.c" />
+      <file file_name="components/drivers_nrf/uart/nrf_drv_uart.c" />
+    </folder>
+  </project>
+  <configuration
+    Name="Debug"
+    c_preprocessor_definitions="DEBUG"
+    gcc_debugging_level="Level 3"
+    gcc_optimization_level="None" />
+  <configuration
+    Name="Release"
+    arm_linker_variant="GNU"
+    c_preprocessor_definitions="NDEBUG"
+    gcc_debugging_level="Level 2"
+    gcc_omit_frame_pointer="Yes"
+    gcc_optimization_level="Level 2 balanced"
+    linker_section_placement_file="nRF51822_xxAA_MemoryMap.xml" />
+  <configuration
+    Name="Common"
+    linker_section_placement_file="nRF51822_xxAA_MemoryMap.xml" />
+  <import file_name="D:/Segger_SDK/V14_1/nRF5SDK14101dda907/examples/ble_peripheral/ble_app_beacon/pca10040/s132/ses/ble_app_beacon_pca10040_s132.emProject" />
+</solution>
