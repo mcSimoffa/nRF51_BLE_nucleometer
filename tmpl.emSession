@@ -60,12 +60,10 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="78" y="33" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="D:/Segger_SDK/V14_1/nRF5SDK14101dda907/components/drivers_nrf/clock/nrf_drv_clock.c" selected="0" top="24" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="15" y="70" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/drivers_nrf/clock/nrf_drv_clock.c" selected="0" top="32" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="464" useTextEdit="1" openedFrom="D:/SesProj/components/drivers_nrf/clock/nrf_drv_clock.c" useBinaryEdit="0" left="0" path="config/sdk_config.h" selected="0" top="443" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="68" useTextEdit="1" openedFrom="D:/SesProj/components/drivers_nrf/clock/nrf_drv_clock.c" useBinaryEdit="0" left="0" path="components/drivers_nrf/common/nrf_drv_common.h" selected="0" top="47" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="136" useTextEdit="1" openedFrom="D:/SesProj/components/drivers_nrf/common/nrf_drv_common.h" useBinaryEdit="0" left="0" path="components/libraries/util/app_util.h" selected="0" top="134" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="62" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/drivers_nrf/gpiote/nrf_drv_gpiote.c" selected="1" top="21" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="26" y="70" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/drivers_nrf/clock/nrf_drv_clock.c" selected="0" top="45" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="9" y="46" useTextEdit="1" openedFrom="D:/SesProj/components/drivers_nrf/gpiote/nrf_drv_gpiote.c" useBinaryEdit="0" left="0" path="config/sdk_config.h" selected="0" top="46" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="62" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/drivers_nrf/gpiote/nrf_drv_gpiote.c" selected="0" top="30" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="20" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/Users/boss/AppData/Local/SEGGER/SEGGER Embedded Studio/v3/tools.xml" selected="1" top="0" codecName="Default"/>
  </Files>
- <ARMCrossStudioWindow activeProject="tmpl" fileDialogDefaultFilter="" autoConnectTarget="J-Link" buildConfiguration="Debug" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="D:/SesProj/components/drivers_nrf/uart" debugSearchPath="" autoConnectCapabilities="3199"/>
+ <ARMCrossStudioWindow activeProject="tmpl" fileDialogDefaultFilter="*.h" autoConnectTarget="J-Link" buildConfiguration="Debug" sessionSettings="" debugSearchFileMap="../../../../../../components/drivers_nrf/common/nrf_drv_common.h&#xa;&#xa;../../../../../../components/drivers_nrf/hal/nrf_clock.h&#xa;&#xa;../../../../../../components/toolchain/cmsis/include/core_cm4.h&#xa;" fileDialogInitialDirectory="D:/SesProj/components/drivers_nrf/uart" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>

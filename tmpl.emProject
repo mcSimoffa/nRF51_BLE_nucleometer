@@ -13,6 +13,7 @@
       arm_fp_abi="Soft"
       arm_fpu_type="None"
       arm_interwork="No"
+      arm_keep_preprocessor_output="Yes"
       arm_linker_heap_size="2048"
       arm_linker_process_stack_size="0"
       arm_linker_stack_size="2048"
@@ -115,5 +116,4 @@
   <configuration
     Name="Common"
     linker_section_placement_file="nRF51822_xxAA_MemoryMap.xml" />
-  <import file_name="D:/Segger_SDK/V14_1/nRF5SDK14101dda907/examples/ble_peripheral/ble_app_beacon/pca10040/s132/ses/ble_app_beacon_pca10040_s132.emProject" />
 </solution>

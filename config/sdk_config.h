@@ -462,7 +462,7 @@
 // <7=> 7 
 
 #ifndef CLOCK_CONFIG_IRQ_PRIORITY
-#define CLOCK_CONFIG_IRQ_PRIORITY 7
+#define CLOCK_CONFIG_IRQ_PRIORITY 3
 #endif
 
 // </e>
@@ -588,7 +588,7 @@
 // <7=> 7 
 
 #ifndef GPIOTE_CONFIG_IRQ_PRIORITY
-#define GPIOTE_CONFIG_IRQ_PRIORITY 7
+#define GPIOTE_CONFIG_IRQ_PRIORITY 3
 #endif
 
 // </e>
