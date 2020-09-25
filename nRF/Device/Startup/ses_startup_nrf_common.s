@@ -103,7 +103,9 @@ Reset_Handler:
 
   /* Perform prestart tasks. */
   b nRFInitialize
-  .thumb_func
+  .thumb_func /*this line I added because i had ERROR 
+  non-veneerable relocation R_ARM_THM_JUMP11 from Thumb to Arm-mode function, from .init to afterInitialize
+*/
 afterInitialize:
   
 #ifndef NO_STACK_INIT

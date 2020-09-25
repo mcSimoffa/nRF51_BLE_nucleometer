@@ -233,7 +233,7 @@ __ASM volatile (
        " SUBS %[number_of_us], #1\n"
        " BNE.N 1b\n"
 #if ( defined(__GNUC__) && (__CORTEX_M == (0x00U) ) )
-    ".syntax divided\n"
+   // ".syntax divided\n"   //I must be comment this because syntax divided is not vorking
 #endif
 #if ( __CORTEX_M == (0x00U) )
     // The SUBS instruction in Cortex-M0 is available only in 16-bit encoding,

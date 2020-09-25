@@ -7,7 +7,8 @@
       Placement="Flash"
       Target="nRF51822_xxAA"
       arm_architecture="v6M"
-      arm_compiler_variant="SEGGER"
+      arm_assembler_variant="gcc"
+      arm_compiler_variant="gcc"
       arm_core_type="Cortex-M0"
       arm_endian="Little"
       arm_fp_abi="Soft"
@@ -23,7 +24,7 @@
       arm_target_device_name="nRF51822_xxAA"
       arm_target_interface_type="SWD"
       c_preprocessor_definitions="__nRF_FAMILY;NRF51822_XXAA;NRF51822;ARM_MATH_CM0;FLASH_PLACEMENT=1;BOARD_PCA10028;CONFIG_GPIO_AS_PINRESET;SOFTDEVICE_PRESENT;S130"
-      c_user_include_directories="$(ProjectDir)/nRF/Device/Include;components/boards;components/drivers_nrf/hal;components/libraries/util;components/softdevice/s130/headers;config;components/libraries/bsp;components/libraries/button;components/libraries/timer;components/ble/common;components/drivers_nrf/clock;components/drivers_nrf/common;components/drivers_nrf/gpiote;components/drivers_nrf/uart;components/libraries/log;components/libraries/log/src;components/softdevice/common/softdevice_handler"
+      c_user_include_directories="$(ProjectDir)/nRF/Device/Include;components/boards;components/drivers_nrf/hal;components/libraries/util;components/softdevice/s130/headers;config;components/libraries/bsp;components/libraries/button;components/libraries/timer;components/ble/common;components/drivers_nrf/clock;components/drivers_nrf/common;components/drivers_nrf/gpiote;components/drivers_nrf/delay;components/drivers_nrf/uart;components/libraries/log;components/libraries/log/src;components/softdevice/common/softdevice_handler"
       debug_register_definition_file="$(ProjectDir)/nRF/Device/nrf51.svd"
       debug_start_from_entry_point_symbol="No"
       debug_target_connection="J-Link"
@@ -32,7 +33,7 @@
       linker_memory_map_file="$(ProjectDir)/nRF/Device/MemoryMap/nRF51822_xxAA_MemoryMap.xml"
       linker_output_format="None"
       linker_section_placement_file="$(ProjectDir)/flash_placement.xml"
-      macros="NRFHeaderFile=$(PackagesDir)/nRF/Device/Include/nrf.h;DeviceHeaderFile=$(PackagesDir)/nRF/Device/Include/nrf51.h;DeviceSystemFile=$(PackagesDir)/nRF/Device/Source/system_nrf51.c;DeviceVectorsFile=$(PackagesDir)/nRF/Device/Startup/ses_startup_nrf51.s;DeviceLinkerScript=$(PackagesDir)/nRF/Device/Linker/ses_nrf51822_xxaa.icf;DeviceMemoryMap=$(PackagesDir)/nRF/Device/MemoryMap/nRF51822_xxAA_MemoryMap.xml;DeviceLibraryIdentifier=M0l;DeviceFamily=nRF;Target=nRF51822_xxAA;Placement=Flash"
+      macros="CMSIS_CONFIG_TOOL=cmsisconfig/CMSIS_Configuration_Wizard.jar"
       package_dependencies="CMSIS-CORE_V5"
       project_directory=""
       project_type="Executable"
@@ -66,7 +67,7 @@
         <configuration Name="Common" file_type="Memory Map" />
       </file>
     </folder>
-    <folder Name="Appliczation">
+    <folder Name="Application">
       <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc" />
       <file file_name="Application/main.c" />
       <file file_name="config/sdk_config.h" />
@@ -80,6 +81,7 @@
     </folder>
     <configuration
       Name="Debug"
+      arm_compiler_variant="SEGGER"
       c_additional_options=""
       debug_target_connection="J-Link" />
     <folder Name="Board Definition">
@@ -92,12 +94,43 @@
     <folder Name="nRF_BLE">
       <file file_name="components/ble/common/ble_advdata.c" />
       <file file_name="components/ble/common/ble_srv_common.c" />
+      <file file_name="components/ble/ble_advertising/ble_advertising.c" />
+      <file file_name="components/ble/common/ble_conn_params.c" />
+      <file file_name="components/ble/common/ble_conn_state.c" />
+      <file file_name="components/ble/peer_manager/gatt_cache_manager.c" />
+      <file file_name="components/ble/peer_manager/gatts_cache_manager.c" />
+      <file file_name="components/ble/peer_manager/id_manager.c" />
+      <file file_name="components/ble/peer_manager/peer_data.c" />
+      <file file_name="components/ble/peer_manager/peer_data_storage.c" />
+      <file file_name="components/ble/peer_manager/peer_database.c" />
+      <file file_name="components/ble/peer_manager/peer_id.c" />
+      <file file_name="components/ble/peer_manager/peer_manager.c" />
+      <file file_name="components/ble/peer_manager/pm_buffer.c" />
+      <file file_name="components/ble/peer_manager/pm_mutex.c" />
+      <file file_name="components/ble/peer_manager/security_dispatcher.c" />
+      <file file_name="components/ble/peer_manager/security_manager.c" />
     </folder>
     <folder Name="nRF_Drivers">
       <file file_name="components/drivers_nrf/clock/nrf_drv_clock.c" />
       <file file_name="components/drivers_nrf/gpiote/nrf_drv_gpiote.c" />
       <file file_name="components/drivers_nrf/common/nrf_drv_common.c" />
       <file file_name="components/drivers_nrf/uart/nrf_drv_uart.c" />
+    </folder>
+    <folder Name="nRF Libraries">
+      <file file_name="components/libraries/button/app_button.c" />
+      <file file_name="components/libraries/util/app_error.c" />
+      <file file_name="components/libraries/util/app_error_weak.c" />
+      <file file_name="components/libraries/timer/app_timer.c" />
+      <file file_name="components/libraries/util/app_util_platform.c" />
+      <file file_name="components/libraries/crc16/crc16.c" />
+      <file file_name="components/libraries/fds/fds.c" />
+      <file file_name="components/libraries/fstorage/fstorage.c" />
+      <file file_name="components/libraries/hardfault/hardfault_implementation.c" />
+      <file file_name="components/libraries/util/nrf_assert.c" />
+      <file file_name="components/libraries/util/sdk_errors.c" />
+      <file file_name="components/libraries/util/sdk_mapped_flags.c" />
+      <file file_name="components/libraries/sensorsim/sensorsim.c" />
+      <file file_name="components/libraries/log/src/nrf_log_frontend.c" />
     </folder>
   </project>
   <configuration
