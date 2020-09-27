@@ -96,7 +96,7 @@ static void flags_set_from_err_code(uint16_t conn_handle, ret_code_t err_code, b
          || (err_code == NRF_ERROR_BUSY)
          || (err_code == NRF_SUCCESS))
     {
-        if ((err_code == NRF_ERROR_STORAGE_FULL))
+        if (err_code == NRF_ERROR_STORAGE_FULL)
         {
             flag_value_busy       = false;
             flag_value_flash_full = true;

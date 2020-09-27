@@ -2,7 +2,6 @@
 <session>
  <Bookmarks/>
  <Breakpoints groups="Breakpoints" active_group="Breakpoints">
-  <BreakpointListItem trigger="" line="105" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="nRF/Device/Startup/ses_startup_nrf_common.s" useHWbreakpoint="false"/>
   <Exceptions set="HardFault"/>
  </Breakpoints>
  <ExecutionProfileWindow/>
@@ -25,8 +24,6 @@
   <ProjectSessionItem path="tmpl"/>
   <ProjectSessionItem path="tmpl;tmpl"/>
   <ProjectSessionItem path="tmpl;tmpl;Application"/>
-  <ProjectSessionItem path="tmpl;tmpl;CMSIS Files"/>
-  <ProjectSessionItem path="tmpl;tmpl;nRF Libraries"/>
   <ProjectSessionItem path="tmpl;tmpl;nRF_BLE"/>
   <ProjectSessionItem path="tmpl;tmpl;nRF_Drivers"/>
   <ProjectSessionItem path="tmpl;tmpl;RTT Files"/>
@@ -34,7 +31,7 @@
   <ProjectSessionItem path="tmpl;tmpl;System Files"/>
  </Project>
  <Register1>
-  <RegisterWindow visibleNodes="CPU - Current Context/r0;CPU - Current Context/r1;CPU - Current Context/r2;CPU - Current Context/r3;CPU - Current Context/r4;CPU - Current Context/r5;CPU - Current Context/r6;CPU - Current Context/r7;CPU - Current Context/r8;CPU - Current Context/r9;CPU - Current Context/r10;CPU - Current Context/r11;CPU - Current Context/r12;CPU - Current Context/sp(r13);CPU - Current Context/lr(r14);CPU - Current Context/pc(r15);CPU - Current Context/apsr;CPU/r0;CPU/r1;CPU/r2;CPU/r3;CPU/r4;CPU/r5;CPU/r6;CPU/r7;CPU/r8;CPU/r9;CPU/r10;CPU/r11;CPU/r12;CPU/sp(r13);CPU/lr(r14);CPU/pc(r15);CPU/xpsr;CPU/msp;CPU/psp;CPU/cfbp;CPU/internal" binaryNodes="" asciiNodes="" openNodes="CPU - Current Context;CPU - Current Context/apsr" name="tmpl" decimalNodes="" octalNodes="" unsignedNodes=""/>
+  <RegisterWindow visibleNodes="CPU - Current Context/r0;CPU - Current Context/r1;CPU - Current Context/r2;CPU - Current Context/r3;CPU - Current Context/r4;CPU - Current Context/r5;CPU - Current Context/r6;CPU - Current Context/r7;CPU - Current Context/r8;CPU - Current Context/r9;CPU - Current Context/r10;CPU - Current Context/r11;CPU - Current Context/r12;CPU - Current Context/sp(r13);CPU - Current Context/lr(r14);CPU - Current Context/pc(r15);CPU - Current Context/apsr;GPIOTE/TASKS_OUT[0];GPIOTE/TASKS_OUT[1];GPIOTE/TASKS_OUT[2];GPIOTE/TASKS_OUT[3];GPIOTE/EVENTS_IN[0];GPIOTE/EVENTS_IN[1];GPIOTE/EVENTS_IN[2];GPIOTE/EVENTS_IN[3];GPIOTE/EVENTS_PORT;GPIOTE/INTENSET;GPIOTE/INTENCLR;GPIOTE/CONFIG[0];GPIOTE/CONFIG[1];GPIOTE/CONFIG[2];GPIOTE/CONFIG[3];GPIOTE/POWER;PPI/CHEN;PPI/CHENSET;PPI/CHENCLR;PPI/CHG[0];PPI/CHG[1];PPI/CHG[2];PPI/CHG[3];PPI/TASKS_CHG[0].EN;PPI/TASKS_CHG[0].DIS;PPI/TASKS_CHG[1].EN;PPI/TASKS_CHG[1].DIS;PPI/TASKS_CHG[2].EN;PPI/TASKS_CHG[2].DIS;PPI/TASKS_CHG[3].EN;PPI/TASKS_CHG[3].DIS;PPI/CH[0].EEP;PPI/CH[0].TEP;PPI/CH[1].EEP;PPI/CH[1].TEP;PPI/CH[2].EEP;PPI/CH[2].TEP;PPI/CH[3].EEP;PPI/CH[3].TEP;PPI/CH[4].EEP;PPI/CH[4].TEP;PPI/CH[5].EEP;PPI/CH[5].TEP;PPI/CH[6].EEP;PPI/CH[6].TEP;PPI/CH[7].EEP;PPI/CH[7].TEP;PPI/CH[8].EEP;PPI/CH[8].TEP;PPI/CH[9].EEP;PPI/CH[9].TEP;PPI/CH[10].EEP;PPI/CH[10].TEP;PPI/CH[11].EEP;PPI/CH[11].TEP;PPI/CH[12].EEP;PPI/CH[12].TEP;PPI/CH[13].EEP;PPI/CH[13].TEP;PPI/CH[14].EEP;PPI/CH[14].TEP;PPI/CH[15].EEP;PPI/CH[15].TEP" binaryNodes="" asciiNodes="" openNodes="CPU - Current Context/apsr;PPI" name="tmpl" decimalNodes="" octalNodes="" unsignedNodes=""/>
  </Register1>
  <Register2>
   <RegisterWindow visibleNodes="CPU - Current Context/r0;CPU - Current Context/r1;CPU - Current Context/r2;CPU - Current Context/r3;CPU - Current Context/r4;CPU - Current Context/r5;CPU - Current Context/r6;CPU - Current Context/r7;CPU - Current Context/r8;CPU - Current Context/r9;CPU - Current Context/r10;CPU - Current Context/r11;CPU - Current Context/r12;CPU - Current Context/sp(r13);CPU - Current Context/lr(r14);CPU - Current Context/pc(r15);CPU - Current Context/apsr;CPU/r0;CPU/r1;CPU/r2;CPU/r3;CPU/r4;CPU/r5;CPU/r6;CPU/r7;CPU/r8;CPU/r9;CPU/r10;CPU/r11;CPU/r12;CPU/sp(r13);CPU/lr(r14);CPU/pc(r15);CPU/xpsr;CPU/msp;CPU/psp;CPU/cfbp;CPU/internal" binaryNodes="" asciiNodes="" openNodes="CPU - Current Context" name="tmpl" decimalNodes="" octalNodes="" unsignedNodes=""/>
@@ -53,7 +50,8 @@
  </TraceWindow>
  <Watch1>
   <Watches active="1" update="Never">
-   <Watchpoint expression="VTOR_REG" name="VTOR_REG" radix="16" linenumber="148" filename="nRF/Device/Startup/ses_startup_nrf_common.s"/>
+   <Watchpoint expression="NRF_PPI_PROG_APP_CHANNELS_MASK" name="NRF_PPI_PROG_APP_CHANNELS_MASK" radix="16" linenumber="85" filename="components/drivers_nrf/ppi/nrf_drv_ppi.c"/>
+   <Watchpoint expression="m_channels_allocated" name="m_channels_allocated" radix="-1" linenumber="64" filename="components/drivers_nrf/ppi/nrf_drv_ppi.c"/>
   </Watches>
  </Watch1>
  <Watch2>
@@ -66,26 +64,7 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="22" y="42" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/drivers_nrf/clock/nrf_drv_clock.c" selected="0" top="24" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="46" useTextEdit="1" openedFrom="D:/SesProj/components/drivers_nrf/gpiote/nrf_drv_gpiote.c" useBinaryEdit="0" left="0" path="config/sdk_config.h" selected="0" top="31" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="62" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/drivers_nrf/gpiote/nrf_drv_gpiote.c" selected="0" top="33" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="Application/main.c" selected="0" top="27" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="50" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="nRF/Device/Include/nrf.h" selected="0" top="36" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="48" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/drivers_nrf/clock/nrf_drv_clock.c" useBinaryEdit="0" left="0" path="components/drivers_nrf/clock/nrf_drv_clock.h" selected="0" top="34" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="3" y="104" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="nRF/Device/Startup/ses_startup_nrf_common.s" selected="0" top="118" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="131" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="nRF/Device/Include/nrf51.h" selected="0" top="103" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="21" y="46" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/libraries/timer/app_timer.c" selected="0" top="30" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="3" y="16" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/libraries/button/app_button.c" useBinaryEdit="0" left="0" path="components/libraries/timer/app_timer.h" selected="0" top="57" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="78" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/libraries/timer/app_timer.c" useBinaryEdit="0" left="0" path="components/libraries/util/nordic_common.h" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="90" y="235" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/drivers_nrf/delay/nrf_delay.h" selected="0" top="220" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="19" y="196" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="nRF/Device/Startup/ses_startup_nrf51.s" selected="0" top="170" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="42" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/libraries/button/app_button.c" selected="0" top="21" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="46" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/drivers_nrf/delay/nrf_delay.h" useBinaryEdit="0" left="0" path="nRF/Device/Source/system_nrf51.c" selected="0" top="31" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="nRF/Device/Linker/ses_nrf51822_xxaa.icf" selected="0" top="48" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="nRF/Device/MemoryMap/nRF51822_xxAA_MemoryMap.xml" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="nRF/Scripts/nRF_Target.js" selected="0" top="42" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/libraries/util/app_error.c" selected="0" top="3" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="50" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/libraries/log/src/nrf_log_frontend.c" selected="1" top="31" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="75" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="Application/main.c" selected="1" top="49" codecName="Default"/>
  </Files>
- <ARMCrossStudioWindow activeProject="tmpl" fileDialogDefaultFilter="" autoConnectTarget="J-Link" buildConfiguration="Debug" sessionSettings="" debugSearchFileMap="../../../../../../components/drivers_nrf/common/nrf_drv_common.h&#xa;&#xa;../../../../../../components/drivers_nrf/hal/nrf_clock.h&#xa;&#xa;../../../../../../components/toolchain/cmsis/include/core_cm4.h&#xa;" fileDialogInitialDirectory="D:/nRF51_BLE_nucleometer/components/libraries/log/src" debugSearchPath="" autoConnectCapabilities="3199"/>
+ <ARMCrossStudioWindow activeProject="tmpl" fileDialogDefaultFilter="" autoConnectTarget="J-Link" buildConfiguration="Debug" sessionSettings="" debugSearchFileMap="../../../../../../components/drivers_nrf/common/nrf_drv_common.h&#xa;&#xa;../../../../../../components/drivers_nrf/hal/nrf_clock.h&#xa;&#xa;../../../../../../components/toolchain/cmsis/include/core_cm4.h&#xa;" fileDialogInitialDirectory="D:/SesProj/components/drivers_nrf/ppi" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>

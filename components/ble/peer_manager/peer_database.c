@@ -144,7 +144,7 @@ static pdb_buffer_record_t * write_buffer_record_find_next(pm_peer_id_t peer_id,
 {
     for (uint32_t i = *p_index; i < N_WRITE_BUFFER_RECORDS; i++)
     {
-        if ((m_write_buffer_records[i].peer_id == peer_id))
+        if (m_write_buffer_records[i].peer_id == peer_id)
         {
             return &m_write_buffer_records[i];
         }
