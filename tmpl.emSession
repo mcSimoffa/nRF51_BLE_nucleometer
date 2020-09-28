@@ -24,10 +24,8 @@
   <ProjectSessionItem path="tmpl"/>
   <ProjectSessionItem path="tmpl;tmpl"/>
   <ProjectSessionItem path="tmpl;tmpl;Application"/>
-  <ProjectSessionItem path="tmpl;tmpl;nRF_BLE"/>
-  <ProjectSessionItem path="tmpl;tmpl;nRF_Drivers"/>
-  <ProjectSessionItem path="tmpl;tmpl;RTT Files"/>
-  <ProjectSessionItem path="tmpl;tmpl;Script Files"/>
+  <ProjectSessionItem path="tmpl;tmpl;Board Support"/>
+  <ProjectSessionItem path="tmpl;tmpl;nRF Libraries"/>
   <ProjectSessionItem path="tmpl;tmpl;System Files"/>
  </Project>
  <Register1>
@@ -64,7 +62,10 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="75" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="Application/main.c" selected="1" top="49" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="87" y="62" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="Application/main.c" selected="1" top="43" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="73" y="448" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/main.c" useBinaryEdit="0" left="0" path="components/libraries/bsp/bsp.c" selected="0" top="430" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="16" y="193" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/libraries/bsp/bsp.c" useBinaryEdit="0" left="0" path="components/libraries/bsp/bsp.h" selected="0" top="178" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="8" y="124" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/main.c" useBinaryEdit="0" left="0" path="components/libraries/timer/app_timer.h" selected="0" top="109" codecName="Default"/>
  </Files>
- <ARMCrossStudioWindow activeProject="tmpl" fileDialogDefaultFilter="" autoConnectTarget="J-Link" buildConfiguration="Debug" sessionSettings="" debugSearchFileMap="../../../../../../components/drivers_nrf/common/nrf_drv_common.h&#xa;&#xa;../../../../../../components/drivers_nrf/hal/nrf_clock.h&#xa;&#xa;../../../../../../components/toolchain/cmsis/include/core_cm4.h&#xa;" fileDialogInitialDirectory="D:/SesProj/components/drivers_nrf/ppi" debugSearchPath="" autoConnectCapabilities="3199"/>
+ <ARMCrossStudioWindow activeProject="tmpl" fileDialogDefaultFilter="" autoConnectTarget="J-Link" buildConfiguration="Debug" sessionSettings="" debugSearchFileMap="../../../../../../components/drivers_nrf/common/nrf_drv_common.h&#xa;&#xa;../../../../../../components/drivers_nrf/hal/nrf_clock.h&#xa;&#xa;../../../../../../components/toolchain/cmsis/include/core_cm4.h&#xa;" fileDialogInitialDirectory="D:/nRF51_BLE_nucleometer/components/libraries/util" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>
