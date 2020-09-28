@@ -24,8 +24,9 @@
   <ProjectSessionItem path="tmpl"/>
   <ProjectSessionItem path="tmpl;tmpl"/>
   <ProjectSessionItem path="tmpl;tmpl;Application"/>
-  <ProjectSessionItem path="tmpl;tmpl;Board Support"/>
-  <ProjectSessionItem path="tmpl;tmpl;nRF Libraries"/>
+  <ProjectSessionItem path="tmpl;tmpl;nRF_Drivers"/>
+  <ProjectSessionItem path="tmpl;tmpl;Script Files"/>
+  <ProjectSessionItem path="tmpl;tmpl;SoftDevice"/>
   <ProjectSessionItem path="tmpl;tmpl;System Files"/>
  </Project>
  <Register1>
@@ -62,10 +63,20 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="87" y="62" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="Application/main.c" selected="1" top="43" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="73" y="448" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/main.c" useBinaryEdit="0" left="0" path="components/libraries/bsp/bsp.c" selected="0" top="430" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="16" y="193" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/libraries/bsp/bsp.c" useBinaryEdit="0" left="0" path="components/libraries/bsp/bsp.h" selected="0" top="178" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="8" y="124" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/main.c" useBinaryEdit="0" left="0" path="components/libraries/timer/app_timer.h" selected="0" top="109" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="102" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="Application/main.c" selected="0" top="72" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="2" y="180" useTextEdit="1" openedFrom="D:/SesProj/Application/main.c" useBinaryEdit="0" left="0" path="components/softdevice/s130/headers/nrf_sdm.h" selected="0" top="15" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/boards/boards.c" selected="0" top="26" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="163" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/boards/custom_board.h" selected="0" top="133" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="12" y="213" useTextEdit="1" openedFrom="D:/SesProj/Application/main.c" useBinaryEdit="0" left="0" path="components/softdevice/common/softdevice_handler/softdevice_handler.h" selected="0" top="204" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="D:/SesProj/components/softdevice/common/softdevice_handler/softdevice_handler.h" useBinaryEdit="0" left="0" path="components/softdevice/common/softdevice_handler/app_ram_base.h" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="D:/SesProj/components/softdevice/common/softdevice_handler/softdevice_handler.h" useBinaryEdit="0" left="0" path="components/softdevice/common/softdevice_handler/ble_stack_handler_types.h" selected="0" top="70" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="23" y="360" useTextEdit="1" openedFrom="D:/SesProj/Application/main.c" useBinaryEdit="0" left="0" path="components/softdevice/s130/headers/ble.h" selected="0" top="341" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="436" useTextEdit="1" openedFrom="D:/SesProj/components/softdevice/s130/headers/ble.h" useBinaryEdit="0" left="0" path="components/softdevice/s130/headers/ble_gap.h" selected="0" top="415" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="config/sdk_config.h" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="nRF/Device/Startup/ses_startup_nrf51.s" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="nRF/Device/MemoryMap/nRF51822_xxAA_MemoryMap.xml" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="nRF/Device/Linker/ses_nrf51822_xxaa.icf" selected="0" top="99" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="Segger/SEGGER_THUMB_Startup.s" selected="1" top="132" codecName="Default"/>
  </Files>
- <ARMCrossStudioWindow activeProject="tmpl" fileDialogDefaultFilter="" autoConnectTarget="J-Link" buildConfiguration="Debug" sessionSettings="" debugSearchFileMap="../../../../../../components/drivers_nrf/common/nrf_drv_common.h&#xa;&#xa;../../../../../../components/drivers_nrf/hal/nrf_clock.h&#xa;&#xa;../../../../../../components/toolchain/cmsis/include/core_cm4.h&#xa;" fileDialogInitialDirectory="D:/nRF51_BLE_nucleometer/components/libraries/util" debugSearchPath="" autoConnectCapabilities="3199"/>
+ <ARMCrossStudioWindow activeProject="tmpl" fileDialogDefaultFilter="" autoConnectTarget="J-Link" buildConfiguration="Debug" sessionSettings="" debugSearchFileMap="../../../../../../components/drivers_nrf/common/nrf_drv_common.h&#xa;&#xa;../../../../../../components/drivers_nrf/hal/nrf_clock.h&#xa;&#xa;../../../../../../components/toolchain/cmsis/include/core_cm4.h&#xa;" fileDialogInitialDirectory="D:/SesProj/components/softdevice/common/softdevice_handler" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>
