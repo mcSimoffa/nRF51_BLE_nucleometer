@@ -1,5 +1,0 @@
-<!DOCTYPE Board_Memory_Definition_File>
-<root name="nRF51822_xxAA">
-  <MemorySegment access="ReadOnly" name="FLASH1" size="0x00025000" start="0x0001b000" />
-  <MemorySegment access="Read/Write" name="RAM1" size="0x0000c38" start="0x200013c8" />
-</root>

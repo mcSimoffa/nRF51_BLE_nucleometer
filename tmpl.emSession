@@ -2,6 +2,11 @@
 <session>
  <Bookmarks/>
  <Breakpoints groups="Breakpoints" active_group="Breakpoints">
+  <BreakpointListItem trigger="Execute" line="-1" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="0x6d0" group="Breakpoints" type="Breakpoint" state="2" filename="" useHWbreakpoint="false"/>
+  <BreakpointListItem trigger="" line="114" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="Application/main.c" useHWbreakpoint="false"/>
+  <BreakpointListItem trigger="" line="130" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="4" filename="Application/main.c" useHWbreakpoint="false"/>
+  <BreakpointListItem trigger="" line="229" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="components/softdevice/s130/headers/nrf_sdm.h" useHWbreakpoint="false"/>
+  <BreakpointListItem trigger="" line="72" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="components/toolchain/ses/ses_nRF_Startup.s" useHWbreakpoint="false"/>
   <Exceptions set="HardFault"/>
  </Breakpoints>
  <ExecutionProfileWindow/>
@@ -9,7 +14,7 @@
   <FrameBufferWindow bufferHeight="-1" addressSpace="" addressText="" bufferWidth="-1"/>
  </FrameBufferWindow>
  <Memory1>
-  <MemoryWindow addressSpace="" dataSize="1" autoEvaluate="0" viewMode="0" addressOrder="0" columnsText="" refreshPeriod="0" name="tmpl" radix="16" sizeText="" addressText="be8"/>
+  <MemoryWindow addressSpace="" dataSize="1" autoEvaluate="0" viewMode="0" addressOrder="0" columnsText="" refreshPeriod="0" name="tmpl" radix="16" sizeText="" addressText="0x20003D00"/>
  </Memory1>
  <Memory2>
   <MemoryWindow addressSpace="" dataSize="1" autoEvaluate="0" viewMode="0" addressOrder="0" columnsText="" refreshPeriod="0" name="tmpl" radix="16" sizeText="" addressText=""/>
@@ -26,6 +31,7 @@
   <ProjectSessionItem path="tmpl;tmpl;Application"/>
   <ProjectSessionItem path="tmpl;tmpl;Device"/>
   <ProjectSessionItem path="tmpl;tmpl;nRF Libraries"/>
+  <ProjectSessionItem path="tmpl;tmpl;RTT Files"/>
   <ProjectSessionItem path="tmpl;tmpl;SoftDevice"/>
  </Project>
  <Register1>
@@ -48,8 +54,7 @@
  </TraceWindow>
  <Watch1>
   <Watches active="1" update="Never">
-   <Watchpoint expression="NRF_PPI_PROG_APP_CHANNELS_MASK" name="NRF_PPI_PROG_APP_CHANNELS_MASK" radix="16" linenumber="85" filename="components/drivers_nrf/ppi/nrf_drv_ppi.c"/>
-   <Watchpoint expression="m_channels_allocated" name="m_channels_allocated" radix="-1" linenumber="64" filename="components/drivers_nrf/ppi/nrf_drv_ppi.c"/>
+   <Watchpoint expression="m_error_data" name="m_error_data" radix="-1" linenumber="137" filename="components/libraries/util/app_error.c"/>
   </Watches>
  </Watch1>
  <Watch2>
@@ -62,13 +67,22 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="34" y="153" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="Application/main.c" selected="1" top="135" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="529" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/softdevice/common/softdevice_handler/softdevice_handler.c" selected="0" top="514" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="274" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/toolchain/ses/ses_nrf51_Vectors.s" selected="0" top="251" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="131" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/toolchain/ses/ses_nRF_Startup.s" selected="0" top="120" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="286" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 5.10a/source/thumb_crt0.s" selected="0" top="271" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="1000" useTextEdit="1" openedFrom="C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 5.10a/source/thumb_crt0.s" useBinaryEdit="0" left="0" path="components/libraries/timer/app_timer.c" selected="0" top="985" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="2" y="132" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/main.c" useBinaryEdit="0" left="0" path="components/ble/common/ble_advdata.h" selected="0" top="117" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="130" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="Application/main.c" selected="1" top="96" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="278" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/toolchain/ses/ses_nrf51_Vectors.s" selected="0" top="216" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="71" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/toolchain/ses/ses_nRF_Startup.s" selected="0" top="45" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="327" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/softdevice/common/softdevice_handler/softdevice_handler.c" selected="0" top="305" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="987" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/libraries/util/app_util.h" selected="0" top="963" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="297" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/drivers_nrf/common/nrf_drv_common.h" selected="0" top="273" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="245" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/softdevice/s130/headers/nrf_sdm.h" selected="0" top="217" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="75" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/libraries/util/app_error.c" selected="0" top="46" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="54" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/libraries/util/app_error_weak.c" selected="0" top="37" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="58" useTextEdit="1" openedFrom="D:/SesProj/components/softdevice/s130/headers/nrf_sdm.h" useBinaryEdit="0" left="0" path="components/softdevice/s130/headers/nrf_svc.h" selected="0" top="45" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="141" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/Users/boss/AppData/Local/SEGGER/SEGGER Embedded Studio/v3/packages/CMSIS_5/CMSIS/Core/Include/cmsis_gcc.h" selected="0" top="119" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="107" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/libraries/log/src/nrf_log_backend_serial.c" selected="0" top="78" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="282" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/libraries/log/src/nrf_log_frontend.c" selected="0" top="258" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="90" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/libraries/util/app_util_platform.c" selected="0" top="46" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="474" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/softdevice/s130/headers/nrf_nvic.h" selected="0" top="448" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="279" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="Segger/SEGGER_RTT.c" selected="0" top="235" codecName=""/>
  </Files>
- <ARMCrossStudioWindow activeProject="tmpl" fileDialogDefaultFilter="" autoConnectTarget="J-Link" buildConfiguration="Debug" sessionSettings="" debugSearchFileMap="../../../../../../components/drivers_nrf/common/nrf_drv_common.h&#xa;&#xa;../../../../../../components/drivers_nrf/hal/nrf_clock.h&#xa;&#xa;../../../../../../components/toolchain/cmsis/include/core_cm4.h&#xa;" fileDialogInitialDirectory="C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 5.10a/source" debugSearchPath="" autoConnectCapabilities="3199"/>
+ <ARMCrossStudioWindow activeProject="tmpl" fileDialogDefaultFilter="" autoConnectTarget="J-Link" buildConfiguration="Debug" sessionSettings="" debugSearchFileMap="../../../../../../components/drivers_nrf/common/nrf_drv_common.h&#xa;&#xa;../../../../../../components/drivers_nrf/hal/nrf_clock.h&#xa;&#xa;../../../../../../components/toolchain/cmsis/include/core_cm4.h&#xa;" fileDialogInitialDirectory="D:/SesProj/components/libraries/log/src" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>
