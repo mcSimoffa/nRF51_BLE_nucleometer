@@ -46,6 +46,7 @@
 #include "softdevice_handler.h"
 #include "ble.h"
 #include "softdevice_handler.h"
+#include "ble_advdata.h"
 
 //#include "nrf_delay.h"
 //#include "nrf_gpio.h"
@@ -55,26 +56,30 @@
                     Function prototypes
 ******************************************************************** */
 static void ble_stack_init(void);
+static void advertising_init(void);
 
 // ********************************************************************
-#define DEAD_BEEF 0xDEADBEEF      // Value used as error code on stack dump, can be used to identify stack location on stack unwind.
+//#define DEAD_BEEF 0xDEADBEEF      // Value used as error code on stack dump, can be used to identify stack location on stack unwind.
 #define APP_TIMER_PRESCALER     0   // Value of the RTC1 PRESCALER register.
 #define APP_TIMER_OP_QUEUE_SIZE 4   // Size of timer operation queues
 #define CENTRAL_LINK_COUNT      0   // Number of central links used by the application. When changing this number remember to adjust the RAM settings*/
 #define PERIPHERAL_LINK_COUNT   0   // Number of peripheral links used by the application. When changing this number remember to adjust the RAM settings*/
 //in global defines needs BLE_STACK_SUPPORT_REQD https://infocenter.nordicsemi.com/index.jsp?topic=%2Fcom.nordic.infocenter.sdk5.v12.3.0%2Flib_softdevice_handler.html
+#define APP_COMPANY_IDENTIFIER          0x0059                            /**< Company identifier for Nordic Semiconductor ASA. as per www.bluetooth.org. */
 
 int main(void) 
-{
+{ //it here from C:\Program Files\SEGGER\SEGGER Embedded Studio for ARM 5.10a\source\thumb_crt0.s
   uint32_t err_code;
   // Initialize.
   err_code = NRF_LOG_INIT(NULL);
   APP_ERROR_CHECK(err_code);
 
+
   APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false); //why this timer needs ?
   err_code = bsp_init(BSP_INIT_LED, APP_TIMER_TICKS(100, APP_TIMER_PRESCALER), NULL); //custom_board.h
   APP_ERROR_CHECK(err_code);
   ble_stack_init();
+  advertising_init();
 }
 
 /* ******************************************************************
@@ -107,4 +112,64 @@ static void ble_stack_init(void)
   // Enable BLE stack.
   err_code = softdevice_enable(&ble_enable_params);
   APP_ERROR_CHECK(err_code);
+}
+
+/**@brief Function for initializing the Advertising functionality.
+ *
+ * @details Encodes the required advertising data and passes it to the stack.
+ *          Also builds a structure to be passed to the stack when starting advertising.
+ */
+static void advertising_init(void)
+{
+    uint32_t      err_code;
+    ble_advdata_t advdata;
+    uint8_t       flags = BLE_GAP_ADV_FLAG_BR_EDR_NOT_SUPPORTED;
+
+    ble_advdata_manuf_data_t manuf_specific_data;
+
+    manuf_specific_data.company_identifier = APP_COMPANY_IDENTIFIER;
+
+#if defined(USE_UICR_FOR_MAJ_MIN_VALUES)
+    // If USE_UICR_FOR_MAJ_MIN_VALUES is defined, the major and minor values will be read from the
+    // UICR instead of using the default values. The major and minor values obtained from the UICR
+    // are encoded into advertising data in big endian order (MSB First).
+    // To set the UICR used by this example to a desired value, write to the address 0x10001080
+    // using the nrfjprog tool. The command to be used is as follows.
+    // nrfjprog --snr <Segger-chip-Serial-Number> --memwr 0x10001080 --val <your major/minor value>
+    // For example, for a major value and minor value of 0xabcd and 0x0102 respectively, the
+    // the following command should be used.
+    // nrfjprog --snr <Segger-chip-Serial-Number> --memwr 0x10001080 --val 0xabcd0102
+    uint16_t major_value = ((*(uint32_t *)UICR_ADDRESS) & 0xFFFF0000) >> 16;
+    uint16_t minor_value = ((*(uint32_t *)UICR_ADDRESS) & 0x0000FFFF);
+
+    uint8_t index = MAJ_VAL_OFFSET_IN_BEACON_INFO;
+
+    m_beacon_info[index++] = MSB_16(major_value);
+    m_beacon_info[index++] = LSB_16(major_value);
+
+    m_beacon_info[index++] = MSB_16(minor_value);
+    m_beacon_info[index++] = LSB_16(minor_value);
+#endif
+
+    manuf_specific_data.data.p_data = (uint8_t *) m_beacon_info;
+    manuf_specific_data.data.size   = APP_BEACON_INFO_LENGTH;
+
+    // Build and set advertising data.
+    memset(&advdata, 0, sizeof(advdata));
+
+    advdata.name_type             = BLE_ADVDATA_NO_NAME;
+    advdata.flags                 = flags;
+    advdata.p_manuf_specific_data = &manuf_specific_data;
+
+    err_code = ble_advdata_set(&advdata, NULL);
+    APP_ERROR_CHECK(err_code);
+
+    // Initialize advertising parameters (used when starting advertising).
+    memset(&m_adv_params, 0, sizeof(m_adv_params));
+
+    m_adv_params.type        = BLE_GAP_ADV_TYPE_ADV_NONCONN_IND;
+    m_adv_params.p_peer_addr = NULL;                             // Undirected advertisement.
+    m_adv_params.fp          = BLE_GAP_ADV_FP_ANY;
+    m_adv_params.interval    = NON_CONNECTABLE_ADV_INTERVAL;
+    m_adv_params.timeout     = APP_CFG_NON_CONN_ADV_TIMEOUT;
 }

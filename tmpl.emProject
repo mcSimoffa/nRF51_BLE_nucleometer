@@ -18,13 +18,13 @@
       arm_linker_heap_size="2048"
       arm_linker_process_stack_size="0"
       arm_linker_stack_size="2048"
-      arm_linker_variant="SEGGER"
+      arm_linker_variant="GNU"
       arm_simulator_memory_simulation_parameter="ROM1;0x00000000;0x00040000;RAM1;0x20000000;0x00004000;"
       arm_target_debug_interface_type="ADIv5"
       arm_target_device_name="nRF51822_xxAA"
       arm_target_interface_type="SWD"
       c_preprocessor_definitions="__nRF_FAMILY;NRF51822_XXAA;NRF51822;ARM_MATH_CM0;FLASH_PLACEMENT=1;BOARD_CUSTOM;CONFIG_GPIO_AS_PINRESET;SOFTDEVICE_PRESENT;S130;BLE_STACK_SUPPORT_REQD"
-      c_user_include_directories="$(ProjectDir)/nRF/Device/Include;components/boards;components/drivers_nrf/hal;components/drivers_nrf/clock;components/drivers_nrf/common;components/drivers_nrf/gpiote;components/drivers_nrf/delay;components/drivers_nrf/uart;components/drivers_nrf/ppi;config;components/libraries/util;components/libraries/bsp;components/libraries/button;components/libraries/timer;components/ble/common;components/libraries/fds;components/libraries/log;components/libraries/experimental_section_vars;components/libraries/fstorage;components/libraries/log/src;components/softdevice/common/softdevice_handler;components/softdevice/s130/headers"
+      c_user_include_directories="$(ProjectDir)/nRF/Device/Include;components/boards;components/drivers_nrf/hal;components/drivers_nrf/clock;components/drivers_nrf/common;components/drivers_nrf/gpiote;components/drivers_nrf/delay;components/drivers_nrf/uart;components/drivers_nrf/ppi;components/ble/common;config;components/libraries/util;components/libraries/bsp;components/libraries/button;components/libraries/timer;components/ble/common;components/libraries/fds;components/libraries/log;components/libraries/experimental_section_vars;components/libraries/fstorage;components/libraries/log/src;components/softdevice/common/softdevice_handler;components/softdevice/s130/headers"
       debug_register_definition_file="$(ProjectDir)/nRF/Device/nrf51.svd"
       debug_start_from_entry_point_symbol="No"
       debug_target_connection="J-Link"
@@ -42,15 +42,18 @@
       target_reset_script="Reset();"
       target_script_file="$(ProjectDir)/nRF/Scripts/nRF_Target.js"
       target_trace_initialize_script="EnableTrace(&quot;$(TraceInterfaceType)&quot;)" />
-    <folder Name="CMSIS Files">
-      <file file_name="nRF/Device/Include/nrf.h" />
-      <file file_name="nRF/Device/Include/nrf51.h" />
+    <folder Name="Device">
       <file file_name="nRF/Device/Source/system_nrf51.c">
         <configuration
           Name="Common"
           default_code_section=".init"
           default_const_section=".init_rodata" />
       </file>
+      <file file_name="components/toolchain/ses/ses_nRF_Startup.s">
+        <configuration Name="Debug" build_exclude_from_build="No" />
+      </file>
+      <file file_name="components/toolchain/ses/ses_nrf51_Vectors.s" />
+      <file file_name="C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 5.10a/source/thumb_crt0.s" />
     </folder>
     <folder Name="RTT Files">
       <file file_name="Segger/SEGGER_RTT.c" />
@@ -58,34 +61,20 @@
       <file file_name="Segger/SEGGER_RTT_Conf.h" />
       <file file_name="Segger/SEGGER_RTT_SES.c" />
     </folder>
-    <folder Name="Script Files">
-      <file file_name="nRF/Scripts/nRF_Target.js">
-        <configuration Name="Common" file_type="Reset Script" />
-      </file>
-      <file file_name="nRF/Device/Linker/ses_nrf51822_xxaa.icf">
-        <configuration Name="Common" file_type="Linker Script" />
-      </file>
-      <file file_name="nRF/Device/MemoryMap/nRF51822_xxAA_MemoryMap.xml">
-        <configuration Name="Common" file_type="Memory Map" />
-      </file>
-    </folder>
     <folder Name="Application">
       <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc" />
       <file file_name="Application/main.c" />
       <file file_name="config/sdk_config.h" />
     </folder>
-    <folder Name="System Files">
-      <file file_name="nRF/Device/Startup/ses_startup_nrf_common.s" />
-      <file file_name="nRF/Device/Startup/ses_startup_nrf51.s">
-        <configuration Name="Common" file_type="Assembly" />
-      </file>
-      <file file_name="Segger/SEGGER_THUMB_Startup.s" />
-    </folder>
     <configuration
       Name="Debug"
       arm_compiler_variant="SEGGER"
       c_additional_options=""
-      debug_target_connection="J-Link" />
+      debug_target_connection="J-Link"
+      linker_memory_map_file=""
+      linker_section_placement_file="$(ProjectDir)/flash_placement.xml"
+      linker_section_placement_macros="FLASH_PH_START=0x0 ;FLASH_PH_SIZE=0x40000;RAM_PH_START=0x20000000;RAM_PH_SIZE=0x4000;FLASH_START=0x1b000;FLASH_SIZE=0x25000;RAM_START=0x200013c8;RAM_SIZE=0x2c38"
+      linker_section_placements_segments="FLASH RX 0x0 0x40000;RAM RWX 0x20000000 0x4000" />
     <folder Name="Board Definition">
       <file file_name="components/boards/boards.c" />
     </folder>
