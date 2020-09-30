@@ -41,8 +41,8 @@
       package_dependencies="CMSIS-CORE_V5"
       project_directory=""
       project_type="Executable"
-      target_reset_script=""
-      target_script_file=""
+      target_reset_script="TargetInterface.resetAndStop()"
+      target_script_file="$(ProjectDir)/nRF/Scripts/nRF_Target.js"
       target_trace_initialize_script="EnableTrace(&quot;$(TraceInterfaceType)&quot;)" />
     <folder Name="Device">
       <file file_name="nRF/Device/Source/system_nrf51.c">
@@ -76,10 +76,7 @@
       c_user_include_directories=""
       debug_target_connection="J-Link"
       gcc_debugging_level="Level 3"
-      linker_memory_map_file=""
-      linker_section_placement_file="$(ProjectDir)/flash_placement.xml"
-      linker_section_placement_macros="FLASH_PH_START=0x0 ;FLASH_PH_SIZE=0x40000;RAM_PH_START=0x20000000;RAM_PH_SIZE=0x4000;FLASH_START=0x1b000;FLASH_SIZE=0x25000;RAM_START=0x200013c8;RAM_SIZE=0x2c38"
-      linker_section_placements_segments="FLASH RX 0x0 0x40000;RAM RWX 0x20000000 0x4000" />
+      linker_memory_map_file="" />
     <folder Name="Board Definition">
       <file file_name="components/boards/boards.c" />
     </folder>

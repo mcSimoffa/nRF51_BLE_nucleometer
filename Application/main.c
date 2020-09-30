@@ -58,6 +58,7 @@
 ******************************************************************** */
 static void ble_stack_init(void);
 static void advertising_init(void);
+static void advertising_start(void);
 
 /* *******************************************************************
                     DEFINITIONs
@@ -81,7 +82,8 @@ static void advertising_init(void);
 #define APP_MAJOR_VALUE                 0x01, 0x02    // Major value used to identify Beacons.
 #define APP_MINOR_VALUE                 0x03, 0x04    // Minor value used to identify Beacons.
 #define APP_MEASURED_RSSI               0xC3          // The Beacon's measured RSSI at 1 meter distance in dBm.
-#define NON_CONNECTABLE_ADV_INTERVAL    MSEC_TO_UNITS(100, 625) // The advertising interval for non-connectable advertisement (100 ms). This value can vary between 100ms to 10.24s). Step 625 uS
+//this time maybe nothing change ???????
+#define NON_CONNECTABLE_ADV_INTERVAL    MSEC_TO_UNITS(150, 625) // The advertising interval for non-connectable advertisement (100 ms). This value can vary between 100ms to 10.24s). Step 625 uS
 #define APP_CFG_NON_CONN_ADV_TIMEOUT    0                                 /**< Time for which the device must be advertising in non-connectable mode (in seconds). 0 disables timeout. */
 
 
@@ -119,6 +121,9 @@ int main(void)
   APP_ERROR_CHECK(err_code);
   ble_stack_init();
   advertising_init();
+   // Start execution.
+    NRF_LOG_INFO("BLE Beacon started\r\n");
+    advertising_start();
   for (;; )
     {
         if (NRF_LOG_PROCESS() == false)
@@ -221,4 +226,17 @@ static void advertising_init(void)
     m_adv_params.fp          = BLE_GAP_ADV_FP_ANY;
     m_adv_params.interval    = NON_CONNECTABLE_ADV_INTERVAL;
     m_adv_params.timeout     = APP_CFG_NON_CONN_ADV_TIMEOUT;
+}
+
+/**@brief Function for starting advertising.
+ */
+static void advertising_start(void)
+{
+    uint32_t err_code;
+
+    err_code = sd_ble_gap_adv_start(&m_adv_params);
+    APP_ERROR_CHECK(err_code);
+
+    err_code = bsp_indication_set(BSP_INDICATE_ADVERTISING);
+    APP_ERROR_CHECK(err_code);
 }
