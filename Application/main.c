@@ -83,8 +83,8 @@ static void advertising_start(void);
 #define APP_MINOR_VALUE                 0x03, 0x04    // Minor value used to identify Beacons.
 #define APP_MEASURED_RSSI               0xC3          // The Beacon's measured RSSI at 1 meter distance in dBm.
 //this time maybe nothing change ???????
-#define NON_CONNECTABLE_ADV_INTERVAL    MSEC_TO_UNITS(150, 625) // The advertising interval for non-connectable advertisement (100 ms). This value can vary between 100ms to 10.24s). Step 625 uS
-#define APP_CFG_NON_CONN_ADV_TIMEOUT    0                                 /**< Time for which the device must be advertising in non-connectable mode (in seconds). 0 disables timeout. */
+#define NON_CONNECTABLE_ADV_INTERVAL    MSEC_TO_UNITS(500, 625) // The advertising interval for non-connectable advertisement (100 ms). This value can vary between 100ms to 10.24s). Step 625 uS
+#define APP_CFG_NON_CONN_ADV_TIMEOUT    0  // Time for which the device must be advertising in non-connectable mode (in seconds). 0 disables timeout.
 
 
 /* *******************************************************************
@@ -116,7 +116,7 @@ int main(void)
   APP_ERROR_CHECK(err_code);
 
 
-  APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false); //why this timer needs ?
+  APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
   err_code = bsp_init(BSP_INIT_LED, APP_TIMER_TICKS(100, APP_TIMER_PRESCALER), NULL); //custom_board.h
   APP_ERROR_CHECK(err_code);
   ble_stack_init();
@@ -168,11 +168,11 @@ static void ble_stack_init(void)
   APP_ERROR_CHECK(err_code);
 }
 
-/**@brief Function for initializing the Advertising functionality.
- *
- * @details Encodes the required advertising data and passes it to the stack.
- *          Also builds a structure to be passed to the stack when starting advertising.
- */
+/* ******************************************************************
+Function for initializing the Advertising functionality.
+Encodes the required advertising data and passes it to the stack.
+Also builds a structure to be passed to the stack when starting advertising.
+******************************************************************** */
 static void advertising_init(void)
 {
     uint32_t      err_code;
@@ -180,7 +180,6 @@ static void advertising_init(void)
     uint8_t       flags = BLE_GAP_ADV_FLAG_BR_EDR_NOT_SUPPORTED;
 
     ble_advdata_manuf_data_t manuf_specific_data;
-
     manuf_specific_data.company_identifier = APP_COMPANY_IDENTIFIER;
 
 #if defined(USE_UICR_FOR_MAJ_MIN_VALUES)
@@ -210,7 +209,6 @@ static void advertising_init(void)
 
     // Build and set advertising data.
     memset(&advdata, 0, sizeof(advdata));
-
     advdata.name_type             = BLE_ADVDATA_NO_NAME;
     advdata.flags                 = flags;
     advdata.p_manuf_specific_data = &manuf_specific_data;
@@ -224,12 +222,13 @@ static void advertising_init(void)
     m_adv_params.type        = BLE_GAP_ADV_TYPE_ADV_NONCONN_IND;
     m_adv_params.p_peer_addr = NULL;                             // Undirected advertisement.
     m_adv_params.fp          = BLE_GAP_ADV_FP_ANY;
-    m_adv_params.interval    = NON_CONNECTABLE_ADV_INTERVAL;
+    m_adv_params.interval    = BLE_GAP_ADV_TYPE_ADV_IND;//NON_CONNECTABLE_ADV_INTERVAL;
     m_adv_params.timeout     = APP_CFG_NON_CONN_ADV_TIMEOUT;
 }
 
-/**@brief Function for starting advertising.
- */
+/* ******************************************************************
+Function for starting advertising.
+******************************************************************** */
 static void advertising_start(void)
 {
     uint32_t err_code;
