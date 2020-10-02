@@ -54,11 +54,15 @@
  </TraceWindow>
  <Watch1>
   <Watches active="1" update="Never">
-   <Watchpoint expression="info" name="info" radix="-1" linenumber="52" filename="components/libraries/util/app_error_weak.c"/>
-   <Watchpoint expression="id" name="id" radix="-1" linenumber="52" filename="components/libraries/util/app_error_weak.c"/>
-   <Watchpoint expression="error_info" name="error_info" radix="-1" linenumber="76" filename="components/libraries/util/app_error.c"/>
+   <Watchpoint expression="&amp;fs_config" name="&amp;fs_config" radix="-1" linenumber="675" filename="components/libraries/fds/fds.c"/>
+   <Watchpoint expression="p_config" name="p_config" radix="-1" linenumber="318" filename="components/libraries/fstorage/fstorage.c"/>
    <Watchpoint expression="p_page_addr" name="p_page_addr" radix="-1" linenumber="211" filename="components/libraries/fds/fds.c"/>
-   <Watchpoint expression="p_page_addr[FDS_PAGE_TAG_WORD_0]" name="p_page_addr[FDS_PAGE_TAG_WORD_0]" radix="16" linenumber="211" filename="components/libraries/fds/fds.c"/>
+   <Watchpoint expression="p_config_j" name="p_config_j" radix="-1" linenumber="336" filename="components/libraries/fstorage/fstorage.c"/>
+   <Watchpoint expression="p_config_i" name="p_config_i" radix="-1" linenumber="363" filename="components/libraries/fstorage/fstorage.c"/>
+   <Watchpoint expression="configs_to_init" name="configs_to_init" radix="-1" linenumber="321" filename="components/libraries/fstorage/fstorage.c"/>
+   <Watchpoint expression="evt_success" name="evt_success" radix="-1" linenumber="1640" filename="components/libraries/fds/fds.c"/>
+   <Watchpoint expression="info" name="info" radix="-1" linenumber="52" filename="components/libraries/util/app_error_weak.c"/>
+   <Watchpoint expression="&amp;abcd" name="&amp;abcd" radix="-1" linenumber="792" filename="Application/main.c"/>
   </Watches>
  </Watch1>
  <Watch2>
@@ -71,11 +75,31 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="59" y="697" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="Application/main.c" selected="1" top="680" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="495" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/main.c" useBinaryEdit="0" left="0" path="components/ble/peer_manager/peer_manager.c" selected="0" top="478" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="360" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/ble/peer_manager/peer_manager.c" useBinaryEdit="0" left="0" path="components/ble/peer_manager/peer_data_storage.c" selected="0" top="338" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="335" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/ble/peer_manager/peer_data_storage.c" useBinaryEdit="0" left="0" path="components/libraries/fds/fds.h" selected="0" top="322" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="210" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/ble/peer_manager/peer_data_storage.c" useBinaryEdit="0" left="0" path="components/libraries/fds/fds.c" selected="0" top="197" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="792" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="Application/main.c" selected="1" top="780" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="495" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/main.c" useBinaryEdit="0" left="0" path="components/ble/peer_manager/peer_manager.c" selected="0" top="480" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="354" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/ble/peer_manager/peer_manager.c" useBinaryEdit="0" left="0" path="components/ble/peer_manager/peer_data_storage.c" selected="0" top="336" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="40" y="313" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/ble/peer_manager/peer_data_storage.c" useBinaryEdit="0" left="0" path="components/libraries/fds/fds.h" selected="0" top="308" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="1620" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/ble/peer_manager/peer_data_storage.c" useBinaryEdit="0" left="0" path="components/libraries/fds/fds.c" selected="0" top="1608" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="53" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/libraries/util/app_error_weak.c" selected="0" top="41" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="75" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/libraries/util/app_error.c" selected="0" top="62" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="39" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/toolchain/ses/ses_nrf51_Vectors.s" selected="0" top="30" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="3192" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/libraries/fds/fds_internal_defs.h" useBinaryEdit="0" left="0" path="config/sdk_config.h" selected="0" top="3172" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="54" y="176" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/libraries/fds/fds.c" useBinaryEdit="0" left="0" path="components/libraries/fstorage/fstorage.h" selected="0" top="167" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="8" y="228" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/libraries/fstorage/fstorage.h" useBinaryEdit="0" left="0" path="components/libraries/experimental_section_vars/section_vars.h" selected="0" top="73" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="126" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/toolchain/ses/ses_nRF_Startup.s" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="190" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/ble/peer_manager/peer_data_storage.c" useBinaryEdit="0" left="0" path="components/ble/peer_manager/peer_manager_internal.h" selected="0" top="167" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="315" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/libraries/fds/fds.c" useBinaryEdit="0" left="0" path="components/libraries/fstorage/fstorage.c" selected="0" top="303" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="55" y="59" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/libraries/fstorage/fstorage.c" useBinaryEdit="0" left="0" path="components/libraries/fstorage/fstorage_internal_defs.h" selected="0" top="46" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="139" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/libraries/fstorage/fstorage_internal_defs.h" useBinaryEdit="0" left="0" path="nRF/Device/Include/nrf.h" selected="0" top="129" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/nRF/Device/Include/nrf.h" useBinaryEdit="0" left="0" path="nRF/Device/Include/nrf51_deprecated.h" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="86" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="nRF/Device/Source/system_nrf51.c" selected="0" top="70" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="3569" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="nRF/Device/Include/nrf51_erratas.h" selected="0" top="3551" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="287" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 5.10a/source/thumb_crt0.s" selected="0" top="255" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="478" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/softdevice/common/softdevice_handler/softdevice_handler.c" selected="0" top="471" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="166" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/libraries/util/sdk_mapped_flags.c" selected="0" top="148" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="8" y="87" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/libraries/fds/fds.c" useBinaryEdit="0" left="0" path="components/libraries/fds/fds_internal_defs.h" selected="0" top="84" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="326" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/libraries/log/src/nrf_log_frontend.c" selected="0" top="310" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="65" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/libraries/util/app_util_platform.c" selected="0" top="53" codecName=""/>
  </Files>
  <ARMCrossStudioWindow activeProject="tmpl" fileDialogDefaultFilter="" autoConnectTarget="J-Link" buildConfiguration="Debug" sessionSettings="" debugSearchFileMap="../../../../../../components/drivers_nrf/common/nrf_drv_common.h&#xa;&#xa;../../../../../../components/drivers_nrf/hal/nrf_clock.h&#xa;&#xa;../../../../../../components/toolchain/cmsis/include/core_cm4.h&#xa;" fileDialogInitialDirectory="D:/nRF51_BLE_nucleometer/components/libraries/bsp" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>

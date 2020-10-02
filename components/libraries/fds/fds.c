@@ -65,6 +65,8 @@ FS_REGISTER_CFG(fs_config_t fs_config) =
     .priority  = 0xFF
 };
 
+ uint32_t abcd =50;
+
 // Used to flag a record as dirty, i.e. ready for garbage collection.
 // Must be statically allocated since it will be written to flash.
 __ALIGN(4) static fds_tl_t const m_fds_tl_dirty =
@@ -665,6 +667,7 @@ static fds_init_opts_t pages_init()
     uint32_t ret = NO_PAGES;
     // The index of the page being initialized in m_pages[].
     uint16_t page = 0;
+
     bool     swap_set_but_not_found  = false;
 
     for (uint16_t i = 0; i < FDS_VIRTUAL_PAGES; i++)
@@ -1614,6 +1617,7 @@ ret_code_t fds_register(fds_cb_t cb)
     ret_code_t ret;
 
     CRITICAL_SECTION_ENTER();
+    abcd++;
     if (m_users == FDS_MAX_USERS)
     {
         ret = FDS_ERR_USER_LIMIT_REACHED;

@@ -42,6 +42,7 @@
 #define FSTORAGE_INTERNAL_DEFS_H__
 
 #include "nrf.h"
+#include "section_vars.h"
 
 #ifdef __cplusplus
 extern "C" {
