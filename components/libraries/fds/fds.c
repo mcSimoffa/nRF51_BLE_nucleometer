@@ -65,7 +65,6 @@ FS_REGISTER_CFG(fs_config_t fs_config) =
     .priority  = 0xFF
 };
 
- uint32_t abcd =50;
 
 // Used to flag a record as dirty, i.e. ready for garbage collection.
 // Must be statically allocated since it will be written to flash.
@@ -1617,7 +1616,6 @@ ret_code_t fds_register(fds_cb_t cb)
     ret_code_t ret;
 
     CRITICAL_SECTION_ENTER();
-    abcd++;
     if (m_users == FDS_MAX_USERS)
     {
         ret = FDS_ERR_USER_LIMIT_REACHED;
