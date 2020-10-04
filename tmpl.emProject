@@ -15,7 +15,7 @@
       arm_fpu_type="None"
       arm_interwork="No"
       arm_keep_preprocessor_output="Yes"
-      arm_linker_heap_size="1024"
+      arm_linker_heap_size="512"
       arm_linker_process_stack_size="0"
       arm_linker_stack_size="2048"
       arm_linker_variant="GNU"
@@ -24,7 +24,7 @@
       arm_target_device_name="nRF51822_xxAA"
       arm_target_interface_type="SWD"
       c_preprocessor_definitions="__nRF_FAMILY;NRF51822_XXAA;NRF51822;NRF51;APP_ENTRY_POINT=Init_section_fs_data;ARM_MATH_CM0;FLASH_PLACEMENT=1;BOARD_CUSTOM;CONFIG_GPIO_AS_PINRESET;SOFTDEVICE_PRESENT;S130;BLE_STACK_SUPPORT_REQD;NRF_SD_BLE_API_VERSION=2"
-      c_user_include_directories="$(ProjectDir)/nRF/Device/Include;Segger;components/boards;components/drivers_nrf/hal;components/drivers_nrf/clock;components/drivers_nrf/common;components/drivers_nrf/gpiote;components/drivers_nrf/delay;components/drivers_nrf/uart;components/drivers_nrf/ppi;components/ble/common;components/ble/ble_advertising;components/ble/peer_manager;config;components/libraries/util;components/libraries/bsp;components/libraries/button;components/libraries/timer;components/libraries/fds;components/libraries/log;components/libraries/experimental_section_vars;components/libraries/fstorage;components/libraries/sensorsim;components/libraries/log/src;components/softdevice/common/softdevice_handler;components/softdevice/s130/headers"
+      c_user_include_directories="$(ProjectDir)/nRF/Device/Include;Segger;components/boards;components/drivers_nrf/hal;components/drivers_nrf/clock;components/drivers_nrf/common;components/drivers_nrf/gpiote;components/drivers_nrf/delay;components/drivers_nrf/uart;components/drivers_nrf/ppi;components/ble/common;components/ble/ble_advertising;components/ble/peer_manager;components/ble/ble_services/ble_dis;config;components/libraries/util;components/libraries/bsp;components/libraries/button;components/libraries/timer;components/libraries/fds;components/libraries/log;components/libraries/experimental_section_vars;components/libraries/fstorage;components/libraries/sensorsim;components/libraries/log/src;components/softdevice/common/softdevice_handler;components/softdevice/s130/headers"
       debug_register_definition_file="$(ProjectDir)/nRF/Device/nrf51.svd"
       debug_start_from_entry_point_symbol="No"
       debug_target_connection="J-Link"
@@ -131,6 +131,9 @@
     </folder>
     <folder Name="SoftDevice">
       <file file_name="components/softdevice/common/softdevice_handler/softdevice_handler.c" />
+    </folder>
+    <folder Name="BLE Services">
+      <file file_name="components/ble/ble_services/ble_dis/ble_dis.c" />
     </folder>
   </project>
   <configuration

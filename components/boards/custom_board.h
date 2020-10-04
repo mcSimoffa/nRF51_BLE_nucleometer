@@ -78,6 +78,7 @@ extern "C" {
 #define BSP_BUTTON_0   BUTTON_1
 #define BSP_BUTTON_1   BUTTON_2
 
+// Buttons functionality here: components\libraries\bsp\bsp_btn_ble.c
 /*
 #define RX_PIN_NUMBER  11
 #define TX_PIN_NUMBER  9

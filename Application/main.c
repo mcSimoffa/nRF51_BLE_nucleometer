@@ -66,10 +66,13 @@
 #include "ble_advdata.h"
 #include "ble_advertising.h"
 #include "ble_conn_state.h"
-
-#define NRF_LOG_MODULE_NAME "MY_APP"
+#include "ble_dis.h"
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
+
+#define NRF_LOG_MODULE_NAME "MY_APP"
+
+// Buttons functionality here: components\libraries\bsp\bsp_btn_ble.c
 
 #define IS_SRVC_CHANGED_CHARACT_PRESENT 1                                           /**< Include or not the service_changed characteristic. if not enabled, the server's database cannot be changed for the lifetime of the device*/
 
@@ -84,6 +87,9 @@
 
 #define DEVICE_NAME                     "Nordic_Template"                           /**< Name of device. Will be included in the advertising data. */
 #define MANUFACTURER_NAME               "NordicSemiconductor"                       /**< Manufacturer. Will be passed to Device Information Service. */
+#define MODEL_NUM                       "nRF Nucleo"                            /**< Model number. Will be passed to Device Information Service. */
+#define MANUFACTURER_ID                 0x1122334455                                /**< Manufacturer ID, part of System ID. Will be passed to Device Information Service. */
+#define ORG_UNIQUE_ID                   0x667788
 #define APP_ADV_INTERVAL                300                                         /**< The advertising interval (in units of 0.625 ms. This value corresponds to 187.5 ms). */
 #define APP_ADV_TIMEOUT_IN_SECONDS      180                                         /**< The advertising timeout in units of seconds. */
 
@@ -110,6 +116,12 @@
 
 #define DEAD_BEEF                       0xDEADBEEF                                  /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
 
+/* -------------------------------------------------------------------------------------------------
+    definitions added by me
+------------------------------------------------------------------------------------------------- */
+// https://specificationrefs.bluetooth.com/assigned-values/Appearance%20Values.pdf
+#define BLE_APPEARANCE_ENERGY_SENSOR        1344  //(1344+12)
+
 static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID;                            /**< Handle of the current connection. */
 
 /* YOUR_JOB: Declare all services structure your application is using
@@ -123,9 +135,7 @@ static ble_uuid_t m_adv_uuids[] = {{BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUI
 static void advertising_start(void);
 
 /**@brief Callback function for asserts in the SoftDevice.
- *
  * @details This function will be called in case of an assert in the SoftDevice.
- *
  * @warning This handler is an example only and does not fit a final product. You need to analyze
  *          how your product is supposed to react in case of Assert.
  * @warning On assert from the SoftDevice, the system can only recover on reset.
@@ -195,7 +205,7 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
 
         case PM_EVT_PEERS_DELETE_SUCCEEDED:
         {
-            advertising_start();
+            ble_advertising_start(BLE_ADV_MODE_FAST);
         } break;
 
         case PM_EVT_LOCAL_DB_CACHE_APPLY_FAILED:
@@ -280,9 +290,8 @@ static void gap_params_init(void)
                                           strlen(DEVICE_NAME));
     APP_ERROR_CHECK(err_code);
 
-    /* YOUR_JOB: Use an appearance value matching the application's use case.
-       err_code = sd_ble_gap_appearance_set(BLE_APPEARANCE_);
-       APP_ERROR_CHECK(err_code); */
+    err_code = sd_ble_gap_appearance_set(BLE_APPEARANCE_ENERGY_SENSOR);
+    APP_ERROR_CHECK(err_code);
 
     memset(&gap_conn_params, 0, sizeof(gap_conn_params));
 
@@ -325,29 +334,25 @@ static void gap_params_init(void)
  */
 static void services_init(void)
 {
-    /* YOUR_JOB: Add code to initialize the services used by the application.
-       uint32_t                           err_code;
-       ble_xxs_init_t                     xxs_init;
-       ble_yys_init_t                     yys_init;
+    uint32_t         err_code;
+    ble_dis_init_t   dis_init;
+    ble_dis_sys_id_t sys_id;
 
-       // Initialize XXX Service.
-       memset(&xxs_init, 0, sizeof(xxs_init));
+    // Initialize Device Information Service.
+    memset(&dis_init, 0, sizeof(dis_init));
 
-       xxs_init.evt_handler                = NULL;
-       xxs_init.is_xxx_notify_supported    = true;
-       xxs_init.ble_xx_initial_value.level = 100;
+    ble_srv_ascii_to_utf8(&dis_init.manufact_name_str, MANUFACTURER_NAME);
+    ble_srv_ascii_to_utf8(&dis_init.model_num_str, MODEL_NUM);
 
-       err_code = ble_bas_init(&m_xxs, &xxs_init);
-       APP_ERROR_CHECK(err_code);
+    sys_id.manufacturer_id            = MANUFACTURER_ID;
+    sys_id.organizationally_unique_id = ORG_UNIQUE_ID;
+    dis_init.p_sys_id                 = &sys_id;
 
-       // Initialize YYY Service.
-       memset(&yys_init, 0, sizeof(yys_init));
-       yys_init.evt_handler                  = on_yys_evt;
-       yys_init.ble_yy_initial_value.counter = 0;
+    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&dis_init.dis_attr_md.read_perm);
+    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&dis_init.dis_attr_md.write_perm);
 
-       err_code = ble_yy_service_init(&yys_init, &yy_init);
-       APP_ERROR_CHECK(err_code);
-     */
+    err_code = ble_dis_init(&dis_init);
+    APP_ERROR_CHECK(err_code);
 }
 
 
@@ -563,11 +568,12 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
  */
 static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 {
+    ble_conn_params_on_ble_evt(p_ble_evt);
     /** The Connection state module has to be fed BLE events in order to function correctly
-     * Remember to call ble_conn_state_on_ble_evt before calling any ble_conns_state_* functions. */
+     * Remember to call ble_conn_state_on_ble_evt before calling any ble_conns_state_* functions. */   
     ble_conn_state_on_ble_evt(p_ble_evt);
     pm_on_ble_evt(p_ble_evt);
-    ble_conn_params_on_ble_evt(p_ble_evt);
+    
     bsp_btn_ble_on_ble_evt(p_ble_evt);
     on_ble_evt(p_ble_evt);
     ble_advertising_on_ble_evt(p_ble_evt);
@@ -779,12 +785,12 @@ static void power_manage(void)
 
 /**@brief Function for starting advertising.
  */
-static void advertising_start(void)
+/*static void advertising_start(void)
 {
     uint32_t err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
 
     APP_ERROR_CHECK(err_code);
-}
+}*/
 
 
 /**@brief Function for application main entry.
@@ -822,7 +828,7 @@ int main(void)
     {
         if (NRF_LOG_PROCESS() == false)
         {
-            power_manage();
+            //power_manage();
         }
     }
 }
