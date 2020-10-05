@@ -1,0 +1,88 @@
+GPIOTE:INFO:Function: nrf_drv_gpiote_init, error code: NRF_SUCCESS.
+GPIOTE:INFO:Function: nrf_drv_gpiote_in_init, error code: NRF_SUCCESS.
+GPIOTE:INFO:Function: nrf_drv_gpiote_in_init, error code: NRF_SUCCESS.
+MAIN:INFO:Bonds erased!
+MAIN:INFO:Template started
+MAIN:INFO:Fast advertising
+MAIN:INFO:Connected. peer addr type= 2
+MAIN:INFO:Security timer start
+MAIN:INFO:Failed to secure connection. Disconnecting.
+MAIN:INFO:Disconnected
+MAIN:INFO:Fast advertising
+MAIN:INFO:Connected. peer addr type= 2
+MAIN:INFO:Security timer start
+MAIN:INFO:Failed to secure connection. Disconnecting.
+MAIN:INFO:Disconnected
+MAIN:INFO:Fast advertising
+MAIN:INFO:Fast advertising
+MAIN:INFO:Fast advertising
+MAIN:INFO:Sleeping by button...
+MAIN:INFO:Sleep mode enter
+MAIN:INFO:Sleeping by button...
+MAIN:INFO:Sleep mode enter
+MAIN:INFO:Connected. peer addr type= 2
+MAIN:INFO:Security timer start
+MAIN:INFO:Failed to secure connection. Disconnecting.
+MAIN:INFO:Disconnected
+MAIN:INFO:Fast advertising
+GPIOTE:INFO:Function: nrf_drv_gpiote_init, error code: NRF_SUCCESS.
+GPIOTE:INFO:Function: nrf_drv_gpiote_in_init, error code: NRF_SUCCESS.
+GPIOTE:INFO:Function: nrf_drv_gpiote_in_init, error code: NRF_SUCCESS.
+MAIN:INFO:Bonds erased!
+MAIN:INFO:Template started
+MAIN:INFO:Fast advertising
+MAIN:INFO:Connected. peer addr type= 2
+MAIN:INFO:Security timer start
+MAIN:INFO:Failed to secure connection. Disconnecting.
+MAIN:INFO:Disconnected
+MAIN:INFO:Fast advertising
+MAIN:INFO:Connected. peer addr type= 2
+MAIN:INFO:Security timer start
+MAIN:INFO:Failed to secure connection. Disconnecting.
+MAIN:INFO:Disconnected
+MAIN:INFO:Fast advertising
+MAIN:INFO:Connected. peer addr type= 2
+MAIN:INFO:Security timer start
+MAIN:INFO:Failed to secure connection. Disconnecting.
+MAIN:INFO:Disconnected
+MAIN:INFO:Fast advertising
+MAIN:INFO:Connected. peer addr type= 2
+MAIN:INFO:Security timer start
+MAIN:INFO:Failed to secure connection. Disconnecting.
+MAIN:INFO:Disconnected
+MAIN:INFO:Fast advertising
+MAIN:INFO:Connected. peer addr type= 2
+MAIN:INFO:Security timer start
+MAIN:INFO:Failed to secure connection. Disconnecting.
+MAIN:INFO:Disconnected
+MAIN:INFO:Fast advertising
+MAIN:INFO:Connected. peer addr type= 0
+MAIN:INFO:Security timer start
+MAIN:INFO:SEC connect start
+MAIN:INFO:Security timer stop
+MAIN:INFO:Passkey: 654321
+MAIN:INFO:Link secured. Role: 1. conn_handle: 0, Procedure: 1
+MAIN:INFO:Peer data update succeeded
+MAIN:INFO:Peer data update succeeded
+MAIN:INFO:Peer data update succeeded
+MAIN:INFO:Disconnected
+MAIN:INFO:Fast advertising
+MAIN:INFO:Connected. peer addr type= 2
+MAIN:INFO:Security timer start
+MAIN:INFO:Failed to secure connection. Disconnecting.
+MAIN:INFO:Disconnected
+MAIN:INFO:Fast advertising
+MAIN:INFO:Connected. peer addr type= 2
+MAIN:INFO:Security timer start
+MAIN:INFO:Failed to secure connection. Disconnecting.
+MAIN:INFO:Disconnected
+MAIN:INFO:Fast advertising
+MAIN:INFO:Connected. peer addr type= 2
+MAIN:INFO:Security timer start
+MAIN:INFO:SEC connect start
+MAIN:INFO:Security timer stop
+MAIN:INFO:Passkey: 654321
+MAIN:INFO:Link secured. Role: 1. conn_handle: 0, Procedure: 1
+MAIN:INFO:Peer data update succeeded
+MAIN:INFO:Peer data update succeeded
+MAIN:INFO:Peer data update succeeded
