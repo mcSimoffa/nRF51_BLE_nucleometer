@@ -1,0 +1,35 @@
+GPIOTE:INFO:Function: nrf_drv_gpiote_init, error code: NRF_SUCCESS.
+GPIOTE:INFO:Function: nrf_drv_gpiote_in_init, error code: NRF_SUCCESS.
+GPIOTE:INFO:Function: nrf_drv_gpiote_in_init, error code: NRF_SUCCESS.
+MAIN:INFO:Template started
+MAIN:INFO:Fast advertising
+MAIN:INFO:Connected to a previously bonded device.
+MAIN:INFO:Local DB cache applied
+MAIN:INFO:Connected. peer addr:B5 5D 62 F9 B0 4F                                .]b..O          
+MAIN:INFO:peer addr type: 2
+MAIN:INFO:Security timer start
+MAIN:INFO:Disconnected
+MAIN:INFO:Fast advertising
+MAIN:INFO:Connected to a previously bonded device.
+MAIN:INFO:Local DB cache applied
+MAIN:INFO:Connected. peer addr:B5 5D 62 F9 B0 4F                                .]b..O          
+MAIN:INFO:peer addr type: 2
+MAIN:INFO:Security timer start
+MAIN:INFO:Disconnected
+MAIN:INFO:Fast advertising
+MAIN:INFO:Connected to a previously bonded device.
+MAIN:INFO:Local DB cache applied
+MAIN:INFO:Connected. peer addr:F4 2A 89 EF 22 98                                .*..".          
+MAIN:INFO:peer addr type: 0
+MAIN:INFO:Security timer start
+MAIN:INFO:Disconnected
+MAIN:INFO:Fast advertising
+MAIN:INFO:Connected to a previously bonded device.
+MAIN:INFO:Local DB cache applied
+MAIN:INFO:Connected. peer addr:B5 5D 62 F9 B0 4F                                .]b..O          
+MAIN:INFO:peer addr type: 2
+MAIN:INFO:Security timer start
+MAIN:INFO:Disconnected
+MAIN:INFO:Fast advertising
+MAIN:INFO:BLE advertising Idle
+MAIN:INFO:Sleep mode enter

@@ -143,6 +143,25 @@ static ble_uuid_t m_adv_uuids[] = {{BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUI
 APP_TIMER_DEF(m_sec_req_timer_id);
 pm_peer_id_t m_peer_to_be_deleted = PM_PEER_ID_INVALID;
 
+//_____________________________________________________________________________________
+/**@brief Function for putting the chip into sleep mode.
+ *
+ * @note This function will not return.
+ ************************************************************************ */
+static void sleep_mode_enter(void) 
+{
+  NRF_LOG_INFO("Sleep mode enter\r\n");
+  uint32_t err_code = bsp_indication_set(BSP_INDICATE_IDLE);
+  APP_ERROR_CHECK(err_code);
+  // Prepare wakeup buttons. Booth buttons can wakeUp device
+  err_code = bsp_btn_ble_sleep_mode_prepare();
+  APP_ERROR_CHECK(err_code);
+  return; //This added I by comfort debug
+  // Go to system-off mode (this function will not return; wakeup will cause a
+  // reset).
+  err_code = sd_power_system_off();
+  APP_ERROR_CHECK(err_code);
+}
 
 /**@brief Callback function for asserts in the SoftDevice.
  * @details This function will be called in case of an assert in the
@@ -161,9 +180,8 @@ void assert_nrf_callback(uint16_t line_num, const uint8_t *p_file_name)
 }
 
 /**@brief Function for handling Peer Manager events.
- *
  * @param[in] p_evt  Peer Manager event.
- */
+ ************************************************************** */
 static void pm_evt_handler(pm_evt_t const *p_evt) 
 {
   ret_code_t err_code;
@@ -285,14 +303,13 @@ static void pm_evt_handler(pm_evt_t const *p_evt)
     }
 }
 
-
 /**@brief Function for handling the Security Request timer timeout.
  *
  * @details This function will be called each time the Security Request timer expires.
  *
  * @param[in] p_context  Pointer used for passing some arbitrary information (context) from the
  *                       app_start_timer() call to the timeout handler.
- */
+ ******************************************************************************************  */
 static void sec_req_timeout_handler(void * p_context)
 {
     uint32_t err_code;
@@ -300,118 +317,13 @@ static void sec_req_timeout_handler(void * p_context)
     if (m_conn_handle != BLE_CONN_HANDLE_INVALID)
     {
         // Initiate bonding.
-        NRF_LOG_DEBUG("Start encryption\r\n");
+        NRF_LOG_DEBUG("Sec timer expired. Start encryption\r\n");
         err_code = pm_conn_secure(m_conn_handle, false);
         if (err_code != NRF_ERROR_INVALID_STATE)
         {
             APP_ERROR_CHECK(err_code);
         }
     }
-}
-
-
-/**@brief Function for the Timer initialization.
- *
- * @details Initializes the timer module. This creates and starts application
- * timers.
- */
-static void timers_init(void) 
-{
-  uint32_t err_code;
-  // Initialize timer module.
-  APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
-
-  /* Create timers. YOUR_JOB: Create any timers to be used by the application.
-         Below is an example of how to create a timer  For every new timer needed, increase the value of the macro  APP_TIMER_MAX_TIMERS by one. */
-// Create Security Request timer.
-    err_code = app_timer_create(&m_sec_req_timer_id,
-                                APP_TIMER_MODE_SINGLE_SHOT,
-                                sec_req_timeout_handler);
-    APP_ERROR_CHECK(err_code);
-}
-
-/**@brief Function for the GAP initialization.
- *
- * @details This function sets up all the necessary GAP (Generic Access
- * Profile) parameters of the device including the device name, appearance, and
- * the preferred connection parameters.
- */
-static void gap_params_init(void) 
-{
-  uint32_t err_code;
-  ble_gap_conn_params_t gap_conn_params;
-  ble_gap_conn_sec_mode_t sec_mode;
-
-  BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
-
-  err_code = sd_ble_gap_device_name_set(&sec_mode, (const uint8_t *)DEVICE_NAME, strlen(DEVICE_NAME));
-  APP_ERROR_CHECK(err_code);
-
-  err_code = sd_ble_gap_appearance_set(BLE_APPEARANCE_ENERGY_SENSOR);
-  APP_ERROR_CHECK(err_code);
-
-  memset(&gap_conn_params, 0, sizeof(gap_conn_params));
-
-  gap_conn_params.min_conn_interval = MIN_CONN_INTERVAL;
-  gap_conn_params.max_conn_interval = MAX_CONN_INTERVAL;
-  gap_conn_params.slave_latency = SLAVE_LATENCY;
-  gap_conn_params.conn_sup_timeout = CONN_SUP_TIMEOUT;
-
-  err_code = sd_ble_gap_ppcp_set(&gap_conn_params);
-  APP_ERROR_CHECK(err_code);
-}
-
-/**@brief Function for handling the YYY Service events.
- * YOUR_JOB implement a service handler function depending on the event the
- service you are using can generate
- *
- * @details This function will be called for all YY Service events which are
- passed to
- *          the application.
- *
- * @param[in]   p_yy_service   YY Service structure.
- * @param[in]   p_evt          Event received from the YY Service.
- *
- *
-   static void on_yys_evt(ble_yy_service_t     * p_yy_service,
-                       ble_yy_service_evt_t * p_evt)
-   {
-    switch (p_evt->evt_type)
-    {
-        case BLE_YY_NAME_EVT_WRITE:
-            APPL_LOG("[APPL]: charact written with value %s. \r\n",
- p_evt->params.char_xx.value.p_str); break;
-
-        default:
-            // No implementation needed.
-            break;
-    }
-   }*/
-
-/**@brief Function for initializing services that will be used by the
- * application.
- */
-static void services_init(void) 
-{
-  uint32_t err_code;
-  ble_dis_init_t dis_init;
-  ble_dis_sys_id_t sys_id;
-
-  // Initialize Device Information Service.
-  memset(&dis_init, 0, sizeof(dis_init));
-
-  ble_srv_ascii_to_utf8(&dis_init.manufact_name_str, MANUFACTURER_NAME);
-  ble_srv_ascii_to_utf8(&dis_init.model_num_str, MODEL_NUM);
-
-  sys_id.manufacturer_id = MANUFACTURER_ID;
-  sys_id.organizationally_unique_id = ORG_UNIQUE_ID;
-  dis_init.p_sys_id = &sys_id;
-
-  BLE_GAP_CONN_SEC_MODE_SET_OPEN(&dis_init.dis_attr_md.read_perm);
-  BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&dis_init.dis_attr_md.write_perm);
-
-  err_code = ble_dis_init(&dis_init);
-  APP_ERROR_CHECK(err_code);
 }
 
 /**@brief Function for handling the Connection Parameters Module.
@@ -423,7 +335,7 @@ static void services_init(void)
  * we use the event handler mechanism to demonstrate its use.
  *
  * @param[in] p_evt  Event received from the Connection Parameters Module.
- */
+ **************************************************************************  */
 static void on_conn_params_evt(ble_conn_params_evt_t *p_evt) 
 {
   uint32_t err_code;
@@ -440,58 +352,10 @@ static void on_conn_params_evt(ble_conn_params_evt_t *p_evt)
  *
  * @param[in] nrf_error  Error code containing information about what went
  * wrong.
- */
+ ************************************************************************* */
 static void conn_params_error_handler(uint32_t nrf_error) 
 {
   APP_ERROR_HANDLER(nrf_error);
-}
-
-/**@brief Function for initializing the Connection Parameters module.
- */
-static void conn_params_init(void) 
-{
-  uint32_t err_code;
-  ble_conn_params_init_t cp_init;
-
-  memset(&cp_init, 0, sizeof(cp_init));
-  cp_init.p_conn_params = NULL;
-  cp_init.first_conn_params_update_delay = FIRST_CONN_PARAMS_UPDATE_DELAY;
-  cp_init.next_conn_params_update_delay = NEXT_CONN_PARAMS_UPDATE_DELAY;
-  cp_init.max_conn_params_update_count = MAX_CONN_PARAMS_UPDATE_COUNT;
-  cp_init.start_on_notify_cccd_handle = BLE_GATT_HANDLE_INVALID;
-  cp_init.disconnect_on_fail = false;
-  cp_init.evt_handler = on_conn_params_evt;
-  cp_init.error_handler = conn_params_error_handler;
-
-  err_code = ble_conn_params_init(&cp_init);
-  APP_ERROR_CHECK(err_code);
-}
-
-/**@brief Function for starting timers.
- */
-static void application_timers_start(void) {
-  /* YOUR_JOB: Start your timers. below is an example of how to start a timer.
-uint32_t err_code;
-err_code = app_timer_start(m_app_timer_id, TIMER_INTERVAL, NULL);
-APP_ERROR_CHECK(err_code); */
-}
-
-/**@brief Function for putting the chip into sleep mode.
- *
- * @note This function will not return.
- */
-static void sleep_mode_enter(void) {
-  NRF_LOG_INFO("Sleep mode enter\r\n");
-  uint32_t err_code = bsp_indication_set(BSP_INDICATE_IDLE);
-  APP_ERROR_CHECK(err_code);
-  // Prepare wakeup buttons. Booth buttons can wakeUp device
-  err_code = bsp_btn_ble_sleep_mode_prepare();
-  APP_ERROR_CHECK(err_code);
-  return; //This added I by comfort debug
-  // Go to system-off mode (this function will not return; wakeup will cause a
-  // reset).
-  err_code = sd_power_system_off();
-  APP_ERROR_CHECK(err_code);
 }
 
 /**@brief Function for handling advertising events.
@@ -500,7 +364,7 @@ static void sleep_mode_enter(void) {
  * passed to the application.
  *
  * @param[in] ble_adv_evt  Advertising event.
- */
+ ************************************************************************** */
 static void on_adv_evt(ble_adv_evt_t ble_adv_evt) 
 {
   uint32_t err_code;
@@ -526,7 +390,7 @@ static void on_adv_evt(ble_adv_evt_t ble_adv_evt)
 /**@brief Function for handling the Application's BLE Stack events.
  *
  * @param[in] p_ble_evt  Bluetooth stack event.
- */
+ ********************************************************************** */
 static void on_ble_evt(ble_evt_t *p_ble_evt) 
 {
   uint32_t err_code = NRF_SUCCESS;
@@ -550,7 +414,12 @@ static void on_ble_evt(ble_evt_t *p_ble_evt)
 
   case BLE_GAP_EVT_CONNECTED:
   {
-    NRF_LOG_INFO("Connected. peer addr type= %d\r\n", p_ble_evt->evt.gap_evt.params.connected.peer_addr.addr_type);
+    char peeraddr[7];
+    memcpy(peeraddr, p_ble_evt->evt.gap_evt.params.connected.peer_addr.addr, 6);
+    peeraddr[6] = 0;
+    NRF_LOG_INFO("Connected. peer addr:");
+    nrf_log_frontend_hexdump(NRF_LOG_LEVEL_INFO,"",peeraddr,6);
+    NRF_LOG_INFO("peer addr type: %d\r\n", p_ble_evt->evt.gap_evt.params.connected.peer_addr.addr_type);
     m_peer_to_be_deleted = PM_PEER_ID_INVALID;
     err_code = bsp_indication_set(BSP_INDICATE_CONNECTED);
     APP_ERROR_CHECK(err_code);
@@ -637,7 +506,44 @@ case BLE_GAP_EVT_PASSKEY_DISPLAY:
     break;
   }
 }
-//-----------------------------------------------------------------------------------------------------------------------------------
+
+/**@brief Function for handling events from the BSP module.
+ *
+ * @param[in]   event   Event generated when button is pressed.
+ ******************************************************************* */
+static void bsp_event_handler(bsp_event_t event) 
+{
+  uint32_t err_code;
+
+  switch (event) 
+  {
+  case BSP_EVENT_SLEEP:
+    NRF_LOG_INFO("Sleeping by button...\r\n");
+    sleep_mode_enter();
+    break; // BSP_EVENT_SLEEP
+
+  case BSP_EVENT_DISCONNECT:
+    NRF_LOG_INFO("Disconnecting by button..\r\n");
+    err_code = sd_ble_gap_disconnect(m_conn_handle, BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION);
+    if (err_code != NRF_ERROR_INVALID_STATE)
+      APP_ERROR_CHECK(err_code);
+    break; // BSP_EVENT_DISCONNECT
+
+  case BSP_EVENT_WHITELIST_OFF:
+    if (m_conn_handle == BLE_CONN_HANDLE_INVALID)
+    {
+      err_code = ble_advertising_restart_without_whitelist();
+      if (err_code != NRF_ERROR_INVALID_STATE)
+        APP_ERROR_CHECK(err_code);
+    }
+    break; // BSP_EVENT_KEY_0
+
+  default:
+    break;
+  }
+}
+
+//----------------------------------------------------------------------------------
 /**@brief Function for dispatching a BLE stack event to all modules with a BLE
  * stack event handler.
  *
@@ -645,7 +551,7 @@ case BLE_GAP_EVT_PASSKEY_DISPLAY:
  * after a BLE stack event has been received.
  *
  * @param[in] p_ble_evt  Bluetooth stack event.
- */
+ *********************************************************************************** */
 static void ble_evt_dispatch(ble_evt_t *p_ble_evt) 
 {
   ble_conn_params_on_ble_evt(p_ble_evt);
@@ -664,14 +570,14 @@ ble_yys_on_ble_evt(&m_yys, p_ble_evt);
 */
 }
 
-//-----------------------------------------------------------------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 /**@brief Function for dispatching a system event to interested modules.
  *
  * @details This function is called from the System event interrupt handler
  * after a system event has been received.
  *
  * @param[in] sys_evt  System stack event.
- */
+ ************************************************************************ */
 static void sys_evt_dispatch(uint32_t sys_evt) 
 {
   // Dispatch the system event to the fstorage module, where it will be
@@ -687,7 +593,7 @@ static void sys_evt_dispatch(uint32_t sys_evt)
 /**@brief Function for initializing the BLE stack.
  *
  * @details Initializes the SoftDevice and the BLE event interrupt.
- */
+ ********************************************************************** */
 static void ble_stack_init(void) 
 {
   uint32_t err_code;
@@ -722,7 +628,7 @@ static void ble_stack_init(void)
  *
  * @param[in] erase_bonds  Indicates whether bonding information should be
  * cleared from persistent storage during initialization of the Peer Manager.
- */
+ ************************************************************************* */
 static void peer_manager_init(bool erase_bonds) 
 {
   ble_gap_sec_params_t sec_param;
@@ -758,43 +664,8 @@ static void peer_manager_init(bool erase_bonds)
   APP_ERROR_CHECK(err_code);
 }
 
-/**@brief Function for handling events from the BSP module.
- *
- * @param[in]   event   Event generated when button is pressed.
- */
-static void bsp_event_handler(bsp_event_t event) {
-  uint32_t err_code;
-
-  switch (event) {
-  case BSP_EVENT_SLEEP:
-    NRF_LOG_INFO("Sleeping by button...\r\n");
-    sleep_mode_enter();
-    break; // BSP_EVENT_SLEEP
-
-  case BSP_EVENT_DISCONNECT:
-    NRF_LOG_INFO("Disconnecting by button..\r\n");
-    err_code = sd_ble_gap_disconnect(m_conn_handle, BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION);
-    if (err_code != NRF_ERROR_INVALID_STATE) {
-      APP_ERROR_CHECK(err_code);
-    }
-    break; // BSP_EVENT_DISCONNECT
-
-  case BSP_EVENT_WHITELIST_OFF:
-    if (m_conn_handle == BLE_CONN_HANDLE_INVALID) {
-      err_code = ble_advertising_restart_without_whitelist();
-      if (err_code != NRF_ERROR_INVALID_STATE) {
-        APP_ERROR_CHECK(err_code);
-      }
-    }
-    break; // BSP_EVENT_KEY_0
-
-  default:
-    break;
-  }
-}
-
 /**@brief Function for initializing the Advertising functionality.
- */
+**************************************************************** */
 static void advertising_init(void) {
   uint32_t err_code;
   ble_advdata_t advdata;
@@ -837,14 +708,17 @@ static void buttons_leds_init(bool *p_erase_bonds) {
 }
 
 /**@brief Function for the Power manager.
- */
+ ******************************************  */
 static void power_manage(void) {
   uint32_t err_code = sd_app_evt_wait();
-
   APP_ERROR_CHECK(err_code);
 }
 
-void static_passkey_def(void) {
+/*
+Define static passkey  
+******************************************* */
+void static_passkey_def(void) 
+{
   static uint8_t static_passkey[] = "654321";
   ret_code_t err_code;
   ble_opt_t opt;
@@ -855,8 +729,135 @@ void static_passkey_def(void) {
   APP_ERROR_CHECK(err_code);
 }
 
-/**@brief Function for application main entry.
+/**@brief Function for the Timer initialization.
+ *
+ * @details Initializes the timer module. This creates and starts application
+ * timers.
+ *************************************************************************** */
+static void timers_init(void) 
+{
+  uint32_t err_code;
+  // Initialize timer module.
+  APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
+
+  /* Create timers. YOUR_JOB: Create any timers to be used by the application.
+         Below is an example of how to create a timer  For every new timer needed, increase the value of the macro  APP_TIMER_MAX_TIMERS by one. */
+// Create Security Request timer.
+    err_code = app_timer_create(&m_sec_req_timer_id,
+                                APP_TIMER_MODE_SINGLE_SHOT,
+                                sec_req_timeout_handler);
+    APP_ERROR_CHECK(err_code);
+}
+
+/**@brief Function for the GAP initialization.
+ *
+ * @details This function sets up all the necessary GAP (Generic Access
+ * Profile) parameters of the device including the device name, appearance, and
+ * the preferred connection parameters.
+ ***************************************************************************** */
+static void gap_params_init(void) 
+{
+  uint32_t err_code;
+  ble_gap_conn_params_t gap_conn_params;
+  ble_gap_conn_sec_mode_t sec_mode;
+
+  BLE_GAP_CONN_SEC_MODE_SET_OPEN(&sec_mode);
+
+  err_code = sd_ble_gap_device_name_set(&sec_mode, (const uint8_t *)DEVICE_NAME, strlen(DEVICE_NAME));
+  APP_ERROR_CHECK(err_code);
+
+  err_code = sd_ble_gap_appearance_set(BLE_APPEARANCE_ENERGY_SENSOR);
+  APP_ERROR_CHECK(err_code);
+
+  memset(&gap_conn_params, 0, sizeof(gap_conn_params));
+
+  gap_conn_params.min_conn_interval = MIN_CONN_INTERVAL;
+  gap_conn_params.max_conn_interval = MAX_CONN_INTERVAL;
+  gap_conn_params.slave_latency = SLAVE_LATENCY;
+  gap_conn_params.conn_sup_timeout = CONN_SUP_TIMEOUT;
+
+  err_code = sd_ble_gap_ppcp_set(&gap_conn_params);
+  APP_ERROR_CHECK(err_code);
+}
+
+/**@brief Function for handling the YYY Service events.
+ * YOUR_JOB implement a service handler function depending on the event the
+ service you are using can generate
+ *
+ * @details This function will be called for all YY Service events which are
+ passed to
+ *          the application.
+ *
+ * @param[in]   p_yy_service   YY Service structure.
+ * @param[in]   p_evt          Event received from the YY Service.
+ *
+ *
+   static void on_yys_evt(ble_yy_service_t     * p_yy_service,
+                       ble_yy_service_evt_t * p_evt)
+   {
+    switch (p_evt->evt_type)
+    {
+        case BLE_YY_NAME_EVT_WRITE:
+            APPL_LOG("[APPL]: charact written with value %s. \r\n",
+ p_evt->params.char_xx.value.p_str); break;
+
+        default:
+            // No implementation needed.
+            break;
+    }
+   }*/
+
+/**@brief Function for initializing services that will be used by the
+ * application.
  */
+static void services_init(void) 
+{
+  uint32_t err_code;
+  ble_dis_init_t dis_init;
+  ble_dis_sys_id_t sys_id;
+
+  // Initialize Device Information Service.
+  memset(&dis_init, 0, sizeof(dis_init));
+
+  ble_srv_ascii_to_utf8(&dis_init.manufact_name_str, MANUFACTURER_NAME);
+  ble_srv_ascii_to_utf8(&dis_init.model_num_str, MODEL_NUM);
+
+  sys_id.manufacturer_id = MANUFACTURER_ID;
+  sys_id.organizationally_unique_id = ORG_UNIQUE_ID;
+  dis_init.p_sys_id = &sys_id;
+
+  BLE_GAP_CONN_SEC_MODE_SET_OPEN(&dis_init.dis_attr_md.read_perm);
+  BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&dis_init.dis_attr_md.write_perm);
+
+  err_code = ble_dis_init(&dis_init);
+  APP_ERROR_CHECK(err_code);
+}
+
+/**@brief Function for initializing the Connection Parameters module.
+******************************************************************** */
+static void conn_params_init(void) 
+{
+  uint32_t err_code;
+  ble_conn_params_init_t cp_init;
+
+  memset(&cp_init, 0, sizeof(cp_init));
+  cp_init.p_conn_params = NULL;
+  cp_init.first_conn_params_update_delay = FIRST_CONN_PARAMS_UPDATE_DELAY;
+  cp_init.next_conn_params_update_delay = NEXT_CONN_PARAMS_UPDATE_DELAY;
+  cp_init.max_conn_params_update_count = MAX_CONN_PARAMS_UPDATE_COUNT;
+  cp_init.start_on_notify_cccd_handle = BLE_GATT_HANDLE_INVALID;
+  cp_init.disconnect_on_fail = false;
+  cp_init.evt_handler = on_conn_params_evt;
+  cp_init.error_handler = conn_params_error_handler;
+
+  err_code = ble_conn_params_init(&cp_init);
+  APP_ERROR_CHECK(err_code);
+}
+
+
+/* *****************************************************************
+                                                        main cycle
+****************************************************************** */
 int main(void) 
 {
   uint32_t err_code;
@@ -870,7 +871,8 @@ int main(void)
   buttons_leds_init(&erase_bonds);
   ble_stack_init();
   peer_manager_init(erase_bonds);
-  if (erase_bonds == true) {
+  if (erase_bonds == true) 
+  {
     NRF_LOG_INFO("Bonds erased!\r\n");
   }
   gap_params_init();
@@ -880,14 +882,25 @@ int main(void)
   static_passkey_def();
   // Start execution.
   NRF_LOG_INFO("Template started\r\n");
-  application_timers_start();
+  //application_timers_start();
   err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
   APP_ERROR_CHECK(err_code);
 
   // Enter main loop.
   for (;;) {
-    if (NRF_LOG_PROCESS() == false) {
-      // power_manage();
+    if (NRF_LOG_PROCESS() == false) 
+    {
+       power_manage();
     }
   }
+}
+
+/**@brief Function for starting timers.
+*********************************************** */
+static void application_timers_start(void) 
+{
+  /* YOUR_JOB: Start your timers. below is an example of how to start a timer.
+uint32_t err_code;
+err_code = app_timer_start(m_app_timer_id, TIMER_INTERVAL, NULL);
+APP_ERROR_CHECK(err_code); */
 }
