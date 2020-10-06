@@ -64,6 +64,7 @@
 #include "ble_advertising.h"
 #include "ble_conn_state.h"
 #include "ble_dis.h"
+#include "ble_bas.h"
 #include "ble_hci.h"
 #include "bsp.h"
 #include "bsp_btn_ble.h"
@@ -131,6 +132,7 @@
 #define BLE_APPEARANCE_ENERGY_SENSOR 1344 //(1344+12) 
 
 static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID; // Handle of the current connection.
+static ble_bas_t m_bas; //Structure used to identify the battery service.
 
 /* YOUR_JOB: Declare all services structure your application is using
    static ble_xx_service_t                     m_xxs;
@@ -138,7 +140,8 @@ static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID; // Handle of the curren
  */
 
 // YOUR_JOB: Use UUIDs for service(s) used in your application.
-static ble_uuid_t m_adv_uuids[] = {{BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE}}; // Universally unique service identifiers.
+static ble_uuid_t m_adv_uuids[] = { {BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE},
+                                    {BLE_UUID_BATTERY_SERVICE, BLE_UUID_TYPE_BLE}}; //service identifiers.
 
 APP_TIMER_DEF(m_sec_req_timer_id);
 pm_peer_id_t m_peer_to_be_deleted = PM_PEER_ID_INVALID;
@@ -814,6 +817,7 @@ static void services_init(void)
 {
   uint32_t err_code;
   ble_dis_init_t dis_init;
+  ble_bas_init_t   bas_init;
   ble_dis_sys_id_t sys_id;
 
   // Initialize Device Information Service.
@@ -830,6 +834,24 @@ static void services_init(void)
   BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&dis_init.dis_attr_md.write_perm);
 
   err_code = ble_dis_init(&dis_init);
+  APP_ERROR_CHECK(err_code);
+
+  // Initialize Battery Service.
+  memset(&bas_init, 0, sizeof(bas_init));
+
+  // Here the sec level for the Battery Service can be changed/increased.
+  BLE_GAP_CONN_SEC_MODE_SET_OPEN      (&bas_init.battery_level_char_attr_md.cccd_write_perm);
+  BLE_GAP_CONN_SEC_MODE_SET_OPEN      (&bas_init.battery_level_char_attr_md.read_perm);
+  BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS (&bas_init.battery_level_char_attr_md.write_perm);
+
+  BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init.battery_level_report_read_perm);
+
+  bas_init.evt_handler          = NULL;
+  bas_init.support_notification = true;
+  bas_init.p_report_ref         = NULL;
+  bas_init.initial_batt_level   = 100;
+
+  err_code = ble_bas_init(&m_bas, &bas_init);
   APP_ERROR_CHECK(err_code);
 }
 
