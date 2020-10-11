@@ -124,6 +124,7 @@
 #define SEC_PARAM_MAX_KEY_SIZE          16                            // Maximum encryption key size. 
 #define DEAD_BEEF                       0xDEADBEEF                    // Value used as error code on stack dump, can be used to identify stack location on stack unwind.
 
+#define BATTERY_LEVEL_MEAS_INTERVAL     APP_TIMER_TICKS(2000, APP_TIMER_PRESCALER)  // Battery level measurement interval (ticks)
 /* -------------------------------------------------------------------------------------------------
     definitions added by me
 -------------------------------------------------------------------------------------------------
@@ -143,7 +144,9 @@ static ble_bas_t m_bas; //Structure used to identify the battery service.
 static ble_uuid_t m_adv_uuids[] = { {BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE},
                                     {BLE_UUID_BATTERY_SERVICE, BLE_UUID_TYPE_BLE}}; //service identifiers.
 
-APP_TIMER_DEF(m_sec_req_timer_id);
+APP_TIMER_DEF(m_sec_req_timer_id);    // timer for secure connection
+APP_TIMER_DEF(m_battery_timer_id);    // Battery timer
+
 pm_peer_id_t m_peer_to_be_deleted = PM_PEER_ID_INVALID;
 
 //_____________________________________________________________________________________
@@ -159,9 +162,9 @@ static void sleep_mode_enter(void)
   // Prepare wakeup buttons. Booth buttons can wakeUp device
   err_code = bsp_btn_ble_sleep_mode_prepare();
   APP_ERROR_CHECK(err_code);
-  return; //This added I by comfort debug
-  // Go to system-off mode (this function will not return; wakeup will cause a
-  // reset).
+  return;                                                         //This added I by comfort debug
+  // Go to system-off mode 
+  // (this function will not return; wakeup will cause a reset).
   err_code = sd_power_system_off();
   APP_ERROR_CHECK(err_code);
 }
@@ -305,6 +308,42 @@ static void pm_evt_handler(pm_evt_t const *p_evt)
       break;
     }
 }
+
+/**@brief Function for performing a battery measurement, and update the Battery Level characteristic in the Battery Service.
+ */
+static void battery_level_update(void)
+{
+    uint32_t err_code;
+    static uint8_t  battery_level=100;
+
+    //battery_level = 90; // in %
+    if (--battery_level <10)
+      battery_level=100;
+
+    err_code = ble_bas_battery_level_update(&m_bas, battery_level);
+    if ((err_code != NRF_SUCCESS) &&
+        (err_code != NRF_ERROR_INVALID_STATE) &&
+        (err_code != BLE_ERROR_NO_TX_PACKETS) &&
+        (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
+       )
+    {
+        APP_ERROR_HANDLER(err_code);
+    }
+}
+
+/**@brief Function for handling the Battery measurement timer timeout.
+ *
+ * @details This function will be called each time the battery level measurement timer expires.
+ *
+ * @param[in] p_context   Pointer used for passing some arbitrary information (context) from the
+ *                        app_start_timer() call to the timeout handler.
+ */
+static void battery_level_meas_timeout_handler(void * p_context)
+{
+    UNUSED_PARAMETER(p_context);
+    battery_level_update();
+}
+
 
 /**@brief Function for handling the Security Request timer timeout.
  *
@@ -557,6 +596,7 @@ static void bsp_event_handler(bsp_event_t event)
  *********************************************************************************** */
 static void ble_evt_dispatch(ble_evt_t *p_ble_evt) 
 {
+  ble_bas_on_ble_evt(&m_bas, p_ble_evt);
   ble_conn_params_on_ble_evt(p_ble_evt);
   /** The Connection state module has to be fed BLE events in order to function
    * correctly Remember to call ble_conn_state_on_ble_evt before calling any
@@ -592,6 +632,7 @@ static void sys_evt_dispatch(uint32_t sys_evt)
   // events first, so that it can report correctly to the Advertising module.
   ble_advertising_on_sys_evt(sys_evt);
 }
+
 
 /**@brief Function for initializing the BLE stack.
  *
@@ -669,7 +710,8 @@ static void peer_manager_init(bool erase_bonds)
 
 /**@brief Function for initializing the Advertising functionality.
 **************************************************************** */
-static void advertising_init(void) {
+static void advertising_init(void) 
+{
   uint32_t err_code;
   ble_advdata_t advdata;
   ble_adv_modes_config_t options;
@@ -697,7 +739,8 @@ static void advertising_init(void) {
  * @param[out] p_erase_bonds  Will be true if the clear bonding button was
  * pressed to wake the application up.
  */
-static void buttons_leds_init(bool *p_erase_bonds) {
+static void buttons_leds_init(bool *p_erase_bonds) 
+{
   bsp_event_t startup_event;
 
   uint32_t err_code = bsp_init(BSP_INIT_LED | BSP_INIT_BUTTONS, APP_TIMER_TICKS(100, APP_TIMER_PRESCALER), bsp_event_handler);
@@ -712,7 +755,8 @@ static void buttons_leds_init(bool *p_erase_bonds) {
 
 /**@brief Function for the Power manager.
  ******************************************  */
-static void power_manage(void) {
+static void power_manage(void) 
+{
   uint32_t err_code = sd_app_evt_wait();
   APP_ERROR_CHECK(err_code);
 }
@@ -744,12 +788,15 @@ static void timers_init(void)
   APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
 
   /* Create timers. YOUR_JOB: Create any timers to be used by the application.
-         Below is an example of how to create a timer  For every new timer needed, increase the value of the macro  APP_TIMER_MAX_TIMERS by one. */
-// Create Security Request timer.
-    err_code = app_timer_create(&m_sec_req_timer_id,
-                                APP_TIMER_MODE_SINGLE_SHOT,
-                                sec_req_timeout_handler);
-    APP_ERROR_CHECK(err_code);
+  Below is an example of how to create a timer  For every new timer needed, increase the value of the macro  APP_TIMER_MAX_TIMERS by one. */
+
+  // Create Security Request timer.
+  err_code = app_timer_create(&m_sec_req_timer_id,  APP_TIMER_MODE_SINGLE_SHOT, sec_req_timeout_handler);
+  APP_ERROR_CHECK(err_code);
+
+  // Create timers for battery service.
+  err_code = app_timer_create(&m_battery_timer_id,  APP_TIMER_MODE_REPEATED,  battery_level_meas_timeout_handler);
+  APP_ERROR_CHECK(err_code);
 }
 
 /**@brief Function for the GAP initialization.
@@ -810,6 +857,15 @@ static void gap_params_init(void)
     }
    }*/
 
+
+/* *****************************************************************
+This callback indicate a event write to Client Charackteristic Configuration
+****************************************************************** */
+void bas_handler (ble_bas_t * p_bas, ble_bas_evt_t * p_evt)
+{
+  NRF_LOG_INFO("Battery notificationt %d\r\n", p_evt->evt_type);  // 0 - Enable 1 - Disable
+}
+
 /**@brief Function for initializing services that will be used by the
  * application.
  */
@@ -844,9 +900,9 @@ static void services_init(void)
   BLE_GAP_CONN_SEC_MODE_SET_OPEN      (&bas_init.battery_level_char_attr_md.read_perm);
   BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS (&bas_init.battery_level_char_attr_md.write_perm);
 
-  BLE_GAP_CONN_SEC_MODE_SET_OPEN(&bas_init.battery_level_report_read_perm);
+  BLE_GAP_CONN_SEC_MODE_SET_OPEN      (&bas_init.battery_level_report_read_perm);
 
-  bas_init.evt_handler          = NULL;
+  bas_init.evt_handler          = bas_handler;//NULL;
   bas_init.support_notification = true;
   bas_init.p_report_ref         = NULL;
   bas_init.initial_batt_level   = 100;
@@ -854,6 +910,8 @@ static void services_init(void)
   err_code = ble_bas_init(&m_bas, &bas_init);
   APP_ERROR_CHECK(err_code);
 }
+
+
 
 /**@brief Function for initializing the Connection Parameters module.
 ******************************************************************** */
@@ -874,6 +932,17 @@ static void conn_params_init(void)
 
   err_code = ble_conn_params_init(&cp_init);
   APP_ERROR_CHECK(err_code);
+}
+
+/**@brief Function for starting application timers.
+ */
+static void application_timers_start(void)
+{
+    uint32_t err_code;
+
+    // Start application timers.
+    err_code = app_timer_start(m_battery_timer_id, BATTERY_LEVEL_MEAS_INTERVAL, NULL);
+    APP_ERROR_CHECK(err_code);
 }
 
 
@@ -904,7 +973,7 @@ int main(void)
   static_passkey_def();
   // Start execution.
   NRF_LOG_INFO("Template started\r\n");
-  //application_timers_start();
+  application_timers_start();
   err_code = ble_advertising_start(BLE_ADV_MODE_FAST);
   APP_ERROR_CHECK(err_code);
 
@@ -915,14 +984,4 @@ int main(void)
        power_manage();
     }
   }
-}
-
-/**@brief Function for starting timers.
-*********************************************** */
-static void application_timers_start(void) 
-{
-  /* YOUR_JOB: Start your timers. below is an example of how to start a timer.
-uint32_t err_code;
-err_code = app_timer_start(m_app_timer_id, TIMER_INTERVAL, NULL);
-APP_ERROR_CHECK(err_code); */
 }

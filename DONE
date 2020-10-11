@@ -19,4 +19,14 @@ https://devzone.nordicsemi.com/f/nordic-q-a/12029/segger-embedded-studio---unpla
 кстати после переустановки SES надо снова првить файл tolls.xml как здесь
 https://infocenter.nordicsemi.com/topic/com.nordic.infocenter.sdk5.v14.1.0/sdk_config.html
 
+Добавил сервис батареи:
+1. дописал ID в m_adv_uuids[]
+2. создал процедуру обновления battery_level_update(void)
+3. Прицепил ее к таймеру battery_level_meas_timeout_handler
+4. создал таймер APP_TIMER_DEF(m_battery_timer_id)  и запустил его в application_timers_start(void)
+5. добавил инициализацию сервиса батареи в services_init(void)
+от себя (нет в примерах)
+	добавил bas_handler обработчик событий. Реагирует на запись в характеристику Client Charackteristic Configuration
+
+
 
