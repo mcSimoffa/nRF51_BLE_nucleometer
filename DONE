@@ -29,4 +29,7 @@ https://infocenter.nordicsemi.com/topic/com.nordic.infocenter.sdk5.v14.1.0/sdk_c
 	добавил bas_handler обработчик событий. Реагирует на запись в характеристику Client Charackteristic Configuration
 
 
-
+Добавил сервил led button Service
+1. переименовал его в input output Service ios
+2. добавил инициализацию в services_init(void)
+3. добавил ble_ios_on_ble_evt в ble_evt_dispatch

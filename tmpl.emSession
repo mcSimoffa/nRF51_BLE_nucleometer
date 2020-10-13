@@ -1,14 +1,13 @@
 <!DOCTYPE CrossStudio_Session_File>
 <session>
  <Bookmarks>
-  <BookmarkItem objectName="" line="839" column="4" path="D:/nRF51_BLE_nucleometer/Application/main.c" number="3" extra="memset(&amp;bas_init, 0, sizeof(bas_init));" color="5"/>
+  <BookmarkItem objectName="" line="333" column="1" path="D:/nRF51_BLE_nucleometer/Application/main.c" number="5" extra="//notification IO service" color="5"/>
+  <BookmarkItem objectName="" line="886" column="0" path="D:/nRF51_BLE_nucleometer/Application/main.c" number="7" extra="static void ios_input_event_handler(ble_ios_t * p_ios, uint16_t * p_val)" color="5"/>
  </Bookmarks>
  <Breakpoints groups="Breakpoints" active_group="Breakpoints">
   <BreakpointListItem trigger="Execute" line="0" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="0x1aef6" group="Breakpoints" type="Breakpoint" state="3" filename="D:/nRF51_BLE_nucleometer" useHWbreakpoint="false"/>
   <BreakpointListItem trigger="Execute" line="0" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="0x2a28a" group="Breakpoints" type="Breakpoint" state="3" filename="D:/SesProj" useHWbreakpoint="false"/>
   <BreakpointListItem trigger="" line="452" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="components/libraries/fstorage/fstorage.c" useHWbreakpoint="false"/>
-  <BreakpointListItem trigger="" line="843" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="Application/main.c" useHWbreakpoint="false"/>
-  <BreakpointListItem trigger="" line="855" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="Application/main.c" useHWbreakpoint="false"/>
   <Exceptions set="HardFault"/>
  </Breakpoints>
  <ExecutionProfileWindow/>
@@ -16,7 +15,7 @@
   <FrameBufferWindow bufferHeight="-1" addressSpace="" addressText="" bufferWidth="-1"/>
  </FrameBufferWindow>
  <Memory1>
-  <MemoryWindow addressSpace="" dataSize="1" autoEvaluate="0" viewMode="0" addressOrder="0" columnsText="" refreshPeriod="0" name="tmpl" radix="16" sizeText="16" addressText="0x2b940"/>
+  <MemoryWindow addressSpace="" dataSize="1" autoEvaluate="0" viewMode="0" addressOrder="0" columnsText="" refreshPeriod="0" name="tmpl" radix="16" sizeText="16" addressText="0x200025a2"/>
  </Memory1>
  <Memory2>
   <MemoryWindow addressSpace="" dataSize="1" autoEvaluate="0" viewMode="0" addressOrder="0" columnsText="" refreshPeriod="0" name="tmpl" radix="16" sizeText="16" addressText="0x20002078"/>
@@ -33,6 +32,7 @@
   <ProjectSessionItem path="tmpl;tmpl;Application"/>
   <ProjectSessionItem path="tmpl;tmpl;BLE Services"/>
   <ProjectSessionItem path="tmpl;tmpl;nRF Libraries"/>
+  <ProjectSessionItem path="tmpl;tmpl;SoftDevice"/>
  </Project>
  <Register1>
   <RegisterWindow visibleNodes="CPU - Current Context/r0;CPU - Current Context/r1;CPU - Current Context/r2;CPU - Current Context/r3;CPU - Current Context/r4;CPU - Current Context/r5;CPU - Current Context/r6;CPU - Current Context/r7;CPU - Current Context/r8;CPU - Current Context/r9;CPU - Current Context/r10;CPU - Current Context/r11;CPU - Current Context/r12;CPU - Current Context/sp(r13);CPU - Current Context/lr(r14);CPU - Current Context/pc(r15);CPU - Current Context/apsr;GPIOTE/TASKS_OUT[0];GPIOTE/TASKS_OUT[1];GPIOTE/TASKS_OUT[2];GPIOTE/TASKS_OUT[3];GPIOTE/EVENTS_IN[0];GPIOTE/EVENTS_IN[1];GPIOTE/EVENTS_IN[2];GPIOTE/EVENTS_IN[3];GPIOTE/EVENTS_PORT;GPIOTE/INTENSET;GPIOTE/INTENCLR;GPIOTE/CONFIG[0];GPIOTE/CONFIG[1];GPIOTE/CONFIG[2];GPIOTE/CONFIG[3];GPIOTE/POWER;PPI/CHEN;PPI/CHENSET;PPI/CHENCLR;PPI/CHG[0];PPI/CHG[1];PPI/CHG[2];PPI/CHG[3];PPI/TASKS_CHG[0].EN;PPI/TASKS_CHG[0].DIS;PPI/TASKS_CHG[1].EN;PPI/TASKS_CHG[1].DIS;PPI/TASKS_CHG[2].EN;PPI/TASKS_CHG[2].DIS;PPI/TASKS_CHG[3].EN;PPI/TASKS_CHG[3].DIS;PPI/CH[0].EEP;PPI/CH[0].TEP;PPI/CH[1].EEP;PPI/CH[1].TEP;PPI/CH[2].EEP;PPI/CH[2].TEP;PPI/CH[3].EEP;PPI/CH[3].TEP;PPI/CH[4].EEP;PPI/CH[4].TEP;PPI/CH[5].EEP;PPI/CH[5].TEP;PPI/CH[6].EEP;PPI/CH[6].TEP;PPI/CH[7].EEP;PPI/CH[7].TEP;PPI/CH[8].EEP;PPI/CH[8].TEP;PPI/CH[9].EEP;PPI/CH[9].TEP;PPI/CH[10].EEP;PPI/CH[10].TEP;PPI/CH[11].EEP;PPI/CH[11].TEP;PPI/CH[12].EEP;PPI/CH[12].TEP;PPI/CH[13].EEP;PPI/CH[13].TEP;PPI/CH[14].EEP;PPI/CH[14].TEP;PPI/CH[15].EEP;PPI/CH[15].TEP" binaryNodes="" asciiNodes="" openNodes="CPU - Current Context;CPU - Current Context/apsr;PPI" name="tmpl" decimalNodes="" octalNodes="" unsignedNodes=""/>
@@ -54,9 +54,9 @@
  </TraceWindow>
  <Watch1>
   <Watches active="1" update="Never">
-   <Watchpoint expression="p_ble_evt" name="p_ble_evt" radix="-1" linenumber="425" filename="Application/main.c"/>
-   <Watchpoint expression="bas_init" name="bas_init" radix="-1" linenumber="840" filename="Application/main.c"/>
-   <Watchpoint expression="m_bas" name="m_bas" radix="-1" linenumber="854" filename="Application/main.c"/>
+   <Watchpoint expression="&amp;m_adv_uuids" name="&amp;m_adv_uuids" radix="-1" linenumber="147" filename="Application/main.c"/>
+   <Watchpoint expression="&amp;p_evt_write->data" name="&amp;p_evt_write->data" radix="-1" linenumber="81" filename="Application/ble_ios.c"/>
+   <Watchpoint expression="p_lbs" name="p_lbs" radix="-1" linenumber="231" filename="components/ble/ble_services/ble_lbs/ble_lbs.c"/>
   </Watches>
  </Watch1>
  <Watch2>
@@ -69,18 +69,18 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="853" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="Application/main.c" selected="1" top="836" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="67" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/main.c" useBinaryEdit="0" left="0" path="components/ble/peer_manager/peer_manager_types.h" selected="0" top="56" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="5" y="653" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/libraries/log/src/nrf_log_internal.h" useBinaryEdit="0" left="0" path="components/libraries/log/src/nrf_log_frontend.c" selected="0" top="635" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="64" y="162" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/libraries/log/src/nrf_log_frontend.c" useBinaryEdit="0" left="0" path="components/libraries/log/nrf_log.h" selected="0" top="151" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="198" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/main.c" useBinaryEdit="0" left="0" path="components/softdevice/s130/headers/ble.h" selected="0" top="180" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="26" y="58" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/libraries/log/nrf_log.h" useBinaryEdit="0" left="0" path="components/libraries/log/src/nrf_log_internal.h" selected="0" top="44" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="594" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/main.c" useBinaryEdit="0" left="0" path="components/softdevice/s130/headers/nrf_soc.h" selected="0" top="576" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="9" y="130" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/main.c" useBinaryEdit="0" left="0" path="components/ble/ble_services/ble_bas/ble_bas.h" selected="0" top="125" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="36" y="243" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/ble/ble_services/ble_bas/ble_bas.h" useBinaryEdit="0" left="0" path="components/ble/common/ble_srv_common.h" selected="0" top="226" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="8" y="380" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/main.c" useBinaryEdit="0" left="0" path="components/softdevice/s130/headers/ble_gap.h" selected="0" top="366" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="77" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="config/sdk_config.h" selected="0" top="57" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="17" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/Users/CNCboss/AppData/Local/SEGGER/SEGGER Embedded Studio/v3/tools.xml" selected="0" top="0" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="22" y="934" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="Application/main.c" selected="0" top="911" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="2" y="192" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/modif_ble_lbs.c" useBinaryEdit="0" left="0" path="components/softdevice/s130/headers/ble_types.h" selected="0" top="165" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="43" y="495" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/modif_ble_lbs.c" useBinaryEdit="0" left="0" path="components/softdevice/s130/headers/ble.h" selected="0" top="478" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="170" y="297" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/ble_ios.c" useBinaryEdit="0" left="65" path="components/softdevice/s130/headers/ble_gatts.h" selected="0" top="285" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="481" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/softdevice/s130/headers/ble_gatts.h" useBinaryEdit="0" left="0" path="components/softdevice/s130/headers/ble_gap.h" selected="0" top="463" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="9" y="268" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/main.c" useBinaryEdit="0" left="0" path="components/ble/ble_services/ble_bas/ble_bas.c" selected="1" top="254" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="54" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/libraries/util/app_error_weak.c" selected="0" top="40" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="75" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/libraries/util/app_error.c" selected="0" top="61" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="219" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="Application/ble_ios.c" selected="0" top="215" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="113" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/main.c" useBinaryEdit="0" left="0" path="Application/ble_ios.h" selected="0" top="94" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="206" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/softdevice/common/softdevice_handler/softdevice_handler.c" selected="0" top="192" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="2" y="107" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/ble/ble_services/ble_bas/ble_bas.c" useBinaryEdit="0" left="0" path="components/ble/ble_services/ble_bas/ble_bas.h" selected="0" top="89" codecName="Default"/>
  </Files>
- <ARMCrossStudioWindow activeProject="tmpl" fileDialogDefaultFilter="" autoConnectTarget="J-Link" buildConfiguration="Debug" sessionSettings="" debugSearchFileMap="../../../../../../components/drivers_nrf/common/nrf_drv_common.h&#xa;&#xa;../../../../../../components/drivers_nrf/hal/nrf_clock.h&#xa;&#xa;../../../../../../components/toolchain/cmsis/include/core_cm4.h&#xa;" fileDialogInitialDirectory="D:/nRF51_BLE_nucleometer/components/ble/ble_services/ble_bas" debugSearchPath="" autoConnectCapabilities="3199"/>
+ <ARMCrossStudioWindow activeProject="tmpl" fileDialogDefaultFilter="" autoConnectTarget="J-Link" buildConfiguration="Debug" sessionSettings="" debugSearchFileMap="../../../../../../components/drivers_nrf/common/nrf_drv_common.h&#xa;&#xa;../../../../../../components/drivers_nrf/hal/nrf_clock.h&#xa;&#xa;../../../../../../components/toolchain/cmsis/include/core_cm4.h&#xa;" fileDialogInitialDirectory="D:/nRF51_BLE_nucleometer/Application" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>

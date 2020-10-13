@@ -65,13 +65,14 @@
 #include "ble_conn_state.h"
 #include "ble_dis.h"
 #include "ble_bas.h"
+#include "ble_ios.h"
 #include "ble_hci.h"
 #include "bsp.h"
 #include "bsp_btn_ble.h"
 #include "nrf_gpio.h"
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
-#include "sensorsim.h"
+
 
 #define NRF_LOG_MODULE_NAME "MAIN"
 
@@ -91,7 +92,7 @@
 #define CENTRAL_LINK_COUNT              0                     // Number of central links used by the application. When changing this number remember to adjust the RAM settings
 #define PERIPHERAL_LINK_COUNT           1                     // Number of peripheral links used by the application. When changing this number remember to adjust the RAM settings
 
-#define DEVICE_NAME                     "Nordic_Template"     // Name of device. Will be included in the advertising data.
+#define DEVICE_NAME                     "Nucleo meter"     // Name of device. Will be included in the advertising data.
 #define MANUFACTURER_NAME               "NordicSemiconductor" // Manufacturer. Will be passed to Device Information Service. 
 #define MODEL_NUM                       "nRF Nucleo"          // Model number. Will be passed to Device Information  Service.
 #define MANUFACTURER_ID                 0x1122334455          // Manufacturer ID, part of System ID. Will be passed to Device Information Service.
@@ -125,15 +126,17 @@
 #define DEAD_BEEF                       0xDEADBEEF                    // Value used as error code on stack dump, can be used to identify stack location on stack unwind.
 
 #define BATTERY_LEVEL_MEAS_INTERVAL     APP_TIMER_TICKS(2000, APP_TIMER_PRESCALER)  // Battery level measurement interval (ticks)
+
 /* -------------------------------------------------------------------------------------------------
     definitions added by me
 -------------------------------------------------------------------------------------------------
 */
 // https://specificationrefs.bluetooth.com/assigned-values/Appearance%20Values.pdf
-#define BLE_APPEARANCE_ENERGY_SENSOR 1344 //(1344+12) 
+#define BLE_APPEARANCE  BLE_APPEARANCE_GENERIC_TAG  //1344 //(1344+12) 
 
-static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID; // Handle of the current connection.
-static ble_bas_t m_bas; //Structure used to identify the battery service.
+static uint16_t   m_conn_handle = BLE_CONN_HANDLE_INVALID; // Handle of the current connection.
+static ble_bas_t  m_bas;  //Structure used to identify the battery service.
+static ble_ios_t  m_ios;  // IO Service instance.
 
 /* YOUR_JOB: Declare all services structure your application is using
    static ble_xx_service_t                     m_xxs;
@@ -141,8 +144,7 @@ static ble_bas_t m_bas; //Structure used to identify the battery service.
  */
 
 // YOUR_JOB: Use UUIDs for service(s) used in your application.
-static ble_uuid_t m_adv_uuids[] = { {BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE},
-                                    {BLE_UUID_BATTERY_SERVICE, BLE_UUID_TYPE_BLE}}; //service identifiers.
+static ble_uuid_t m_adv_uuids[] = { {BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE} }; //service identifiers.
 
 APP_TIMER_DEF(m_sec_req_timer_id);    // timer for secure connection
 APP_TIMER_DEF(m_battery_timer_id);    // Battery timer
@@ -313,22 +315,31 @@ static void pm_evt_handler(pm_evt_t const *p_evt)
  */
 static void battery_level_update(void)
 {
-    uint32_t err_code;
-    static uint8_t  battery_level=100;
+  uint32_t err_code;
+  static uint8_t  battery_level=100;
 
-    //battery_level = 90; // in %
-    if (--battery_level <10)
-      battery_level=100;
+  //battery_level = 90; // in %
+  if (--battery_level <10)
+    battery_level=100;
 
-    err_code = ble_bas_battery_level_update(&m_bas, battery_level);
-    if ((err_code != NRF_SUCCESS) &&
-        (err_code != NRF_ERROR_INVALID_STATE) &&
-        (err_code != BLE_ERROR_NO_TX_PACKETS) &&
-        (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
-       )
+  err_code = ble_bas_battery_level_update(&m_bas, battery_level);
+  if ((err_code != NRF_SUCCESS) &&
+      (err_code != NRF_ERROR_INVALID_STATE) &&
+      (err_code != BLE_ERROR_NO_TX_PACKETS) &&
+      (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING) )
+  {
+    APP_ERROR_HANDLER(err_code);
+  }
+
+  //notification IO service
+  err_code = ble_ios_on_output_change(&m_ios, &battery_level, OUTPUT_CHAR_LEN);
+    if (err_code != NRF_SUCCESS &&
+        err_code != BLE_ERROR_INVALID_CONN_HANDLE &&
+        err_code != NRF_ERROR_INVALID_STATE)
     {
-        APP_ERROR_HANDLER(err_code);
+      APP_ERROR_CHECK(err_code);
     }
+
 }
 
 /**@brief Function for handling the Battery measurement timer timeout.
@@ -596,7 +607,8 @@ static void bsp_event_handler(bsp_event_t event)
  *********************************************************************************** */
 static void ble_evt_dispatch(ble_evt_t *p_ble_evt) 
 {
-  ble_bas_on_ble_evt(&m_bas, p_ble_evt);
+  ble_bas_on_ble_evt(&m_bas, p_ble_evt);  //battery service events
+  ble_ios_on_ble_evt(&m_ios, p_ble_evt);  //input output service events
   ble_conn_params_on_ble_evt(p_ble_evt);
   /** The Connection state module has to be fed BLE events in order to function
    * correctly Remember to call ble_conn_state_on_ble_evt before calling any
@@ -816,7 +828,7 @@ static void gap_params_init(void)
   err_code = sd_ble_gap_device_name_set(&sec_mode, (const uint8_t *)DEVICE_NAME, strlen(DEVICE_NAME));
   APP_ERROR_CHECK(err_code);
 
-  err_code = sd_ble_gap_appearance_set(BLE_APPEARANCE_ENERGY_SENSOR);
+  err_code = sd_ble_gap_appearance_set(BLE_APPEARANCE);
   APP_ERROR_CHECK(err_code);
 
   memset(&gap_conn_params, 0, sizeof(gap_conn_params));
@@ -866,15 +878,28 @@ void bas_handler (ble_bas_t * p_bas, ble_bas_evt_t * p_evt)
   NRF_LOG_INFO("Battery notificationt %d\r\n", p_evt->evt_type);  // 0 - Enable 1 - Disable
 }
 
+
+/**@brief Function for handling write events to the IO characteristic.
+ *
+ * @param[in] p_ios     Instance of IO Service to which the write applies.
+ * @param[in] p_val     pointer to incoming value
+ */
+static void ios_input_event_handler(ble_ios_t * p_ios, uint16_t * p_val)
+{
+  //  The size of *p_val must be associated with INPUT_CHAR_LEN
+  NRF_LOG_INFO("Input incoming 0x%X\r\n", *((uint16_t *) p_val));
+}
+
 /**@brief Function for initializing services that will be used by the
  * application.
  */
 static void services_init(void) 
 {
   uint32_t err_code;
-  ble_dis_init_t dis_init;
-  ble_bas_init_t   bas_init;
-  ble_dis_sys_id_t sys_id;
+  ble_dis_init_t    dis_init;
+  ble_bas_init_t    bas_init;
+  //ble_lbs_init_t    lbs_init;
+  ble_dis_sys_id_t  sys_id;
 
   // Initialize Device Information Service.
   memset(&dis_init, 0, sizeof(dis_init));
@@ -908,6 +933,10 @@ static void services_init(void)
   bas_init.initial_batt_level   = 100;
 
   err_code = ble_bas_init(&m_bas, &bas_init);
+  APP_ERROR_CHECK(err_code);
+
+  // Input Outpur Service initialize
+   err_code = ble_ios_init(&m_ios, ios_input_event_handler);
   APP_ERROR_CHECK(err_code);
 }
 
@@ -967,8 +996,8 @@ int main(void)
     NRF_LOG_INFO("Bonds erased!\r\n");
   }
   gap_params_init();
-  advertising_init();
   services_init();
+  advertising_init();
   conn_params_init();
   static_passkey_def();
   // Start execution.
