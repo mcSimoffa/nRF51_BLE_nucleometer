@@ -1,17 +1,16 @@
 <!DOCTYPE CrossStudio_Session_File>
 <session>
  <Bookmarks>
-  <BookmarkItem objectName="" line="909" column="34" path="D:/SesProj/Application/main.c" number="6" extra="bas_init.evt_handler = bas_handler;//NULL;" color="5"/>
-  <BookmarkItem objectName="" line="318" column="34" path="D:/SesProj/Application/main.c" number="1" extra="static void battery_level_update(void)" color="5"/>
-  <BookmarkItem objectName="" line="603" column="1" path="D:/SesProj/Application/main.c" number="2" extra="ble_bas_on_ble_evt(&amp;m_bas, p_ble_evt);" color="5"/>
-  <BookmarkItem objectName="" line="802" column="2" path="D:/SesProj/Application/main.c" number="3" extra="err_code = app_timer_create(&amp;m_battery_timer_id, APP_TIMER_MODE_REPEATED, battery_level_meas_timeout_handler);" color="5"/>
-  <BookmarkItem objectName="" line="870" column="2" path="D:/SesProj/Application/main.c" number="9" extra="NRF_LOG_INFO(&quot;Battery event %d\r\n&quot;, p_evt->evt_type );" color="5"/>
-  <BookmarkItem objectName="" line="903" column="2" path="D:/SesProj/Application/main.c" number="4" extra="BLE_GAP_CONN_SEC_MODE_SET_OPEN (&amp;bas_init.battery_level_char_attr_md.cccd_write_perm);" color="5"/>
+  <BookmarkItem objectName="" line="354" column="35" path="D:/nRF51_BLE_nucleometer/Application/main.c" number="10" extra="battery_charge_measure_start();" color="5"/>
+  <BookmarkItem objectName="" line="992" column="1" path="D:/nRF51_BLE_nucleometer/Application/main.c" number="9" extra="adc_config();" color="5"/>
  </Bookmarks>
  <Breakpoints groups="Breakpoints" active_group="Breakpoints">
   <BreakpointListItem trigger="Execute" line="0" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="0x1aef6" group="Breakpoints" type="Breakpoint" state="3" filename="D:/nRF51_BLE_nucleometer" useHWbreakpoint="false"/>
   <BreakpointListItem trigger="Execute" line="0" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="0x2a28a" group="Breakpoints" type="Breakpoint" state="3" filename="D:/SesProj" useHWbreakpoint="false"/>
+  <BreakpointListItem trigger="" line="10" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="Application/analog_part.c" useHWbreakpoint="false"/>
   <BreakpointListItem trigger="" line="452" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="components/libraries/fstorage/fstorage.c" useHWbreakpoint="false"/>
+  <BreakpointListItem trigger="" line="242" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="components/drivers_nrf/adc/nrf_drv_adc.c" useHWbreakpoint="false"/>
+  <BreakpointListItem trigger="" line="280" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="4" filename="components/drivers_nrf/adc/nrf_drv_adc.c" useHWbreakpoint="false"/>
   <Exceptions set="HardFault"/>
  </Breakpoints>
  <ExecutionProfileWindow/>
@@ -19,7 +18,7 @@
   <FrameBufferWindow bufferHeight="-1" addressSpace="" addressText="" bufferWidth="-1"/>
  </FrameBufferWindow>
  <Memory1>
-  <MemoryWindow addressSpace="" dataSize="1" autoEvaluate="0" viewMode="0" addressOrder="0" columnsText="" refreshPeriod="0" name="tmpl" radix="16" sizeText="16" addressText="0x2b940"/>
+  <MemoryWindow addressSpace="" dataSize="1" autoEvaluate="0" viewMode="0" addressOrder="0" columnsText="" refreshPeriod="0" name="tmpl" radix="16" sizeText="16" addressText="0x200025a2"/>
  </Memory1>
  <Memory2>
   <MemoryWindow addressSpace="" dataSize="1" autoEvaluate="0" viewMode="0" addressOrder="0" columnsText="" refreshPeriod="0" name="tmpl" radix="16" sizeText="16" addressText="0x20002078"/>
@@ -38,12 +37,11 @@
   <ProjectSessionItem path="tmpl;tmpl;Board Definition"/>
   <ProjectSessionItem path="tmpl;tmpl;Board Support"/>
   <ProjectSessionItem path="tmpl;tmpl;nRF Libraries"/>
-  <ProjectSessionItem path="tmpl;tmpl;nRF_BLE"/>
   <ProjectSessionItem path="tmpl;tmpl;nRF_Drivers"/>
   <ProjectSessionItem path="tmpl;tmpl;SoftDevice"/>
  </Project>
  <Register1>
-  <RegisterWindow visibleNodes="CPU - Current Context/r0;CPU - Current Context/r1;CPU - Current Context/r2;CPU - Current Context/r3;CPU - Current Context/r4;CPU - Current Context/r5;CPU - Current Context/r6;CPU - Current Context/r7;CPU - Current Context/r8;CPU - Current Context/r9;CPU - Current Context/r10;CPU - Current Context/r11;CPU - Current Context/r12;CPU - Current Context/sp(r13);CPU - Current Context/lr(r14);CPU - Current Context/pc(r15);CPU - Current Context/apsr;GPIOTE/TASKS_OUT[0];GPIOTE/TASKS_OUT[1];GPIOTE/TASKS_OUT[2];GPIOTE/TASKS_OUT[3];GPIOTE/EVENTS_IN[0];GPIOTE/EVENTS_IN[1];GPIOTE/EVENTS_IN[2];GPIOTE/EVENTS_IN[3];GPIOTE/EVENTS_PORT;GPIOTE/INTENSET;GPIOTE/INTENCLR;GPIOTE/CONFIG[0];GPIOTE/CONFIG[1];GPIOTE/CONFIG[2];GPIOTE/CONFIG[3];GPIOTE/POWER;PPI/CHEN;PPI/CHENSET;PPI/CHENCLR;PPI/CHG[0];PPI/CHG[1];PPI/CHG[2];PPI/CHG[3];PPI/TASKS_CHG[0].EN;PPI/TASKS_CHG[0].DIS;PPI/TASKS_CHG[1].EN;PPI/TASKS_CHG[1].DIS;PPI/TASKS_CHG[2].EN;PPI/TASKS_CHG[2].DIS;PPI/TASKS_CHG[3].EN;PPI/TASKS_CHG[3].DIS;PPI/CH[0].EEP;PPI/CH[0].TEP;PPI/CH[1].EEP;PPI/CH[1].TEP;PPI/CH[2].EEP;PPI/CH[2].TEP;PPI/CH[3].EEP;PPI/CH[3].TEP;PPI/CH[4].EEP;PPI/CH[4].TEP;PPI/CH[5].EEP;PPI/CH[5].TEP;PPI/CH[6].EEP;PPI/CH[6].TEP;PPI/CH[7].EEP;PPI/CH[7].TEP;PPI/CH[8].EEP;PPI/CH[8].TEP;PPI/CH[9].EEP;PPI/CH[9].TEP;PPI/CH[10].EEP;PPI/CH[10].TEP;PPI/CH[11].EEP;PPI/CH[11].TEP;PPI/CH[12].EEP;PPI/CH[12].TEP;PPI/CH[13].EEP;PPI/CH[13].TEP;PPI/CH[14].EEP;PPI/CH[14].TEP;PPI/CH[15].EEP;PPI/CH[15].TEP" binaryNodes="" asciiNodes="" openNodes="CPU - Current Context/apsr" name="tmpl" decimalNodes="" octalNodes="" unsignedNodes=""/>
+  <RegisterWindow visibleNodes="CPU - Current Context/r0;CPU - Current Context/r1;CPU - Current Context/r2;CPU - Current Context/r3;CPU - Current Context/r4;CPU - Current Context/r5;CPU - Current Context/r6;CPU - Current Context/r7;CPU - Current Context/r8;CPU - Current Context/r9;CPU - Current Context/r10;CPU - Current Context/r11;CPU - Current Context/r12;CPU - Current Context/sp(r13);CPU - Current Context/lr(r14);CPU - Current Context/pc(r15);CPU - Current Context/apsr;GPIOTE/TASKS_OUT[0];GPIOTE/TASKS_OUT[1];GPIOTE/TASKS_OUT[2];GPIOTE/TASKS_OUT[3];GPIOTE/EVENTS_IN[0];GPIOTE/EVENTS_IN[1];GPIOTE/EVENTS_IN[2];GPIOTE/EVENTS_IN[3];GPIOTE/EVENTS_PORT;GPIOTE/INTENSET;GPIOTE/INTENCLR;GPIOTE/CONFIG[0];GPIOTE/CONFIG[1];GPIOTE/CONFIG[2];GPIOTE/CONFIG[3];GPIOTE/POWER;PPI/CHEN;PPI/CHENSET;PPI/CHENCLR;PPI/CHG[0];PPI/CHG[1];PPI/CHG[2];PPI/CHG[3];PPI/TASKS_CHG[0].EN;PPI/TASKS_CHG[0].DIS;PPI/TASKS_CHG[1].EN;PPI/TASKS_CHG[1].DIS;PPI/TASKS_CHG[2].EN;PPI/TASKS_CHG[2].DIS;PPI/TASKS_CHG[3].EN;PPI/TASKS_CHG[3].DIS;PPI/CH[0].EEP;PPI/CH[0].TEP;PPI/CH[1].EEP;PPI/CH[1].TEP;PPI/CH[2].EEP;PPI/CH[2].TEP;PPI/CH[3].EEP;PPI/CH[3].TEP;PPI/CH[4].EEP;PPI/CH[4].TEP;PPI/CH[5].EEP;PPI/CH[5].TEP;PPI/CH[6].EEP;PPI/CH[6].TEP;PPI/CH[7].EEP;PPI/CH[7].TEP;PPI/CH[8].EEP;PPI/CH[8].TEP;PPI/CH[9].EEP;PPI/CH[9].TEP;PPI/CH[10].EEP;PPI/CH[10].TEP;PPI/CH[11].EEP;PPI/CH[11].TEP;PPI/CH[12].EEP;PPI/CH[12].TEP;PPI/CH[13].EEP;PPI/CH[13].TEP;PPI/CH[14].EEP;PPI/CH[14].TEP;PPI/CH[15].EEP;PPI/CH[15].TEP;ADC/TASKS_START;ADC/TASKS_STOP;ADC/EVENTS_END;ADC/INTENSET;ADC/INTENCLR;ADC/BUSY;ADC/ENABLE;ADC/CONFIG;ADC/RESULT;ADC/POWER" binaryNodes="" asciiNodes="" openNodes="CPU - Current Context/apsr;ADC;ADC/RESULT" name="tmpl" decimalNodes="" octalNodes="" unsignedNodes=""/>
  </Register1>
  <Register2>
   <RegisterWindow visibleNodes="CPU - Current Context/r0;CPU - Current Context/r1;CPU - Current Context/r2;CPU - Current Context/r3;CPU - Current Context/r4;CPU - Current Context/r5;CPU - Current Context/r6;CPU - Current Context/r7;CPU - Current Context/r8;CPU - Current Context/r9;CPU - Current Context/r10;CPU - Current Context/r11;CPU - Current Context/r12;CPU - Current Context/sp(r13);CPU - Current Context/lr(r14);CPU - Current Context/pc(r15);CPU - Current Context/apsr;CPU/r0;CPU/r1;CPU/r2;CPU/r3;CPU/r4;CPU/r5;CPU/r6;CPU/r7;CPU/r8;CPU/r9;CPU/r10;CPU/r11;CPU/r12;CPU/sp(r13);CPU/lr(r14);CPU/pc(r15);CPU/xpsr;CPU/msp;CPU/psp;CPU/cfbp;CPU/internal" binaryNodes="" asciiNodes="" openNodes="CPU - Current Context" name="tmpl" decimalNodes="" octalNodes="" unsignedNodes=""/>
@@ -62,13 +60,9 @@
  </TraceWindow>
  <Watch1>
   <Watches active="1" update="Never">
-   <Watchpoint expression="bas_init" name="bas_init" radix="-1" linenumber="913" filename="Application/main.c"/>
-   <Watchpoint expression="p_ble_evt->header.evt_id" name="p_ble_evt->header.evt_id" radix="-1" linenumber="123" filename="components/ble/ble_services/ble_bas/ble_bas.c"/>
-   <Watchpoint expression="p_bas" name="p_bas" radix="-1" linenumber="869" filename="Application/main.c"/>
-   <Watchpoint expression="p_evt" name="p_evt" radix="-1" linenumber="869" filename="Application/main.c"/>
-   <Watchpoint expression="m_channel_config" name="m_channel_config" radix="-1" linenumber="1005" filename="Application/main.c"/>
-   <Watchpoint expression="m_cb" name="m_cb" radix="-1" linenumber="113" filename="components/drivers_nrf/adc/nrf_drv_adc.c"/>
-   <Watchpoint expression="p_event->data.done.p_buffer[0]" name="p_event->data.done.p_buffer[0]" radix="-1" linenumber="992" filename="Application/main.c"/>
+   <Watchpoint expression="adc_buffer_Vbat" name="adc_buffer_Vbat" radix="16" linenumber="4" filename="Application/analog_part.c"/>
+   <Watchpoint expression="m_cb" name="m_cb" radix="-1" linenumber="301" filename="components/drivers_nrf/adc/nrf_drv_adc.c"/>
+   <Watchpoint expression="Vbat_channel_config" name="Vbat_channel_config" radix="-1" linenumber="28" filename="Application/analog_part.c"/>
   </Watches>
  </Watch1>
  <Watch2>
@@ -81,30 +75,17 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="1012" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="Application/main.c" selected="1" top="977" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="94" useTextEdit="1" openedFrom="D:/SesProj/Application/main.c" useBinaryEdit="0" left="0" path="components/softdevice/s130/headers/ble_types.h" selected="0" top="73" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="121" useTextEdit="1" openedFrom="D:/SesProj/components/libraries/util/app_error_weak.c" useBinaryEdit="0" left="0" path="components/libraries/util/app_error.c" selected="0" top="111" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="59" useTextEdit="1" openedFrom="D:/SesProj/components/libraries/util/app_error.c" useBinaryEdit="0" left="0" path="components/libraries/util/app_error_weak.c" selected="0" top="30" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="111" useTextEdit="1" openedFrom="D:/SesProj/Application/main.c" useBinaryEdit="0" left="0" path="components/ble/ble_services/ble_dis/ble_dis.h" selected="0" top="90" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="81" useTextEdit="1" openedFrom="D:/SesProj/Application/main.c" useBinaryEdit="0" left="0" path="components/ble/ble_services/ble_bas/ble_bas.h" selected="0" top="67" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="162" useTextEdit="1" openedFrom="D:/SesProj/components/ble/ble_services/ble_bas/ble_bas.h" useBinaryEdit="0" left="0" path="components/ble/common/ble_srv_common.h" selected="0" top="139" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="481" useTextEdit="1" openedFrom="D:/SesProj/components/ble/ble_services/ble_bas/ble_bas.h" useBinaryEdit="0" left="0" path="components/softdevice/s130/headers/ble_gap.h" selected="0" top="496" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="99" useTextEdit="1" openedFrom="D:/SesProj/Application/main.c" useBinaryEdit="0" left="0" path="components/ble/ble_services/ble_bas/ble_bas.c" selected="0" top="62" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="262" useTextEdit="1" openedFrom="D:/SesProj/components/ble/ble_services/ble_bas/ble_bas.c" useBinaryEdit="0" left="0" path="components/softdevice/s130/headers/ble_gatts.h" selected="0" top="241" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="204" useTextEdit="1" openedFrom="D:/SesProj/Application/main.c" useBinaryEdit="0" left="0" path="components/libraries/util/nordic_common.h" selected="0" top="183" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="998" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/libraries/timer/app_timer.c" selected="0" top="967" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="184" useTextEdit="1" openedFrom="D:/SesProj/components/ble/ble_services/ble_bas/ble_bas.c" useBinaryEdit="0" left="0" path="components/softdevice/s130/headers/ble.h" selected="0" top="18" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="206" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/softdevice/common/softdevice_handler/softdevice_handler.c" selected="0" top="173" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="51" useTextEdit="1" openedFrom="D:/SesProj/components/ble/ble_services/ble_bas/ble_bas.c" useBinaryEdit="0" left="0" path="components/ble/common/ble_srv_common.c" selected="0" top="20" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="39" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/boards/boards.c" selected="0" top="21" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="75" useTextEdit="1" openedFrom="D:/SesProj/components/boards/boards.c" useBinaryEdit="0" left="0" path="components/boards/boards.h" selected="0" top="36" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="D:/SesProj/components/boards/boards.h" useBinaryEdit="0" left="0" path="components/boards/custom_board.h" selected="0" top="126" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="30" y="262" useTextEdit="1" openedFrom="D:/SesProj/Application/main.c" useBinaryEdit="0" left="0" path="components/drivers_nrf/adc/nrf_drv_adc.h" selected="0" top="233" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="37" y="245" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/drivers_nrf/adc/nrf_drv_adc.c" selected="0" top="222" codecName=""/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="49" y="120" useTextEdit="1" openedFrom="D:/SesProj/Application/main.c" useBinaryEdit="0" left="0" path="components/drivers_nrf/hal/nrf_adc.h" selected="0" top="97" codecName=""/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="296" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/drivers_nrf/common/nrf_drv_common.c" selected="0" top="269" codecName=""/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="631" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/toolchain/cmsis/include/core_cm0.h" selected="0" top="608" codecName=""/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="187" useTextEdit="1" openedFrom="D:/SesProj/components/drivers_nrf/hal/nrf_adc.h" useBinaryEdit="0" left="0" path="nRF/Device/Include/nrf51_bitfields.h" selected="0" top="164" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="29" y="354" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/analog_part.c" useBinaryEdit="0" left="0" path="Application/main.c" selected="0" top="339" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="33" y="232" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/analog_part.c" useBinaryEdit="0" left="0" path="components/drivers_nrf/adc/nrf_drv_adc.h" selected="0" top="206" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="21" y="13" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/main.c" useBinaryEdit="0" left="0" path="Application/analog_part.h" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="16" y="35" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="Application/analog_part.c" selected="1" top="15" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="495" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="components/libraries/log/src/nrf_log_frontend.c" selected="0" top="470" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="21" y="262" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/drivers_nrf/adc/nrf_drv_adc.c" useBinaryEdit="0" left="0" path="components/drivers_nrf/hal/nrf_adc.h" selected="0" top="246" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="425" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/main.c" useBinaryEdit="0" left="0" path="components/libraries/bsp/bsp.c" selected="0" top="408" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="39" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/libraries/bsp/bsp.c" useBinaryEdit="0" left="0" path="components/boards/boards.c" selected="0" top="28" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="62" y="545" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/analog_part.c" useBinaryEdit="0" left="0" path="components/drivers_nrf/hal/nrf_gpio.h" selected="0" top="496" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="82" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/boards/boards.h" useBinaryEdit="0" left="0" path="components/boards/custom_board.h" selected="0" top="60" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="75" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/boards/boards.c" useBinaryEdit="0" left="0" path="components/boards/boards.h" selected="0" top="63" codecName="Default"/>
  </Files>
- <ARMCrossStudioWindow activeProject="tmpl" fileDialogDefaultFilter="" autoConnectTarget="J-Link" buildConfiguration="Debug" sessionSettings="" debugSearchFileMap="../../../../../../components/drivers_nrf/common/nrf_drv_common.h&#xa;&#xa;../../../../../../components/drivers_nrf/hal/nrf_clock.h&#xa;&#xa;../../../../../../components/toolchain/cmsis/include/core_cm4.h&#xa;" fileDialogInitialDirectory="D:/SesProj/components/drivers_nrf/adc" debugSearchPath="" autoConnectCapabilities="3199"/>
+ <ARMCrossStudioWindow activeProject="tmpl" fileDialogDefaultFilter="" autoConnectTarget="J-Link" buildConfiguration="Debug" sessionSettings="" debugSearchFileMap="../../../../../../components/drivers_nrf/common/nrf_drv_common.h&#xa;&#xa;../../../../../../components/drivers_nrf/hal/nrf_clock.h&#xa;&#xa;../../../../../../components/toolchain/cmsis/include/core_cm4.h&#xa;" fileDialogInitialDirectory="D:/nRF51_BLE_nucleometer/Application" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>

@@ -255,7 +255,7 @@
 // <4=> Debug 
 
 #ifndef ADC_CONFIG_LOG_LEVEL
-#define ADC_CONFIG_LOG_LEVEL 3
+#define ADC_CONFIG_LOG_LEVEL 4
 #endif
 
 // <o> ADC_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -3617,7 +3617,7 @@
 // <4=> Debug 
 
 #ifndef NRF_LOG_DEFAULT_LEVEL
-#define NRF_LOG_DEFAULT_LEVEL 3
+#define NRF_LOG_DEFAULT_LEVEL 4
 #endif
 
 // <e> NRF_LOG_DEFERRED - Enable deffered logger.

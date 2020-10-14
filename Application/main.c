@@ -72,7 +72,7 @@
 #include "nrf_gpio.h"
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
-#include "nrf_drv_adc.h"
+#include "analog_part.h"
 
 #define NRF_LOG_MODULE_NAME "MAIN"
 
@@ -126,7 +126,6 @@
 #define DEAD_BEEF                       0xDEADBEEF                    // Value used as error code on stack dump, can be used to identify stack location on stack unwind.
 
 #define BATTERY_LEVEL_MEAS_INTERVAL     APP_TIMER_TICKS(2000, APP_TIMER_PRESCALER)  // Battery level measurement interval (ticks)
-#define ADC_BUFFER_SIZE 2                                /**< Size of buffer for ADC samples.  */
 
 /* -------------------------------------------------------------------------------------------------
     definitions added by me
@@ -134,10 +133,6 @@
 */
 // https://specificationrefs.bluetooth.com/assigned-values/Appearance%20Values.pdf
 #define BLE_APPEARANCE  BLE_APPEARANCE_GENERIC_TAG  //1344 //(1344+12) 
-
-
-static nrf_adc_value_t       adc_buffer[ADC_BUFFER_SIZE]; /**< ADC buffer. */
-static nrf_drv_adc_channel_t m_channel_config = NRF_DRV_ADC_DEFAULT_CHANNEL(NRF_ADC_CONFIG_INPUT_2); /**< Channel instance. Default configuration used. */
 
 static uint16_t   m_conn_handle = BLE_CONN_HANDLE_INVALID; // Handle of the current connection.
 static ble_bas_t  m_bas;  //Structure used to identify the battery service.
@@ -336,7 +331,7 @@ static void battery_level_update(void)
     APP_ERROR_HANDLER(err_code);
   }
 
-  //notification IO service
+  //notification IO service. This is here for example. Refresh by timer
   err_code = ble_ios_on_output_change(&m_ios, &battery_level, OUTPUT_CHAR_LEN);
     if (err_code != NRF_SUCCESS &&
         err_code != BLE_ERROR_INVALID_CONN_HANDLE &&
@@ -357,7 +352,7 @@ static void battery_level_update(void)
 static void battery_level_meas_timeout_handler(void * p_context)
 {
     UNUSED_PARAMETER(p_context);
-    battery_level_update();
+    battery_charge_measure_start();
 }
 
 
@@ -979,32 +974,6 @@ static void application_timers_start(void)
     APP_ERROR_CHECK(err_code);
 }
 
-/**
- * @brief ADC interrupt handler.
- */
-static void adc_event_handler(nrf_drv_adc_evt_t const * p_event)
-{
-    if (p_event->type == NRF_DRV_ADC_EVT_DONE)
-    {
-        uint32_t i;
-        for (i = 0; i < p_event->data.done.size; i++)
-        {
-            NRF_LOG_INFO("Current sample value: %d\r\n", p_event->data.done.p_buffer[i]);
-        }
-    }
-}
-
-static void adc_config(void)
-{
-    ret_code_t ret_code;
-    nrf_drv_adc_config_t config = NRF_DRV_ADC_DEFAULT_CONFIG;
-
-    ret_code = nrf_drv_adc_init(&config, adc_event_handler);
-    APP_ERROR_CHECK(ret_code);
-
-    nrf_drv_adc_channel_enable(&m_channel_config);
-}
-
 
 /* *****************************************************************
                                                         main cycle
@@ -1020,18 +989,7 @@ int main(void)
 
   timers_init();
   buttons_leds_init(&erase_bonds);
-
-adc_config();
-APP_ERROR_CHECK(nrf_drv_adc_buffer_convert(adc_buffer,ADC_BUFFER_SIZE));
-for(int s=0;s<10000;s++)
-  asm("nop");
-nrf_drv_adc_sample();
-for(int s=0;s<10000;s++)
-  asm("nop");
-nrf_drv_adc_sample();
-for(int s=0;s<10000;s++)
-  asm("nop");
-
+  analog_part_init();
   ble_stack_init();
   peer_manager_init(erase_bonds);
   if (erase_bonds == true) 
