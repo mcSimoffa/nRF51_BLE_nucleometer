@@ -125,7 +125,6 @@
 #define SEC_PARAM_MAX_KEY_SIZE          16                            // Maximum encryption key size. 
 #define DEAD_BEEF                       0xDEADBEEF                    // Value used as error code on stack dump, can be used to identify stack location on stack unwind.
 
-#define BATTERY_LEVEL_MEAS_INTERVAL     APP_TIMER_TICKS(2000, APP_TIMER_PRESCALER)  // Battery level measurement interval (ticks)
 
 /* -------------------------------------------------------------------------------------------------
     definitions added by me
@@ -146,8 +145,8 @@ static ble_ios_t  m_ios;  // IO Service instance.
 // YOUR_JOB: Use UUIDs for service(s) used in your application.
 static ble_uuid_t m_adv_uuids[] = { {BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE} }; //service identifiers.
 
-APP_TIMER_DEF(m_sec_req_timer_id);    // timer for secure connection
-APP_TIMER_DEF(m_battery_timer_id);    // Battery timer
+APP_TIMER_DEF(m_sec_req_timer_id);        // timer for secure connection
+APP_TIMER_DEF(m_analogPart_timer_id);     // timer for Analog part
 
 pm_peer_id_t m_peer_to_be_deleted = PM_PEER_ID_INVALID;
 
@@ -342,18 +341,6 @@ static void battery_level_update(void)
 
 }
 
-/**@brief Function for handling the Battery measurement timer timeout.
- *
- * @details This function will be called each time the battery level measurement timer expires.
- *
- * @param[in] p_context   Pointer used for passing some arbitrary information (context) from the
- *                        app_start_timer() call to the timeout handler.
- */
-static void battery_level_meas_timeout_handler(void * p_context)
-{
-    UNUSED_PARAMETER(p_context);
-    battery_charge_measure_start();
-}
 
 
 /**@brief Function for handling the Security Request timer timeout.
@@ -806,8 +793,8 @@ static void timers_init(void)
   err_code = app_timer_create(&m_sec_req_timer_id,  APP_TIMER_MODE_SINGLE_SHOT, sec_req_timeout_handler);
   APP_ERROR_CHECK(err_code);
 
-  // Create timers for battery service.
-  err_code = app_timer_create(&m_battery_timer_id,  APP_TIMER_MODE_REPEATED,  battery_level_meas_timeout_handler);
+  // Create timers for Analog circuits (HV convertor + battery service).
+  err_code = app_timer_create(&m_analogPart_timer_id,  APP_TIMER_MODE_REPEATED,  analogPart_timeout_handler);
   APP_ERROR_CHECK(err_code);
 }
 
@@ -970,7 +957,7 @@ static void application_timers_start(void)
     uint32_t err_code;
 
     // Start application timers.
-    err_code = app_timer_start(m_battery_timer_id, BATTERY_LEVEL_MEAS_INTERVAL, NULL);
+    err_code = app_timer_start(m_analogPart_timer_id, ANALOGPART_TIMER_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
 }
 
