@@ -15,6 +15,11 @@
 
 #define ANALOGPART_TIMER_INTERVAL     APP_TIMER_TICKS(1000, APP_TIMER_PRESCALER)
 
+// Analog module machine state
+#define HVU_STATE_IDLE            0
+#define HVU_STATE_PROCESS         1
+
+
 void analogPart_timeout_handler(void * p_context);
 static void adc_event_handler(nrf_drv_adc_evt_t const * p_event);
 void analog_part_init();

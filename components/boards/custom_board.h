@@ -48,7 +48,6 @@ extern "C" {
 
 // LEDs definitions for PCA10028
 #define LEDS_NUMBER    2
-
 #define LED_START      21
 #define LED_1          21
 #define LED_2          22
@@ -64,7 +63,6 @@ extern "C" {
 #define GREEN_LED       LED_2
 
 #define BUTTONS_NUMBER 2
-
 #define BUTTON_START   17
 #define BUTTON_1       17
 #define BUTTON_2       18
@@ -73,19 +71,24 @@ extern "C" {
 
 #define BUTTONS_ACTIVE_STATE 0
 
-#define BUTTONS_LIST { BUTTON_1, BUTTON_2}
+#define BUTTONS_LIST {BUTTON_1, BUTTON_2}
 
 #define BSP_BUTTON_0   BUTTON_1
 #define BSP_BUTTON_1   BUTTON_2
 
-#define BATTERY_MEAS_PIN  1 // This pin turn On, and its voltage is measuring ADC. Then this pin turn OFF for energy save
+
+#define VBAT_MEA_PIN        1   // This pin turn On, and its voltage is measuring from ADC_BAT_PIN. Then this pin turn OFF for energy sav
+#define HV_PUMP_PIN         0   // output pulse to Step-UP HV converter
+#define PULSE_PIN           30  //for count pulse from Geyger-Miller counter
+
 // Buttons functionality here: components\libraries\bsp\bsp_btn_ble.c
 
-/*
 #define RX_PIN_NUMBER  11
 #define TX_PIN_NUMBER  9
 #define CTS_PIN_NUMBER 10
 #define RTS_PIN_NUMBER 8
+
+/*
 #define HWFC           true
 
 #define SPIS_MISO_PIN  28    // SPI MISO signal.
