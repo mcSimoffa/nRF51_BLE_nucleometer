@@ -125,28 +125,30 @@
 #define SEC_PARAM_MAX_KEY_SIZE          16                            // Maximum encryption key size. 
 #define DEAD_BEEF                       0xDEADBEEF                    // Value used as error code on stack dump, can be used to identify stack location on stack unwind.
 
-
+#define BAT_NOTIF_TIMER_INTERVAL     APP_TIMER_TICKS(5000, APP_TIMER_PRESCALER)
 /* -------------------------------------------------------------------------------------------------
     definitions added by me
--------------------------------------------------------------------------------------------------
-*/
+------------------------------------------------------------------------------------------------- */
 // https://specificationrefs.bluetooth.com/assigned-values/Appearance%20Values.pdf
 #define BLE_APPEARANCE  BLE_APPEARANCE_GENERIC_TAG  //1344 //(1344+12) 
 
 static uint16_t   m_conn_handle = BLE_CONN_HANDLE_INVALID; // Handle of the current connection.
-static ble_bas_t  m_bas;  //Structure used to identify the battery service.
+static ble_bas_t  m_bas;  // Structure used to identify the battery service.
 static ble_ios_t  m_ios;  // IO Service instance.
 
-/* YOUR_JOB: Declare all services structure your application is using
-   static ble_xx_service_t                     m_xxs;
-   static ble_yy_service_t                     m_yys;
- */
+struct
+{
+  uint16_t  min;
+  uint16_t  max;
+  uint16_t  average;
+} tf_data;  // structure what describe a nucleoactiviti in a timeframe
 
 // YOUR_JOB: Use UUIDs for service(s) used in your application.
 static ble_uuid_t m_adv_uuids[] = { {BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE} }; //service identifiers.
 
 APP_TIMER_DEF(m_sec_req_timer_id);        // timer for secure connection
 APP_TIMER_DEF(m_analogPart_timer_id);     // timer for Analog part
+APP_TIMER_DEF(m_batNot_timer_id);         // timer for battery level update
 
 pm_peer_id_t m_peer_to_be_deleted = PM_PEER_ID_INVALID;
 
@@ -312,16 +314,12 @@ static void pm_evt_handler(pm_evt_t const *p_evt)
 
 /**@brief Function for performing a battery measurement, and update the Battery Level characteristic in the Battery Service.
  */
-static void battery_level_update(void)
+static void battery_level_update_handler(void * p_context)
 {
   uint32_t err_code;
-  static uint8_t  battery_level=100;
+  UNUSED_PARAMETER(p_context);
 
-  //battery_level = 90; // in %
-  if (--battery_level <10)
-    battery_level=100;
-
-  err_code = ble_bas_battery_level_update(&m_bas, battery_level);
+  err_code = ble_bas_battery_level_update(&m_bas, battery_level_get());
   if ((err_code != NRF_SUCCESS) &&
       (err_code != NRF_ERROR_INVALID_STATE) &&
       (err_code != BLE_ERROR_NO_TX_PACKETS) &&
@@ -329,16 +327,19 @@ static void battery_level_update(void)
   {
     APP_ERROR_HANDLER(err_code);
   }
+  
 
-  //notification IO service. This is here for example. Refresh by timer
-  err_code = ble_ios_on_output_change(&m_ios, &battery_level, OUTPUT_CHAR_LEN);
+  //notification IO service. the code is damp and temporary. This is here for example. Refresh by timer
+  err_code = ble_ios_on_output_change(&m_ios, &tf_data, OUTPUT_CHAR_LEN);
     if (err_code != NRF_SUCCESS &&
         err_code != BLE_ERROR_INVALID_CONN_HANDLE &&
         err_code != NRF_ERROR_INVALID_STATE)
     {
       APP_ERROR_CHECK(err_code);
     }
-
+  tf_data.min++;
+  tf_data.max++;
+  tf_data.average--;
 }
 
 
@@ -352,18 +353,18 @@ static void battery_level_update(void)
  ******************************************************************************************  */
 static void sec_req_timeout_handler(void * p_context)
 {
-    uint32_t err_code;
+  uint32_t err_code;
 
-    if (m_conn_handle != BLE_CONN_HANDLE_INVALID)
+  if (m_conn_handle != BLE_CONN_HANDLE_INVALID)
+  {
+    // Initiate bonding.
+    NRF_LOG_DEBUG("Sec timer expired. Start encryption\r\n");
+    err_code = pm_conn_secure(m_conn_handle, false);
+    if (err_code != NRF_ERROR_INVALID_STATE)
     {
-        // Initiate bonding.
-        NRF_LOG_DEBUG("Sec timer expired. Start encryption\r\n");
-        err_code = pm_conn_secure(m_conn_handle, false);
-        if (err_code != NRF_ERROR_INVALID_STATE)
-        {
-            APP_ERROR_CHECK(err_code);
-        }
+      APP_ERROR_CHECK(err_code);
     }
+  }
 }
 
 /**@brief Function for handling the Connection Parameters Module.
@@ -793,8 +794,12 @@ static void timers_init(void)
   err_code = app_timer_create(&m_sec_req_timer_id,  APP_TIMER_MODE_SINGLE_SHOT, sec_req_timeout_handler);
   APP_ERROR_CHECK(err_code);
 
-  // Create timers for Analog circuits (HV convertor + battery service).
+  // Create timers for Analog circuits (HV convertor + battery voltage measure).
   err_code = app_timer_create(&m_analogPart_timer_id,  APP_TIMER_MODE_REPEATED,  analogPart_timeout_handler);
+  APP_ERROR_CHECK(err_code);
+
+  // Create timers for battery notification.
+  err_code = app_timer_create(&m_batNot_timer_id,  APP_TIMER_MODE_REPEATED,  battery_level_update_handler);
   APP_ERROR_CHECK(err_code);
 }
 
@@ -871,7 +876,7 @@ void bas_handler (ble_bas_t * p_bas, ble_bas_evt_t * p_evt)
  * @param[in] p_ios     Instance of IO Service to which the write applies.
  * @param[in] p_val     pointer to incoming value
  */
-static void ios_input_event_handler(ble_ios_t * p_ios, uint16_t * p_val)
+static void ios_input_event_handler(ble_ios_t * p_ios, void * p_val)
 {
   //  The size of *p_val must be associated with INPUT_CHAR_LEN
   NRF_LOG_INFO("Input incoming 0x%X\r\n", *((uint16_t *) p_val));
@@ -954,11 +959,14 @@ static void conn_params_init(void)
  */
 static void application_timers_start(void)
 {
-    uint32_t err_code;
+  uint32_t err_code;
+  // Start application timers.
+  err_code = app_timer_start(m_analogPart_timer_id, ANALOGPART_TIMER_INTERVAL, NULL);
+  APP_ERROR_CHECK(err_code);
 
-    // Start application timers.
-    err_code = app_timer_start(m_analogPart_timer_id, ANALOGPART_TIMER_INTERVAL, NULL);
-    APP_ERROR_CHECK(err_code);
+  err_code = app_timer_start(m_batNot_timer_id, BAT_NOTIF_TIMER_INTERVAL, NULL);
+  APP_ERROR_CHECK(err_code);
+   
 }
 
 

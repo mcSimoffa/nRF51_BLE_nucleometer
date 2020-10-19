@@ -77,10 +77,6 @@ extern "C" {
 #define BSP_BUTTON_1   BUTTON_2
 
 
-#define VBAT_MEA_PIN        1   // This pin turn On, and its voltage is measuring from ADC_BAT_PIN. Then this pin turn OFF for energy sav
-#define HV_PUMP_PIN         0   // output pulse to Step-UP HV converter
-#define PULSE_PIN           30  //for count pulse from Geyger-Miller counter
-
 // Buttons functionality here: components\libraries\bsp\bsp_btn_ble.c
 
 #define RX_PIN_NUMBER  11

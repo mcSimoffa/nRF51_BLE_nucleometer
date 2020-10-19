@@ -78,6 +78,7 @@ extern "C" {
 #define LBS_UUID_SERVICE     0x1523
 #define LBS_UUID_BUTTON_CHAR 0x1524
 #define LBS_UUID_LED_CHAR    0x1525
+
 // The length of created characteristics
 #define INPUT_CHAR_LEN        2
 #define INPUT_CHAR_LEN_MAX    2

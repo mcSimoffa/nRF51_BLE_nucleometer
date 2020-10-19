@@ -243,7 +243,7 @@
 // <e> ADC_CONFIG_LOG_ENABLED - Enables logging in the module.
 //==========================================================
 #ifndef ADC_CONFIG_LOG_ENABLED
-#define ADC_CONFIG_LOG_ENABLED 1
+#define ADC_CONFIG_LOG_ENABLED 0
 #endif
 #if  ADC_CONFIG_LOG_ENABLED
 // <o> ADC_CONFIG_LOG_LEVEL  - Default Severity level
@@ -255,7 +255,7 @@
 // <4=> Debug 
 
 #ifndef ADC_CONFIG_LOG_LEVEL
-#define ADC_CONFIG_LOG_LEVEL 4
+#define ADC_CONFIG_LOG_LEVEL 3
 #endif
 
 // <o> ADC_CONFIG_INFO_COLOR  - ANSI escape code prefix.
@@ -676,7 +676,7 @@
 // <e> GPIOTE_CONFIG_LOG_ENABLED - Enables logging in the module.
 //==========================================================
 #ifndef GPIOTE_CONFIG_LOG_ENABLED
-#define GPIOTE_CONFIG_LOG_ENABLED 1
+#define GPIOTE_CONFIG_LOG_ENABLED 0
 #endif
 #if  GPIOTE_CONFIG_LOG_ENABLED
 // <o> GPIOTE_CONFIG_LOG_LEVEL  - Default Severity level
@@ -1287,7 +1287,7 @@
 // <e> PPI_CONFIG_LOG_ENABLED - Enables logging in the module.
 //==========================================================
 #ifndef PPI_CONFIG_LOG_ENABLED
-#define PPI_CONFIG_LOG_ENABLED 1
+#define PPI_CONFIG_LOG_ENABLED 0
 #endif
 #if  PPI_CONFIG_LOG_ENABLED
 // <o> PPI_CONFIG_LOG_LEVEL  - Default Severity level
