@@ -933,7 +933,7 @@
 // <e> LPCOMP_ENABLED - nrf_drv_lpcomp - LPCOMP peripheral driver
 //==========================================================
 #ifndef LPCOMP_ENABLED
-#define LPCOMP_ENABLED 0
+#define LPCOMP_ENABLED 1
 #endif
 #if  LPCOMP_ENABLED
 // <o> LPCOMP_CONFIG_REFERENCE  - Reference voltage
@@ -957,7 +957,7 @@
 // <65543=> External Ref 1 
 
 #ifndef LPCOMP_CONFIG_REFERENCE
-#define LPCOMP_CONFIG_REFERENCE 3
+#define LPCOMP_CONFIG_REFERENCE 4
 #endif
 
 // <o> LPCOMP_CONFIG_DETECTION  - Detection
@@ -967,7 +967,7 @@
 // <2=> Down 
 
 #ifndef LPCOMP_CONFIG_DETECTION
-#define LPCOMP_CONFIG_DETECTION 2
+#define LPCOMP_CONFIG_DETECTION 1
 #endif
 
 // <o> LPCOMP_CONFIG_INPUT  - Analog input
@@ -982,14 +982,14 @@
 // <7=> 7 
 
 #ifndef LPCOMP_CONFIG_INPUT
-#define LPCOMP_CONFIG_INPUT 0
+#define LPCOMP_CONFIG_INPUT 3
 #endif
 
 // <q> LPCOMP_CONFIG_HYST  - Hysteresis
  
 
 #ifndef LPCOMP_CONFIG_HYST
-#define LPCOMP_CONFIG_HYST 0
+#define LPCOMP_CONFIG_HYST 1
 #endif
 
 // <o> LPCOMP_CONFIG_IRQ_PRIORITY  - Interrupt priority
@@ -1006,13 +1006,13 @@
 // <7=> 7 
 
 #ifndef LPCOMP_CONFIG_IRQ_PRIORITY
-#define LPCOMP_CONFIG_IRQ_PRIORITY 7
+#define LPCOMP_CONFIG_IRQ_PRIORITY 3
 #endif
 
 // <e> LPCOMP_CONFIG_LOG_ENABLED - Enables logging in the module.
 //==========================================================
 #ifndef LPCOMP_CONFIG_LOG_ENABLED
-#define LPCOMP_CONFIG_LOG_ENABLED 0
+#define LPCOMP_CONFIG_LOG_ENABLED 1
 #endif
 #if  LPCOMP_CONFIG_LOG_ENABLED
 // <o> LPCOMP_CONFIG_LOG_LEVEL  - Default Severity level

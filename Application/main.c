@@ -70,11 +70,12 @@
 #include "bsp.h"
 #include "bsp_btn_ble.h"
 #include "nrf_gpio.h"
-#include "nrf_log.h"
-#include "nrf_log_ctrl.h"
 #include "analog_part.h"
 
 #define NRF_LOG_MODULE_NAME "MAIN"
+
+#include "nrf_log.h"
+#include "nrf_log_ctrl.h"
 
 // Buttons functionality here: components\libraries\bsp\bsp_btn_ble.c
 
@@ -104,8 +105,8 @@
 #define APP_TIMER_OP_QUEUE_SIZE         4                     // Size of timer operation queues.
 #define SECURITY_REQUEST_DELAY          APP_TIMER_TICKS(400, APP_TIMER_PRESCALER)  // Delay after connection until Security Request is sent, if necessary (ticks)
                                         
-#define MIN_CONN_INTERVAL               MSEC_TO_UNITS(100, UNIT_1_25_MS)  // Minimum acceptable connection interval (0.1 seconds). 
-#define MAX_CONN_INTERVAL               MSEC_TO_UNITS(200, UNIT_1_25_MS)   // Maximum acceptable connection interval (0.2 second).
+#define MIN_CONN_INTERVAL               MSEC_TO_UNITS(100, UNIT_1_25_MS)  // Minimum acceptable connection interval. 
+#define MAX_CONN_INTERVAL               MSEC_TO_UNITS(1000, UNIT_1_25_MS)   // Maximum acceptable connection interval.
 #define SLAVE_LATENCY                   0   // Slave latency.
 #define CONN_SUP_TIMEOUT                MSEC_TO_UNITS(4000, UNIT_10_MS) // Connection supervisory timeout (4 seconds).
 
@@ -317,9 +318,10 @@ static void pm_evt_handler(pm_evt_t const *p_evt)
 static void battery_level_update_handler(void * p_context)
 {
   uint32_t err_code;
+  uint8_t battety_level =  battery_level_get();
   UNUSED_PARAMETER(p_context);
-
-  err_code = ble_bas_battery_level_update(&m_bas, battery_level_get());
+  NRF_LOG_INFO("Battery level %d\r\n", battety_level);
+  err_code = ble_bas_battery_level_update(&m_bas, battety_level);
   if ((err_code != NRF_SUCCESS) &&
       (err_code != NRF_ERROR_INVALID_STATE) &&
       (err_code != BLE_ERROR_NO_TX_PACKETS) &&
@@ -435,23 +437,25 @@ static void on_adv_evt(ble_adv_evt_t ble_adv_evt)
 static void on_ble_evt(ble_evt_t *p_ble_evt) 
 {
   uint32_t err_code = NRF_SUCCESS;
-
+  ret_code_t ret_val;
   switch (p_ble_evt->header.evt_id) 
   {
   case BLE_GAP_EVT_DISCONNECTED:
-    {
-      NRF_LOG_INFO("Disconnected\r\n");
-      m_conn_handle = BLE_CONN_HANDLE_INVALID;
+    NRF_LOG_INFO("Disconnected\r\n");
+    m_conn_handle = BLE_CONN_HANDLE_INVALID;
 
-      // check if the last connected peer had not used MITM, if so, delete its bond information
-      if (m_peer_to_be_deleted != PM_PEER_ID_INVALID)
-      {
-          ret_code_t ret_val = pm_peer_delete(m_peer_to_be_deleted);
-          APP_ERROR_CHECK(ret_val);
-          NRF_LOG_DEBUG("Collector's bond deleted\r\n");
-          m_peer_to_be_deleted = PM_PEER_ID_INVALID;
-      }
-    } break; // BLE_GAP_EVT_DISCONNECTED
+    // check if the last connected peer had not used MITM, if so, delete its bond information
+    if (m_peer_to_be_deleted != PM_PEER_ID_INVALID)
+    {
+      ret_val = pm_peer_delete(m_peer_to_be_deleted);
+      APP_ERROR_CHECK(ret_val);
+      NRF_LOG_DEBUG("Collector's bond deleted\r\n");
+      m_peer_to_be_deleted = PM_PEER_ID_INVALID;
+    }
+    // Stop battery level update timer
+    ret_val = app_timer_stop(m_batNot_timer_id);
+    APP_ERROR_CHECK(ret_val);
+    break; // BLE_GAP_EVT_DISCONNECTED
 
   case BLE_GAP_EVT_CONNECTED:
   {
@@ -465,10 +469,15 @@ static void on_ble_evt(ble_evt_t *p_ble_evt)
     err_code = bsp_indication_set(BSP_INDICATE_CONNECTED);
     APP_ERROR_CHECK(err_code);
     m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
+
     // Start Security Request timer.
     err_code = app_timer_start(m_sec_req_timer_id, SECURITY_REQUEST_DELAY, NULL);
     APP_ERROR_CHECK(err_code);
     NRF_LOG_INFO("Security timer start\r\n");
+    
+    // Start battery level update timer
+    err_code = app_timer_start(m_batNot_timer_id, BAT_NOTIF_TIMER_INTERVAL, NULL);
+    APP_ERROR_CHECK(err_code);
   } break; // BLE_GAP_EVT_CONNECTED
 
   case BLE_GATTC_EVT_TIMEOUT:
@@ -963,10 +972,6 @@ static void application_timers_start(void)
   // Start application timers.
   err_code = app_timer_start(m_analogPart_timer_id, ANALOGPART_TIMER_INTERVAL, NULL);
   APP_ERROR_CHECK(err_code);
-
-  err_code = app_timer_start(m_batNot_timer_id, BAT_NOTIF_TIMER_INTERVAL, NULL);
-  APP_ERROR_CHECK(err_code);
-   
 }
 
 

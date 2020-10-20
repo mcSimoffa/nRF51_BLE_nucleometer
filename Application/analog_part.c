@@ -1,5 +1,12 @@
 #include "analog_part.h"
 
+#define NRF_LOG_MODULE_NAME "ANALOG"
+//#define NRF_LOG_LEVEL NRF_LOG_LEVEL_ERROR
+#define NRF_LOG_LEVEL NRF_LOG_LEVEL_INFO
+
+#include "nrf_log.h"
+#include "nrf_log_ctrl.h"
+
 #define MAX_CONTINOUS_PUMPS       10      // maximum times pump cycle continous
 #define DUTY_ON_TIME              10      // uS. Time ti pumpON
 #define FEDBACK_MEAS_DELAY        10      // uS. Since this time ADC start measure feedback voltage
@@ -7,13 +14,14 @@
 
 #define PUMP_HV_PIN               0
 #define AIN_BATTERY               ADC_CONFIG_PSEL_AnalogInput4  // it's P0.3
-#define PIN_FEEDBACK_HV           2
-#define AIN_FEEDBACK_HV           ADC_CONFIG_PSEL_AnalogInput3  // it's P0.2
-#define VBAT_MEA_PIN              1   // This pin turn On, and its voltage is measuring from ADC_BAT_PIN. Then this pin turn OFF for energy sav
+
+//#define PIN_FEEDBACK_HV           2
+//#define AIN_FEEDBACK_HV           ADC_CONFIG_PSEL_AnalogInput3  // it's P0.2
+
 #define PULSE_PIN                 30  //for count pulse from Geyger-Miller counter
 
-#define HV_FEEDBACK_NOMINAL       0x0300  //ADC value what is correspondent to 380V secondary power syplay
-#define HV_FEEDBACK_OVERVOLTAGE   0x0380  //ADC overvoltage value 
+//#define HV_FEEDBACK_NOMINAL       0x0300  //ADC value what is correspondent to 380V secondary power syplay
+//#define HV_FEEDBACK_OVERVOLTAGE   0x0380  //ADC overvoltage value 
 
 // Analog module machine state
 #define HVU_STATE_DENY            0
@@ -27,12 +35,12 @@ uint8_t AnalogModule_state = HVU_STATE_DENY;
 static nrf_drv_adc_channel_t Vbat_ch_config =   
 {{{
     .resolution = NRF_ADC_CONFIG_RES_10BIT,
-    .input      = NRF_ADC_CONFIG_SCALING_INPUT_TWO_THIRDS,
+    .input      = NRF_ADC_CONFIG_SCALING_INPUT_ONE_THIRD,
     .reference  = NRF_ADC_CONFIG_REF_VBG,
     .ain        = AIN_BATTERY
  }}, NULL};
 
-static nrf_drv_adc_channel_t fb_HV_ch_config =  NRF_DRV_ADC_DEFAULT_CHANNEL(AIN_FEEDBACK_HV); 
+//static nrf_drv_adc_channel_t fb_HV_ch_config =  NRF_DRV_ADC_DEFAULT_CHANNEL(AIN_FEEDBACK_HV); 
 
 static struct 
 {
@@ -54,11 +62,7 @@ uint32_t tics_duty_on, tics_meas_fb, tics_after_adc;
 __STATIC_INLINE void make_rising_pump()
 {
   AnalogModule_state = HVU_STATE_PROCESS;
-  nrf_gpio_cfg_default (PIN_FEEDBACK_HV);        //release pin for ADC may use it
-  // prepare ADC to measure feedback voltage. Start event will be by PPI
-  nrf_adc_config_set(fb_HV_ch_config.config.data);
-  nrf_adc_enable();
-  nrf_adc_int_enable(NRF_ADC_INT_END_MASK);
+  nrf_drv_lpcomp_enable();  // enable and start comparator
 
   nrf_drv_timer_clear(&TIMER_HV);
   nrf_drv_gpiote_out_task_force(PUMP_HV_PIN, 1);  // rising PUMP_HV_PIN
@@ -98,24 +102,14 @@ static void adc_event_handler(nrf_drv_adc_evt_t const * p_event)
   if (p_event->type != NRF_DRV_ADC_EVT_SAMPLE)
     return;
 
-  switch (AnalogModule_state)
+  if (AnalogModule_state == HVU_STATE_VBAT_MEA)
   {
-    case HVU_STATE_PROCESS:
-      HV_param.feedbackVoltage = p_event->data.sample.sample;
-      nrf_gpio_cfg_output(PIN_FEEDBACK_HV);
-      nrf_gpio_pin_clear(PIN_FEEDBACK_HV);      //it's discharge of HV feedbacks capasitor
-      nrf_drv_timer_enable(&TIMER_HV);          // start after ADC delay
-      break;
-
-    case HVU_STATE_VBAT_MEA:
-      HV_param.BatteryVoltage = p_event->data.sample.sample;
-      nrf_gpio_cfg_default (VBAT_MEA_PIN);        //release pin energy save
-      AnalogModule_state = HVU_STATE_IDLE;
-      break;
-
-    default:
-      AnalogModule_state = HVU_STATE_IDLE;
+    HV_param.BatteryVoltage = p_event->data.sample.sample;
+    AnalogModule_state = HVU_STATE_IDLE;
+    NRF_LOG_INFO("ADC VBAT %X\r\n", HV_param.BatteryVoltage);
   }
+  else 
+    AnalogModule_state = HVU_STATE_IDLE;
 }
 
 /* *************************************************************
@@ -127,16 +121,12 @@ static void adc_event_handler(nrf_drv_adc_evt_t const * p_event)
 ************************************************************** */
 static void timer1_event_handler(nrf_timer_event_t event_type, void* p_context)
 {
+  if (event_type == NRF_TIMER_EVENT_COMPARE1)
+
   if (event_type != NRF_TIMER_EVENT_COMPARE2)
     return;
   
-  if (HV_param.feedbackVoltage > HV_FEEDBACK_OVERVOLTAGE)
-  {
-    HV_param.enable = 0;
-    NRF_LOG_INFO("Overvoltage Feedback\r\n"); //it's only for debug. For Overvoltage protection
-  }
-
-  if ((HV_param.feedbackVoltage < HV_FEEDBACK_NOMINAL) && (++HV_param.pump_quant < MAX_CONTINOUS_PUMPS))
+   if ((HV_param.feedbackVoltage < HV_FEEDBACK_NOMINAL) && (++HV_param.pump_quant < MAX_CONTINOUS_PUMPS))
   {
     nrf_gpio_pin_toggle(LED_2);   // (Green) it's temporary for debug
     make_rising_pump();
@@ -145,10 +135,8 @@ static void timer1_event_handler(nrf_timer_event_t event_type, void* p_context)
   {
     AnalogModule_state = HVU_STATE_VBAT_MEA;
 
-    // Prepare and Start ADC for Battery level measure
-    nrf_gpio_cfg_output(VBAT_MEA_PIN);
-    nrf_gpio_pin_set(VBAT_MEA_PIN); 
-    nrf_adc_config_set(Vbat_ch_config.config.data);
+    // Prepare and Start ADC for Battery level measure     
+    //nrf_adc_config_set(Vbat_ch_config.config.data);
     nrf_adc_enable();
     nrf_adc_int_enable(NRF_ADC_INT_END_MASK);
     nrf_adc_start();
@@ -167,7 +155,7 @@ void analog_part_init()
 {
   uint32_t eventAddr, taskAddr;  
   ret_code_t          ret_code;
-  nrf_ppi_channel_t   ppi_ch_tim1_gpiote, ppi_ch_tim1_adc;
+  nrf_ppi_channel_t   ppi_ch_tim1_gpiote;
 
   memset(&HV_param,0, sizeof(HV_param));
 
@@ -192,6 +180,10 @@ void analog_part_init()
   };
   ret_code = nrf_drv_timer_init(&TIMER_HV, &timer_cfg, timer1_event_handler);
   APP_ERROR_CHECK(ret_code);
+  
+  //it's temporary.
+  nrf_gpio_cfg_output(1);
+  nrf_gpio_pin_set(1);
 
   // setting timing for all steps
   tics_duty_on = nrf_drv_timer_us_to_ticks(&TIMER_HV, DUTY_ON_TIME);
@@ -207,8 +199,6 @@ void analog_part_init()
   APP_ERROR_CHECK(ret_code);
   ret_code = nrf_drv_ppi_channel_alloc(&ppi_ch_tim1_gpiote);
   APP_ERROR_CHECK(ret_code);
-  ret_code = nrf_drv_ppi_channel_alloc(&ppi_ch_tim1_adc);
-  APP_ERROR_CHECK(ret_code);
   
   // Connecting TIMER_HV CC[0] event to GPIOTE task (turn OFF PUMP_HV_PIN).
   // It's need for make a pulse with DUTY_ON
@@ -217,23 +207,23 @@ void analog_part_init()
   ret_code = nrf_drv_ppi_channel_assign (ppi_ch_tim1_gpiote, eventAddr, taskAddr);
   APP_ERROR_CHECK(ret_code);
   
-  // Connecting TIMER_HV CC[1] event to ADC task (START)
-  // It's need for measure feedback voltage
-  eventAddr =  nrf_drv_timer_event_address_get (&TIMER_HV, NRF_TIMER_EVENT_COMPARE1);
-  taskAddr =   nrf_adc_task_address_get(NRF_ADC_TASK_START);
-  ret_code = nrf_drv_ppi_channel_assign (ppi_ch_tim1_adc, eventAddr, taskAddr);
-  APP_ERROR_CHECK(ret_code);
-
   ret_code = nrf_drv_ppi_channel_enable(ppi_ch_tim1_gpiote);
   APP_ERROR_CHECK(ret_code);
   nrf_drv_gpiote_out_task_enable(PUMP_HV_PIN);
 
-  ret_code = nrf_drv_ppi_channel_enable(ppi_ch_tim1_adc);
-  APP_ERROR_CHECK(ret_code);
-
   // ADC init
-  nrf_drv_adc_config_t config = NRF_DRV_ADC_DEFAULT_CONFIG;
-  ret_code = nrf_drv_adc_init(&config, adc_event_handler);
+  nrf_drv_adc_config_t adc_config = NRF_DRV_ADC_DEFAULT_CONFIG;
+  ret_code = nrf_drv_adc_init(&adc_config, adc_event_handler);
+  APP_ERROR_CHECK(ret_code);
+  nrf_adc_config_set(Vbat_ch_config.config.data);
+
+  //LPCOMP init
+  nrf_lpcomp_config_t lpcomp_config;
+  lpcomp_config.detection = NRF_LPCOMP_DETECT_UP;
+  lpcomp_config.reference = 
+  .hal.reference = NRF_LPCOMP_REF_SUPPLY_5_8;
+  lpcomp_config.input = NRF_LPCOMP_INPUT_3;
+  nrf_lpcomp_configure(&lpcomp_config);
   APP_ERROR_CHECK(ret_code);
   
   HV_param.enable = 1;  //enable work HV sypply source
@@ -245,7 +235,6 @@ void analog_part_init()
 ******************************************************** */
 uint8_t battery_level_get()
 {
-  //0x03FF = 3.6V = 120%
-  //return value * 1023 /120 = value / 8.52 = 2* value / 17
-  return ((HV_param.BatteryVoltage << 1) / 17 );
+  //See the circuit diagramm. Calculation formula there
+  return ((HV_param.BatteryVoltage *3) / 25 );
 }
