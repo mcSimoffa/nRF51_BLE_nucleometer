@@ -113,7 +113,9 @@
       <file file_name="components/drivers_nrf/ppi/nrf_drv_ppi.c" />
       <file file_name="components/drivers_nrf/adc/nrf_drv_adc.c" />
       <file file_name="components/drivers_nrf/timer/nrf_drv_timer.c" />
-      <file file_name="components/drivers_nrf/lpcomp/nrf_drv_lpcomp.c" />
+      <file file_name="components/drivers_nrf/lpcomp/nrf_drv_lpcomp.c">
+        <configuration Name="Debug" build_exclude_from_build="No" />
+      </file>
     </folder>
     <folder Name="nRF Libraries">
       <file file_name="components/libraries/button/app_button.c" />
