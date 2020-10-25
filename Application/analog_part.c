@@ -7,9 +7,9 @@
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
 
-#define MAX_CONTINOUS_PUMPS       20      // maximum times pump cycle continous
-#define DUTY_ON_TIME              10      // uS. Time ti pumpON
-#define FEDBACK_MEAS_DELAY        50000   // uS. Since this time ADC start measure feedback voltage
+#define MAX_CONTINOUS_PUMPS       300      // maximum times pump cycle continous
+#define DUTY_ON_TIME              4     // uS. Time ti pumpON
+#define FEDBACK_MEAS_DELAY        1000   // uS. Since this time ADC start measure feedback voltage
 
 #define PUMP_HV_PIN               3
 #define PULSE_PIN                 30                      //for count pulse from Geyger-Miller counter
@@ -80,7 +80,8 @@ static void timer1_event_handler(nrf_timer_event_t event_type, void* p_context)
   if (event_type == NRF_TIMER_EVENT_COMPARE1)
   {
     nrf_drv_lpcomp_disable();
-    if((!nrf_lpcomp_event_check(NRF_LPCOMP_EVENT_UP)) && (++HV_param.pump_quant < MAX_CONTINOUS_PUMPS))
+    //if((!nrf_lpcomp_event_check(NRF_LPCOMP_EVENT_UP)) && (++HV_param.pump_quant < MAX_CONTINOUS_PUMPS))
+    if (++HV_param.pump_quant < MAX_CONTINOUS_PUMPS)
     {
       nrf_gpio_pin_toggle(LED_2);   // (Green) it's temporary for debug
       nrf_drv_lpcomp_enable();      // enable and start comparator
@@ -163,7 +164,7 @@ void analog_part_init()
   // timer for cycle control.
   nrf_drv_timer_config_t timer_cfg = 
   {
-    .frequency          = NRF_TIMER_FREQ_1MHz,
+    .frequency          = NRF_TIMER_FREQ_16MHz,
     .mode               = NRF_TIMER_MODE_TIMER,
     .bit_width          = NRF_TIMER_BIT_WIDTH_16,
     .interrupt_priority = TIMER_DEFAULT_CONFIG_IRQ_PRIORITY,
@@ -222,7 +223,7 @@ void analog_part_init()
 
   while(1)
   {
-    for(uint32_t i=0; i<500000; i++)
+    for(uint32_t i=0; i<400000; i++)
       NRF_LOG_PROCESS();
     analogPart_timeout_handler(NULL);
   }

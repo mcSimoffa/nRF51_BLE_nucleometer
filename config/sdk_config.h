@@ -1012,7 +1012,7 @@
 // <e> LPCOMP_CONFIG_LOG_ENABLED - Enables logging in the module.
 //==========================================================
 #ifndef LPCOMP_CONFIG_LOG_ENABLED
-#define LPCOMP_CONFIG_LOG_ENABLED 1
+#define LPCOMP_CONFIG_LOG_ENABLED 0
 #endif
 #if  LPCOMP_CONFIG_LOG_ENABLED
 // <o> LPCOMP_CONFIG_LOG_LEVEL  - Default Severity level

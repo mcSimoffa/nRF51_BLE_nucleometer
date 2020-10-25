@@ -1,11 +1,11 @@
 <!DOCTYPE CrossStudio_Session_File>
 <session>
  <Bookmarks>
-  <BookmarkItem objectName="" line="968" column="12" path="D:/nRF51_BLE_nucleometer/Application/main.c" number="4" extra="static void application_timers_start(void)" color="5"/>
+  <BookmarkItem objectName="" line="806" column="2" path="D:/nRF51_BLE_nucleometer/Application/main.c" number="2" extra="err_code = app_timer_create(&amp;m_analogPart_timer_id, APP_TIMER_MODE_REPEATED, analogPart_timeout_handler);" color="5"/>
   <BookmarkItem objectName="" line="128" column="45" path="D:/nRF51_BLE_nucleometer/Application/analog_part.c" number="1" extra="AnalogModule_state = HVU_STATE_PROCESS;" color="5"/>
   <BookmarkItem objectName="" line="317" column="32" path="D:/nRF51_BLE_nucleometer/Application/main.c" number="3" extra="static void battery_level_update(void)" color="5"/>
   <BookmarkItem objectName="" line="454" column="6" path="D:/nRF51_BLE_nucleometer/Application/main.c" number="5" extra="//" color="5"/>
-  <BookmarkItem objectName="" line="806" column="2" path="D:/nRF51_BLE_nucleometer/Application/main.c" number="2" extra="err_code = app_timer_create(&amp;m_analogPart_timer_id, APP_TIMER_MODE_REPEATED, analogPart_timeout_handler);" color="5"/>
+  <BookmarkItem objectName="" line="968" column="12" path="D:/nRF51_BLE_nucleometer/Application/main.c" number="4" extra="static void application_timers_start(void)" color="5"/>
  </Bookmarks>
  <Breakpoints groups="Breakpoints" active_group="Breakpoints">
   <BreakpointListItem trigger="Execute" line="0" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="0x1aef6" group="Breakpoints" type="Breakpoint" state="3" filename="D:/nRF51_BLE_nucleometer" useHWbreakpoint="false"/>
@@ -60,11 +60,11 @@
  </TraceWindow>
  <Watch1>
   <Watches active="1" update="Never">
-   <Watchpoint expression="p_event" name="p_event" radix="-1" linenumber="142" filename="Application/analog_part.c"/>
-   <Watchpoint expression="fb_HV_ch_config" name="fb_HV_ch_config" radix="-1" linenumber="229" filename="Application/analog_part.c"/>
-   <Watchpoint expression="config" name="config" radix="-1" linenumber="200" filename="Application/analog_part.c"/>
-   <Watchpoint expression="TIMER_HV" name="TIMER_HV" radix="-1" linenumber="176" filename="Application/analog_part.c"/>
-   <Watchpoint expression="lpcomp_config" name="lpcomp_config" radix="-1" linenumber="219" filename="Application/analog_part.c"/>
+   <Watchpoint expression="p_event" name="p_event" radix="-1" linenumber="143" filename="Application/analog_part.c"/>
+   <Watchpoint expression="fb_HV_ch_config" name="fb_HV_ch_config" radix="-1" linenumber="230" filename="Application/analog_part.c"/>
+   <Watchpoint expression="config" name="config" radix="-1" linenumber="201" filename="Application/analog_part.c"/>
+   <Watchpoint expression="TIMER_HV" name="TIMER_HV" radix="-1" linenumber="177" filename="Application/analog_part.c"/>
+   <Watchpoint expression="lpcomp_config" name="lpcomp_config" radix="-1" linenumber="220" filename="Application/analog_part.c"/>
    <Watchpoint expression="(uint8_t *)NRF_LPCOMP + lpcomp_event" name="(uint8_t *)NRF_LPCOMP + lpcomp_event" radix="16" linenumber="413" filename="components/drivers_nrf/hal/nrf_lpcomp.h"/>
   </Watches>
  </Watch1>
@@ -78,9 +78,9 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="981" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/analog_part.c" useBinaryEdit="0" left="0" path="Application/main.c" selected="0" top="969" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="32" y="986" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/analog_part.c" useBinaryEdit="0" left="0" path="Application/main.c" selected="1" top="975" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="79" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/components/libraries/bsp/bsp.c" useBinaryEdit="0" left="0" path="components/boards/custom_board.h" selected="0" top="151" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="11" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/main.c" useBinaryEdit="0" left="0" path="Application/analog_part.c" selected="1" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="35" y="9" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/main.c" useBinaryEdit="0" left="0" path="Application/analog_part.c" selected="0" top="0" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="17" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/main.c" useBinaryEdit="0" left="0" path="Application/analog_part.h" selected="0" top="3" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="125" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/analog_part.c" useBinaryEdit="0" left="0" path="components/drivers_nrf/adc/nrf_drv_adc.h" selected="0" top="113" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="710" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/analog_part.c" useBinaryEdit="0" left="0" path="components/libraries/log/src/nrf_log_frontend.c" selected="0" top="698" codecName="Default"/>
@@ -89,7 +89,7 @@
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="92" useTextEdit="1" openedFrom="D:/SesProj/Application/analog_part.c" useBinaryEdit="0" left="0" path="components/boards/boards.c" selected="0" top="66" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="189" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/analog_part.c" useBinaryEdit="0" left="0" path="components/drivers_nrf/timer/nrf_drv_timer.c" selected="0" top="174" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="106" useTextEdit="1" openedFrom="D:/SesProj/components/drivers_nrf/timer/nrf_drv_timer.c" useBinaryEdit="0" left="0" path="components/drivers_nrf/common/nrf_drv_common.h" selected="0" top="82" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="185" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/analog_part.c" useBinaryEdit="0" left="0" path="components/drivers_nrf/hal/nrf_timer.h" selected="0" top="160" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="528" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/analog_part.c" useBinaryEdit="0" left="0" path="components/drivers_nrf/hal/nrf_timer.h" selected="0" top="510" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="399" useTextEdit="1" openedFrom="D:/SesProj/Application/analog_part.c" useBinaryEdit="0" left="0" path="components/drivers_nrf/gpiote/nrf_drv_gpiote.c" selected="0" top="389" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="521" useTextEdit="1" openedFrom="D:/SesProj/components/drivers_nrf/gpiote/nrf_drv_gpiote.c" useBinaryEdit="0" left="0" path="components/drivers_nrf/hal/nrf_gpio.h" selected="0" top="510" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="391" useTextEdit="1" openedFrom="D:/SesProj/components/drivers_nrf/gpiote/nrf_drv_gpiote.c" useBinaryEdit="0" left="0" path="components/drivers_nrf/hal/nrf_gpiote.h" selected="0" top="354" codecName="Default"/>
