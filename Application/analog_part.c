@@ -8,7 +8,7 @@
 #include "nrf_log_ctrl.h"
 
 #define MAX_CONTINOUS_PUMPS       300     // maximum times pump cycle continous
-#define DUTY_ON_TIME              100    // uS. Time ti pumpON
+#define DUTY_ON_TIME              10    // uS. Time ti pumpON
 #define FEDBACK_MEAS_DELAY        1000   // uS. Since this time ADC start measure feedback voltage
 
 #define PUMP_HV_PIN               3
@@ -223,7 +223,7 @@ void analog_part_init()
 
   while(1)
   {
-    for(uint32_t i=0; i<400000; i++)
+    for(uint32_t i=0; i<250000; i++)
       NRF_LOG_PROCESS();
     analogPart_timeout_handler(NULL);
   }
