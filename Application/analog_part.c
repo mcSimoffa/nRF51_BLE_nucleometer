@@ -7,8 +7,8 @@
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
 
-#define MAX_CONTINOUS_PUMPS       300      // maximum times pump cycle continous
-#define DUTY_ON_TIME              4     // uS. Time ti pumpON
+#define MAX_CONTINOUS_PUMPS       300     // maximum times pump cycle continous
+#define DUTY_ON_TIME              100    // uS. Time ti pumpON
 #define FEDBACK_MEAS_DELAY        1000   // uS. Since this time ADC start measure feedback voltage
 
 #define PUMP_HV_PIN               3
@@ -36,8 +36,8 @@ static nrf_drv_adc_channel_t Vbat_ch_config =
 static struct 
 {
   uint16_t  BatteryVoltage;
+  uint16_t   pump_quant;
   uint8_t   enable;
-  uint8_t   pump_quant;
 } HV_param;
 
 uint8_t AnalogModule_state = HVU_STATE_DENY;
@@ -63,7 +63,8 @@ void lpcomp_event_handler(nrf_lpcomp_event_t event)
       nrf_drv_timer_clear(&TIMER_HV);
       __disable_irq();
       nrf_drv_gpiote_out_task_force(PUMP_HV_PIN, 1);  // rising PUMP_HV_PIN
-      nrf_drv_timer_enable(&TIMER_HV);                // start watch for state ON
+      nrf_timer_task_trigger(TIMER_HV.p_reg, NRF_TIMER_TASK_START);
+      //nrf_drv_timer_enable(&TIMER_HV);                // start watch for state ON
       __enable_irq();
     }
   }
@@ -83,7 +84,6 @@ static void timer1_event_handler(nrf_timer_event_t event_type, void* p_context)
     //if((!nrf_lpcomp_event_check(NRF_LPCOMP_EVENT_UP)) && (++HV_param.pump_quant < MAX_CONTINOUS_PUMPS))
     if (++HV_param.pump_quant < MAX_CONTINOUS_PUMPS)
     {
-      nrf_gpio_pin_toggle(LED_2);   // (Green) it's temporary for debug
       nrf_drv_lpcomp_enable();      // enable and start comparator
     }
     else
