@@ -60,13 +60,10 @@
 #include "peer_manager.h"
 #include "softdevice_handler.h"
 
-#include "ble_advdata.h"
-#include "ble_advertising.h"
 #include "ble_conn_state.h"
 #include "ble_dis.h"
 #include "ble_bas.h"
 #include "ble_ios.h"
-#include "ble_hci.h"
 #include "bsp.h"
 #include "bsp_btn_ble.h"
 #include "nrf_gpio.h"
@@ -92,13 +89,13 @@
 #define CENTRAL_LINK_COUNT              0                     // Number of central links used by the application. When changing this number remember to adjust the RAM settings
 #define PERIPHERAL_LINK_COUNT           1                     // Number of peripheral links used by the application. When changing this number remember to adjust the RAM settings
 
-#define DEVICE_NAME                     "Nucleo meter"     // Name of device. Will be included in the advertising data.
+#define DEVICE_NAME                     "Nordic_Blinky"     // Name of device. Will be included in the advertising data.
 #define MANUFACTURER_NAME               "NordicSemiconductor" // Manufacturer. Will be passed to Device Information Service. 
 #define MODEL_NUM                       "nRF Nucleo"          // Model number. Will be passed to Device Information  Service.
 #define MANUFACTURER_ID                 0x1122334455          // Manufacturer ID, part of System ID. Will be passed to Device Information Service.
 #define ORG_UNIQUE_ID                   0x667788
 #define APP_ADV_INTERVAL                300                   // The advertising interval (in units of 0.625 ms. This value corresponds to 187.5 ms).
-#define APP_ADV_TIMEOUT_IN_SECONDS      180                   // The advertising timeout in units of seconds.
+#define APP_ADV_TIMEOUT_IN_SECONDS      18000                   // The advertising timeout in units of seconds.
                                         
 #define APP_TIMER_PRESCALER             0                     // Value of the RTC1 PRESCALER register.
 #define APP_TIMER_OP_QUEUE_SIZE         4                     // Size of timer operation queues.
@@ -290,7 +287,7 @@ static void pm_evt_handler(pm_evt_t const *p_evt)
       break;
 
     case PM_EVT_CONN_SEC_START:
-      NRF_LOG_INFO("SEC connect start\r\n");
+      NRF_LOG_INFO("SEC connect start\r\n");  //?? не появляется от отладочной платы
       break;
     case PM_EVT_PEER_DATA_UPDATE_SUCCEEDED:
       NRF_LOG_INFO("Peer data update succeeded\r\n");
@@ -330,7 +327,7 @@ static void battery_level_update_handler(void * p_context)
   
 
   //notification IO service. the code is damp and temporary. This is here for example. Refresh by timer
-  err_code = ble_ios_on_output_change(&m_ios, &tf_data, OUTPUT_CHAR_LEN);
+  /*err_code = ble_ios_on_output_change(&m_ios, &tf_data, OUTPUT_CHAR_LEN);
     if (err_code != NRF_SUCCESS &&
         err_code != BLE_ERROR_INVALID_CONN_HANDLE &&
         err_code != NRF_ERROR_INVALID_STATE)
@@ -339,7 +336,7 @@ static void battery_level_update_handler(void * p_context)
     }
   tf_data.min++;
   tf_data.max++;
-  tf_data.average--;
+  tf_data.average--;*/
 }
 
 
@@ -422,6 +419,9 @@ static void on_adv_evt(ble_adv_evt_t ble_adv_evt)
     NRF_LOG_INFO("BLE advertising Idle\r\n");
     sleep_mode_enter();
     break;
+  
+  case BLE_ADV_EVT_DIRECTED:
+    NRF_LOG_INFO("DIRECTED advertising\r\n");
 
   default:
     break;
