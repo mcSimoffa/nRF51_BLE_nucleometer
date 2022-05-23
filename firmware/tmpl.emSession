@@ -1,10 +1,10 @@
 <!DOCTYPE CrossStudio_Session_File>
 <session>
  <Bookmarks>
-  <BookmarkItem objectName="" line="797" column="2" path="D:/nRF51_BLE_nucleometer/Application/main.c" number="2" extra="err_code = app_timer_create(&amp;m_analogPart_timer_id, APP_TIMER_MODE_REPEATED, analogPart_timeout_handler);" color="5"/>
+  <BookmarkItem objectName="" line="959" column="12" path="D:/nRF51_BLE_nucleometer/Application/main.c" number="4" extra="static void application_timers_start(void)" color="5"/>
   <BookmarkItem objectName="" line="104" column="29" path="D:/nRF51_BLE_nucleometer/Application/analog_part.c" number="1" extra="HV_param.BatteryVoltage = p_event->data.sample.sample;" color="5"/>
   <BookmarkItem objectName="" line="316" column="32" path="D:/nRF51_BLE_nucleometer/Application/main.c" number="3" extra="static void battery_level_update(void)" color="5"/>
-  <BookmarkItem objectName="" line="959" column="12" path="D:/nRF51_BLE_nucleometer/Application/main.c" number="4" extra="static void application_timers_start(void)" color="5"/>
+  <BookmarkItem objectName="" line="797" column="2" path="D:/nRF51_BLE_nucleometer/Application/main.c" number="2" extra="err_code = app_timer_create(&amp;m_analogPart_timer_id, APP_TIMER_MODE_REPEATED, analogPart_timeout_handler);" color="5"/>
  </Bookmarks>
  <Breakpoints groups="Breakpoints" active_group="Breakpoints">
   <BreakpointListItem trigger="Execute" line="0" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="0x1aef6" group="Breakpoints" type="Breakpoint" state="3" filename="D:/nRF51_BLE_nucleometer" useHWbreakpoint="false"/>
@@ -40,6 +40,7 @@
   <ProjectSessionItem path="tmpl;tmpl;nRF Libraries"/>
   <ProjectSessionItem path="tmpl;tmpl;nRF_BLE"/>
   <ProjectSessionItem path="tmpl;tmpl;nRF_Drivers"/>
+  <ProjectSessionItem path="tmpl;tmpl;RTT Files"/>
   <ProjectSessionItem path="tmpl;tmpl;SoftDevice"/>
  </Project>
  <Register1>
@@ -78,14 +79,18 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="943" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/analog_part.c" useBinaryEdit="0" left="0" path="Application/main.c" selected="0" top="906" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="210" useTextEdit="1" openedFrom="C:/hte/projects/BLE_nucleoMeter/firmware/Application/main.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/nRF5_SDK123/components/ble/nrf_ble_qwr/nrf_ble_qwr.h" selected="0" top="190" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="589" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/_forDevelop/nRF5_SDK123/components/ble/ble_services/experimental_nrf_ble_bms/nrf_ble_bms.c" selected="0" top="577" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="148" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/_forDevelop/nRF5_SDK123/components/ble/nrf_ble_qwr/nrf_ble_qwr.c" selected="0" top="128" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="660" useTextEdit="1" openedFrom="C:/hte/projects/BLE_nucleoMeter/firmware/Application/main.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/nRF5_SDK123/components/ble/peer_manager/peer_manager.c" selected="0" top="637" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="410" useTextEdit="1" openedFrom="C:/_forDevelop/nRF5_SDK123/components/ble/peer_manager/peer_manager.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/nRF5_SDK123/components/ble/peer_manager/peer_manager.h" selected="0" top="374" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="689" useTextEdit="1" openedFrom="C:/hte/projects/BLE_nucleoMeter/firmware/Application/main.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/nRF5_SDK123/components/ble/ble_advertising/ble_advertising.c" selected="0" top="666" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="176" useTextEdit="1" openedFrom="C:/hte/projects/BLE_nucleoMeter/firmware/Application/main.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/nRF5_SDK123/components/libraries/bsp/bsp.h" selected="1" top="167" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="1181" useTextEdit="1" openedFrom="D:/nRF51_BLE_nucleometer/Application/analog_part.c" useBinaryEdit="0" left="0" path="Application/main.c" selected="0" top="1102" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="Application/analog_part.c" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="Application/fs_data_init.s" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="config/sdk_config.h" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/toolchain/system_nrf51.c" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="ses/ses_nrf51_Vectors.s" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="ses/ses_nRF_Startup.s" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="Segger/SEGGER_RTT.c" selected="0" top="1619" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 5.68/source/thumb_crt0.s" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="Segger/SEGGER_RTT_SES.c" selected="0" top="18" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="16" y="55" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/external/segger_rtt/SEGGER_RTT.c" selected="0" top="12" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/external/segger_rtt/SEGGER_RTT.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/external/segger_rtt/SEGGER_RTT.h" selected="1" top="0" codecName="Default"/>
  </Files>
  <ARMCrossStudioWindow activeProject="tmpl" fileDialogDefaultFilter="*" autoConnectTarget="J-Link" buildConfiguration="Debug" sessionSettings="" debugSearchFileMap="../../../../../../components/drivers_nrf/common/nrf_drv_common.h&#xa;&#xa;../../../../../../components/drivers_nrf/hal/nrf_clock.h&#xa;&#xa;../../../../../../components/toolchain/cmsis/include/core_cm4.h&#xa;" fileDialogInitialDirectory="C:/_forDevelop/nRF5_SDK123/components/ble/nrf_ble_qwr" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>

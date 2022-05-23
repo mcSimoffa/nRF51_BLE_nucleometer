@@ -16,7 +16,7 @@ https://devzone.nordicsemi.com/f/nordic-q-a/12029/segger-embedded-studio---unpla
 добавил статический пароль для соединения. Добавил логгирование различных событий чтобы понимать что происходит
 Обновил SES до версии 5.10b. J-Link обновился до 6.86b версии и стал ругаться что он не оригинальный
 вернул назад J-Flash 6.82e и ругань прекратилась
-кстати после переустановки SES надо снова првить файл tolls.xml как здесь
+кстати после переустановки SES надо снова првить файл tools.xml как здесь
 https://infocenter.nordicsemi.com/topic/com.nordic.infocenter.sdk5.v14.1.0/sdk_config.html
 
 Добавил сервис батареи:
@@ -33,3 +33,7 @@ https://infocenter.nordicsemi.com/topic/com.nordic.infocenter.sdk5.v14.1.0/sdk_c
 1. переименовал его в input output Service ios
 2. добавил инициализацию в services_init(void)
 3. добавил ble_ios_on_ble_evt в ble_evt_dispatch
+
+23.05.2022
+Настроил стандартным решениями (INITIALIZE_USER_SECTIONS) пользовательские секции (fs_data) 
+Очистил проект от хлама. Все ссылки на СДК файлы прописаны глобальной переменной SES
