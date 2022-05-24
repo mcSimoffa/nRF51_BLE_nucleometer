@@ -25,7 +25,7 @@
       arm_target_device_name="nRF51822_xxAA"
       arm_target_interface_type="SWD"
       c_preprocessor_definitions="__nRF_FAMILY;NRF51822_XXAA;NRF51822;NRF51;INITIALIZE_USER_SECTIONS;APP_ENTRY_POINT=main;ARM_MATH_CM0;FLASH_PLACEMENT=1;BOARD_CUSTOM;CONFIG_GPIO_AS_PINRESET;SOFTDEVICE_PRESENT;S130;BLE_STACK_SUPPORT_REQD;NRF_SD_BLE_API_VERSION=2"
-      c_user_include_directories="nRF;$(SDK12.3_DIR)/components/device;$(SDK12.3_DIR)/components/toolchain;$(SDK12.3_DIR)/components/toolchain/cmsis/include;$(SDK12.3_DIR)/components/boards;$(SDK12.3_DIR)/components/drivers_nrf/hal;$(SDK12.3_DIR)/components/drivers_nrf/clock;$(SDK12.3_DIR)/components/drivers_nrf/common;$(SDK12.3_DIR)/components/drivers_nrf/gpiote;$(SDK12.3_DIR)/components/drivers_nrf/delay;$(SDK12.3_DIR)/components/drivers_nrf/uart;$(SDK12.3_DIR)/components/drivers_nrf/ppi;$(SDK12.3_DIR)/components/drivers_nrf/adc;$(SDK12.3_DIR)/components/drivers_nrf/timer;$(SDK12.3_DIR)/components/drivers_nrf/hal;$(SDK12.3_DIR)/components/ble/common;$(SDK12.3_DIR)/components/ble/ble_advertising;$(SDK12.3_DIR)/components/ble/peer_manager;$(SDK12.3_DIR)/components/ble/ble_services/ble_dis;$(SDK12.3_DIR)/components/ble/ble_services/ble_bas;$(SDK12.3_DIR)/components/ble/ble_services/ble_lbs;$(SDK12.3_DIR)/components/ble/nrf_ble_qwr;$(SDK12.3_DIR)\\components\\ble\\ble_services\\experimental_nrf_ble_bms;$(SDK12.3_DIR)/components/libraries/util;$(SDK12.3_DIR)/components/libraries/bsp;$(SDK12.3_DIR)/components/libraries/button;$(SDK12.3_DIR)/components/libraries/timer;$(SDK12.3_DIR)/components/libraries/fds;$(SDK12.3_DIR)/components/libraries/log;$(SDK12.3_DIR)/components/libraries/log/src;$(SDK12.3_DIR)/components/libraries/experimental_section_vars;$(SDK12.3_DIR)/components/libraries/fstorage;$(SDK12.3_DIR)/components/libraries/sensorsim;$(SDK12.3_DIR)/components/softdevice/common/softdevice_handler;$(SDK12.3_DIR)/components/softdevice/s130/headers;$(SDK12.3_DIR)/external/segger_rtt;Application;config;."
+      c_user_include_directories="nRF;$(SDK12.3_DIR)/components/device;$(SDK12.3_DIR)/components/toolchain;$(SDK12.3_DIR)/components/toolchain/cmsis/include;$(SDK12.3_DIR)/components/boards;$(SDK12.3_DIR)/components/drivers_nrf/hal;$(SDK12.3_DIR)/components/drivers_nrf/clock;$(SDK12.3_DIR)/components/drivers_nrf/common;$(SDK12.3_DIR)/components/drivers_nrf/gpiote;$(SDK12.3_DIR)/components/drivers_nrf/delay;$(SDK12.3_DIR)/components/drivers_nrf/uart;$(SDK12.3_DIR)/components/drivers_nrf/ppi;$(SDK12.3_DIR)/components/drivers_nrf/adc;$(SDK12.3_DIR)/components/drivers_nrf/timer;$(SDK12.3_DIR)/components/drivers_nrf/hal;$(SDK12.3_DIR)/components/ble/common;$(SDK12.3_DIR)/components/ble/ble_advertising;$(SDK12.3_DIR)/components/ble/peer_manager;$(SDK12.3_DIR)/components/ble/ble_services/ble_dis;$(SDK12.3_DIR)/components/ble/ble_services/ble_bas;$(SDK12.3_DIR)/components/ble/ble_services/ble_lbs;$(SDK12.3_DIR)/components/ble/nrf_ble_qwr;$(SDK12.3_DIR)\\components\\ble\\ble_services\\experimental_nrf_ble_bms;$(SDK12.3_DIR)/components/libraries/util;$(SDK12.3_DIR)/components/libraries/bsp;$(SDK12.3_DIR)/components/libraries/button;$(SDK12.3_DIR)/components/libraries/timer;$(SDK12.3_DIR)/components/libraries/fds;$(SDK12.3_DIR)/components/libraries/log;$(SDK12.3_DIR)/components/libraries/log/src;$(SDK12.3_DIR)/components/libraries/experimental_section_vars;$(SDK12.3_DIR)/components/libraries/fstorage;$(SDK12.3_DIR)/components/libraries/sensorsim;$(SDK12.3_DIR)/components/softdevice/common/softdevice_handler;$(SDK12.3_DIR)/components/softdevice/s130/headers;$(SDK12.3_DIR)/external/segger_rtt;src;config;."
       debug_register_definition_file="$(SDK12.3_DIR)/svd/nrf51.svd"
       debug_start_from_entry_point_symbol="No"
       debug_target_connection="J-Link"
@@ -60,16 +60,22 @@
       <file file_name="$(SDK12.3_DIR)/external/segger_rtt/SEGGER_RTT.c" />
       <file file_name="$(StudioDir)/samples/SEGGER_RTT_SES.c" />
     </folder>
-    <folder Name="Application">
+    <folder Name="src">
       <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc" />
-      <file file_name="Application/main.c" />
-      <file file_name="config/sdk_config.h" />
-      <file file_name="Application/analog_part.c" />
+      <file file_name="src/main.c" />
+      <file file_name="src/analog_part.c" />
+      <folder Name="APPL" />
+      <folder Name="HAL">
+        <file file_name="src/HAL/app_time_lib.c" />
+      </folder>
+      <folder Name="BCS">
+        <file file_name="src/ble_ios.c" />
+      </folder>
     </folder>
     <configuration
       Name="Debug"
       c_additional_options=""
-      c_preprocessor_definitions="DEBUG"
+      c_preprocessor_definitions="DEBUG;DEBUG_NRF;DEBUG_NRF_USER"
       c_user_include_directories=""
       debug_additional_load_file="$(SDK12.3_DIR)/components/softdevice/s130/hex/s130_nrf51_2.0.1_softdevice.hex"
       debug_target_connection="J-Link"
@@ -139,7 +145,9 @@
     <folder Name="BLE Services">
       <file file_name="$(SDK12.3_DIR)/components/ble/ble_services/ble_dis/ble_dis.c" />
       <file file_name="$(SDK12.3_DIR)/components/ble/ble_services/ble_bas/ble_bas.c" />
-      <file file_name="Application/ble_ios.c" />
+    </folder>
+    <folder Name="config">
+      <file file_name="config/sdk_config.h" />
     </folder>
   </project>
   <configuration
