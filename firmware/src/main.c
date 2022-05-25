@@ -77,7 +77,7 @@
 //#include "nrf_ble_cgms.h"
 #include "ble_dis.h"
 //#include "ble_racp.h"
-
+#include "app_time_lib.h"
 
 
 #define NRF_LOG_MODULE_NAME "APP"
@@ -95,8 +95,7 @@
 #define CENTRAL_LINK_COUNT              0                                           /**< Number of central links used by the application. When changing this number remember to adjust the RAM settings*/
 #define PERIPHERAL_LINK_COUNT           1                                           /**< Number of peripheral links used by the application. When changing this number remember to adjust the RAM settings*/
 
-#define APP_TIMER_PRESCALER             0                                           /**< Value of the RTC1 PRESCALER register. */
-#define APP_TIMER_OP_QUEUE_SIZE         6                                           /**< Size of timer operation queues. */
+
 
 #define SECURITY_REQUEST_DELAY          APP_TIMER_TICKS(4000, APP_TIMER_PRESCALER)  /**< Delay after connection until Security Request is sent, if necessary (ticks). */
 
@@ -352,9 +351,6 @@ static void sec_req_timeout_handler(void * p_context)
 static void timers_init(void)
 {
     uint32_t err_code;
-
-    // Initialize timer module, making it use the scheduler.
-    APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, false);
 
     // Create battery timers.
     err_code = app_timer_create(&m_battery_timer_id,
@@ -1168,16 +1164,24 @@ static void power_manage(void)
     APP_ERROR_CHECK(err_code);
 }
 
+static uint32_t log_time_provider()
+{
+  timestr_t log_timestr;
+  app_time_Ticks_to_struct(app_time_Get_sys_time(), &log_timestr);
+  return (log_timestr.sec*1000 + log_timestr.ms);
+}
 
 /**@brief Function for application main entry.
  */
 int main(void)
 {
+    app_time_Init();
+
     uint32_t err_code;
     bool erase_bonds;
 
     // Initialize.
-    err_code = NRF_LOG_INIT(NULL);
+    err_code = NRF_LOG_INIT(log_time_provider);
     APP_ERROR_CHECK(err_code);
 
     timers_init();
