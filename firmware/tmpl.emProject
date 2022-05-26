@@ -63,8 +63,12 @@
     <folder Name="src">
       <configuration Name="Common" filter="c;cpp;cxx;cc;h;s;asm;inc" />
       <file file_name="src/main.c" />
-      <file file_name="src/analog_part.c" />
-      <folder Name="APPL" />
+      <file file_name="src/analog_part.c">
+        <configuration Name="Debug" build_exclude_from_build="Yes" />
+      </file>
+      <folder Name="APPL">
+        <file file_name="src/APPL/HighVoltagePump.c" />
+      </folder>
       <folder Name="HAL">
         <file file_name="src/HAL/app_time_lib.c" />
       </folder>

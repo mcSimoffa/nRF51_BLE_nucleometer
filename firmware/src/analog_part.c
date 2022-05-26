@@ -1,3 +1,4 @@
+
 #include "analog_part.h"
 
 #define MAX_CONTINOUS_PUMPS       10      // maximum times pump cycle continous
@@ -169,7 +170,7 @@ void analog_part_init()
   ret_code_t          ret_code;
   nrf_ppi_channel_t   ppi_ch_tim1_gpiote, ppi_ch_tim1_adc;
 
-  memset(&HV_param,0, sizeof(HV_param));
+  memset(&HV_param, 0, sizeof(HV_param));
 
   //configure PUMP_HV_PIN for controlling by Event
   nrf_drv_gpiote_out_config_t pumpOut = 

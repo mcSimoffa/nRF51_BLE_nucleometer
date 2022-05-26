@@ -78,6 +78,7 @@
 #include "ble_dis.h"
 //#include "ble_racp.h"
 #include "app_time_lib.h"
+#include "HighVoltagePump.h"
 
 
 #define NRF_LOG_MODULE_NAME "APP"
@@ -1164,6 +1165,12 @@ static void power_manage(void)
     APP_ERROR_CHECK(err_code);
 }
 
+/*! ---------------------------------------------------------------------------
+  \brief Function provides a timestamp for log module
+  \details app_time_Init() should be invoked before using
+
+  \return milliseconds value after system start (RTC1 was started)
+ ----------------------------------------------------------------------------*/
 static uint32_t log_time_provider()
 {
   timestr_t log_timestr;
@@ -1183,6 +1190,10 @@ int main(void)
     // Initialize.
     err_code = NRF_LOG_INIT(log_time_provider);
     APP_ERROR_CHECK(err_code);
+    
+    HV_pump_Init();
+
+    while(1);
 
     timers_init();
     buttons_leds_init(&erase_bonds);
