@@ -5,7 +5,7 @@
 #include <app_timer.h>
 
 #define APP_TIMER_PRESCALER             0     // Value of the RTC1 PRESCALER register.
-
+#define MS_TO_TICK(ms)                  APP_TIMER_TICKS(ms, APP_TIMER_PRESCALER)
 typedef struct
 {
   uint64_t  sec;  // number of seconds

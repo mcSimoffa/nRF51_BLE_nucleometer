@@ -3,6 +3,7 @@
 #include "nrf_error.h"
 #include "nrf_assert.h"
 #include "app_timer.h"
+#include "nrf_drv_clock.h"
 #include "app_time_lib.h"
 
 #define NRF_LOG_MODULE_NAME     RTC
@@ -49,12 +50,28 @@ static void onHalfRangeTimerEvt(void* context)
   refresh_64bit_value();
 }
 
+/*! ---------------------------------------------------------------------------
+  \brief Function for starting lfclk needed by APP_TIMER.
+---------------------------------------------------------------------------  */
+static void lfclk_init(void)
+{
+    uint32_t err_code;
+    err_code = nrf_drv_clock_init();
+    APP_ERROR_CHECK(err_code);
+
+    nrf_drv_clock_lfclk_request(NULL);
+    nrf_drv_clock_hfclk_request(NULL);
+}
+
 
 //-----------------------------------------------------------------------------
 //      PUBLIC FUNCTIONS
 //------------------------------------------------------------------------------
 void app_time_Init(void)
 {
+#ifdef DISABLE_SOFTDEVICE
+  lfclk_init();
+#endif
   // Initialize timer module
   APP_TIMER_INIT(APP_TIMER_PRESCALER, APP_TIMER_OP_QUEUE_SIZE, NULL);
   memset(&app_time_s, 0, sizeof(app_time_t));

@@ -70,6 +70,7 @@
 #include "fstorage.h"
 #include "ble_conn_state.h"
 #include "nrf_ble_qwr.h"
+#include "CPU_usage.h"
 
 //Services
 #include "ble_bas.h"
@@ -1157,14 +1158,6 @@ static void buttons_leds_init(bool * p_erase_bonds)
 
 
 
-/**@brief Function for the Power manager.
- */
-static void power_manage(void)
-{
-    uint32_t err_code = sd_app_evt_wait();
-    APP_ERROR_CHECK(err_code);
-}
-
 /*! ---------------------------------------------------------------------------
   \brief Function provides a timestamp for log module
   \details app_time_Init() should be invoked before using
@@ -1182,45 +1175,46 @@ static uint32_t log_time_provider()
  */
 int main(void)
 {
-    app_time_Init();
+  for (uint8_t i=0; i<30; i++)
+    nrf_gpio_cfg_default(i);
 
-    uint32_t err_code;
-    bool erase_bonds;
+  app_time_Init();
 
-    // Initialize.
-    err_code = NRF_LOG_INIT(log_time_provider);
-    APP_ERROR_CHECK(err_code);
-    
-    HV_pump_Init();
+  ret_code_t err_code = NRF_LOG_INIT(log_time_provider);
+  ASSERT(err_code == NRF_SUCCESS);
+  
+  CPU_usage_Startup();
 
-    while(1);
+  //HV_pump_Init();
+  //HV_pump_Startup();
+#if 000
 
-    timers_init();
-    buttons_leds_init(&erase_bonds);
-    ble_stack_init();
-    peer_manager_init(erase_bonds);
-    if (erase_bonds == true)
+  timers_init();
+  buttons_leds_init(&erase_bonds);
+  ble_stack_init();
+  peer_manager_init(erase_bonds);
+  if (erase_bonds == true)
+  {
+      NRF_LOG_INFO("Bonds erased!\r\n");
+  }
+  gap_params_init();
+  advertising_init();
+  services_init();
+  conn_params_init();
+
+  // Start execution.
+  NRF_LOG_INFO("Continuous Glucose Monitoring Sensor Start!\r\n");
+  application_timers_start();
+  advertising_start();
+#endif
+  // Enter main loop.
+  while (true)
+  {
+    if (NRF_LOG_PROCESS() == false)
     {
-        NRF_LOG_INFO("Bonds erased!\r\n");
+      CPU_usage_Sleep();
     }
-    gap_params_init();
-    advertising_init();
-    services_init();
-    conn_params_init();
-
-    // Start execution.
-    NRF_LOG_INFO("Continuous Glucose Monitoring Sensor Start!\r\n");
-    application_timers_start();
-    advertising_start();
-
-    // Enter main loop.
-    for (;;)
-    {
-        if (NRF_LOG_PROCESS() == false)
-        {
-            power_manage();
-        }
-    }
+  }
 }
 
 

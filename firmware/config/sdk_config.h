@@ -296,50 +296,6 @@
 #endif //ADC_ENABLED
 // </e>
 
-// <e> APP_USBD_ENABLED - app_usbd - USB Device library
-//==========================================================
-#ifndef APP_USBD_ENABLED
-#define APP_USBD_ENABLED 0
-#endif
-#if  APP_USBD_ENABLED
-// <o> APP_USBD_VID - Vendor ID  <0x0000-0xFFFF> 
-
-
-// <i> Vendor ID ordered from USB IF: http://www.usb.org/developers/vendor/
-
-#ifndef APP_USBD_VID
-#define APP_USBD_VID 0
-#endif
-
-// <o> APP_USBD_PID - Product ID  <0x0000-0xFFFF> 
-
-
-// <i> Selected Product ID
-
-#ifndef APP_USBD_PID
-#define APP_USBD_PID 0
-#endif
-
-// <o> APP_USBD_DEVICE_VER_MAJOR - Device version, major part  <0-99> 
-
-
-// <i> Device version, will be converted automatically to BCD notation. Use just decimal values.
-
-#ifndef APP_USBD_DEVICE_VER_MAJOR
-#define APP_USBD_DEVICE_VER_MAJOR 1
-#endif
-
-// <o> APP_USBD_DEVICE_VER_MINOR - Device version, minor part  <0-99> 
-
-
-// <i> Device version, will be converted automatically to BCD notation. Use just decimal values.
-
-#ifndef APP_USBD_DEVICE_VER_MINOR
-#define APP_USBD_DEVICE_VER_MINOR 0
-#endif
-
-#endif //APP_USBD_ENABLED
-// </e>
 
 // <e> CLOCK_ENABLED - nrf_drv_clock - CLOCK peripheral driver
 //==========================================================
@@ -2724,7 +2680,7 @@
 // <e> UART_ENABLED - nrf_drv_uart - UART/UARTE peripheral driver
 //==========================================================
 #ifndef UART_ENABLED
-#define UART_ENABLED 1
+#define UART_ENABLED 0
 #endif
 #if  UART_ENABLED
 // <o> UART_DEFAULT_CONFIG_HWFC  - Hardware Flow Control
@@ -2871,30 +2827,6 @@
 #endif //UART_ENABLED
 // </e>
 
-// <e> USBD_ENABLED - nrf_drv_usbd - USB driver
-//==========================================================
-#ifndef USBD_ENABLED
-#define USBD_ENABLED 0
-#endif
-#if  USBD_ENABLED
-// <o> NRF_DRV_USBD_DMASCHEDULER_MODE  - USBD SMA scheduler working scheme
- 
-// <0=> Prioritized access 
-// <1=> Round Robin 
-
-#ifndef NRF_DRV_USBD_DMASCHEDULER_MODE
-#define NRF_DRV_USBD_DMASCHEDULER_MODE 0
-#endif
-
-// <q> NRF_USBD_DRV_LOG_ENABLED  - Enable logging.
- 
-
-#ifndef NRF_USBD_DRV_LOG_ENABLED
-#define NRF_USBD_DRV_LOG_ENABLED 0
-#endif
-
-#endif //USBD_ENABLED
-// </e>
 
 // <e> WDT_ENABLED - nrf_drv_wdt - WDT peripheral driver
 //==========================================================
@@ -3085,41 +3017,6 @@
 
 #endif //APP_UART_ENABLED
 // </e>
-
-// <q> APP_USBD_CLASS_AUDIO_ENABLED  - app_usbd_audio - USB AUDIO class
- 
-
-#ifndef APP_USBD_CLASS_AUDIO_ENABLED
-#define APP_USBD_CLASS_AUDIO_ENABLED 0
-#endif
-
-// <q> APP_USBD_CLASS_HID_ENABLED  - app_usbd_hid - USB HID class
- 
-
-#ifndef APP_USBD_CLASS_HID_ENABLED
-#define APP_USBD_CLASS_HID_ENABLED 0
-#endif
-
-// <q> APP_USBD_HID_GENERIC_ENABLED  - app_usbd_hid_generic - USB HID generic
- 
-
-#ifndef APP_USBD_HID_GENERIC_ENABLED
-#define APP_USBD_HID_GENERIC_ENABLED 0
-#endif
-
-// <q> APP_USBD_HID_KBD_ENABLED  - app_usbd_hid_kbd - USB HID keyboard
- 
-
-#ifndef APP_USBD_HID_KBD_ENABLED
-#define APP_USBD_HID_KBD_ENABLED 0
-#endif
-
-// <q> APP_USBD_HID_MOUSE_ENABLED  - app_usbd_hid_mouse - USB HID mouse
- 
-
-#ifndef APP_USBD_HID_MOUSE_ENABLED
-#define APP_USBD_HID_MOUSE_ENABLED 0
-#endif
 
 // <q> BUTTON_ENABLED  - app_button - buttons handling module
  
@@ -3499,46 +3396,133 @@
 #define SLIP_ENABLED 0
 #endif
 
-// <h> app_usbd_cdc_acm - USB CDC ACM class
 
 //==========================================================
-// <q> APP_USBD_CLASS_CDC_ACM_ENABLED  - Enabling USBD CDC ACM Class library
- 
-
-#ifndef APP_USBD_CLASS_CDC_ACM_ENABLED
-#define APP_USBD_CLASS_CDC_ACM_ENABLED 0
-#endif
-
-// <q> APP_USBD_CDC_ACM_LOG_ENABLED  - Enables logging in the module.
- 
-
-#ifndef APP_USBD_CDC_ACM_LOG_ENABLED
-#define APP_USBD_CDC_ACM_LOG_ENABLED 0
-#endif
-
-// </h> 
+// <e> NRF_PWR_MGMT_ENABLED - nrf_pwr_mgmt - Power management module
 //==========================================================
-
-// <h> app_usbd_msc - USB MSC class
-
+#ifndef NRF_PWR_MGMT_ENABLED
+#define NRF_PWR_MGMT_ENABLED 1
+#endif
+#if  NRF_PWR_MGMT_ENABLED
+// <e> NRF_PWR_MGMT_CONFIG_LOG_ENABLED - Enables logging in the module.
 //==========================================================
-// <q> APP_USBD_CLASS_MSC_ENABLED  - Enabling USBD MSC Class library
+#ifndef NRF_PWR_MGMT_CONFIG_LOG_ENABLED
+#define NRF_PWR_MGMT_CONFIG_LOG_ENABLED 1
+#endif
+#if  NRF_PWR_MGMT_CONFIG_LOG_ENABLED
+// <o> NRF_PWR_MGMT_CONFIG_LOG_LEVEL  - Default Severity level
  
+// <0=> Off 
+// <1=> Error 
+// <2=> Warning 
+// <3=> Info 
+// <4=> Debug 
 
-#ifndef APP_USBD_CLASS_MSC_ENABLED
-#define APP_USBD_CLASS_MSC_ENABLED 0
+#ifndef NRF_PWR_MGMT_CONFIG_LOG_LEVEL
+#define NRF_PWR_MGMT_CONFIG_LOG_LEVEL 3
 #endif
 
-// <q> APP_USBD_MSC_CLASS_LOG_ENABLED  - Enables logging in the module.
+// <o> NRF_PWR_MGMT_CONFIG_INFO_COLOR  - ANSI escape code prefix.
  
+// <0=> Default 
+// <1=> Black 
+// <2=> Red 
+// <3=> Green 
+// <4=> Yellow 
+// <5=> Blue 
+// <6=> Magenta 
+// <7=> Cyan 
+// <8=> White 
 
-#ifndef APP_USBD_MSC_CLASS_LOG_ENABLED
-#define APP_USBD_MSC_CLASS_LOG_ENABLED 0
+#ifndef NRF_PWR_MGMT_CONFIG_INFO_COLOR
+#define NRF_PWR_MGMT_CONFIG_INFO_COLOR 5
 #endif
 
-// </h> 
-//==========================================================
+// <o> NRF_PWR_MGMT_CONFIG_DEBUG_COLOR  - ANSI escape code prefix.
+ 
+// <0=> Default 
+// <1=> Black 
+// <2=> Red 
+// <3=> Green 
+// <4=> Yellow 
+// <5=> Blue 
+// <6=> Magenta 
+// <7=> Cyan 
+// <8=> White 
 
+#ifndef NRF_PWR_MGMT_CONFIG_DEBUG_COLOR
+#define NRF_PWR_MGMT_CONFIG_DEBUG_COLOR 0
+#endif
+
+#endif //NRF_PWR_MGMT_CONFIG_LOG_ENABLED
+// </e>
+
+// <e> NRF_PWR_MGMT_CONFIG_DEBUG_PIN_ENABLED - Enables pin debug in the module.
+
+// <i> Selected pin will be set when CPU is in sleep mode.
+//==========================================================
+#ifndef NRF_PWR_MGMT_CONFIG_DEBUG_PIN_ENABLED
+#define NRF_PWR_MGMT_CONFIG_DEBUG_PIN_ENABLED 0
+#endif
+#if  NRF_PWR_MGMT_CONFIG_DEBUG_PIN_ENABLED
+// <o> NRF_PWR_MGMT_SLEEP_DEBUG_PIN - Pin number  <0-31> 
+
+
+#ifndef NRF_PWR_MGMT_SLEEP_DEBUG_PIN
+#define NRF_PWR_MGMT_SLEEP_DEBUG_PIN 31
+#endif
+
+#endif //NRF_PWR_MGMT_CONFIG_DEBUG_PIN_ENABLED
+// </e>
+
+// <q> NRF_PWR_MGMT_CONFIG_CPU_USAGE_MONITOR_ENABLED  - Enables CPU usage monitor.
+ 
+
+// <i> Module will trace percentage of CPU usage in one second intervals.
+
+#ifndef NRF_PWR_MGMT_CONFIG_CPU_USAGE_MONITOR_ENABLED
+#define NRF_PWR_MGMT_CONFIG_CPU_USAGE_MONITOR_ENABLED 1
+#endif
+
+// <e> NRF_PWR_MGMT_CONFIG_STANDBY_TIMEOUT_ENABLED - Enable standby timeout.
+//==========================================================
+#ifndef NRF_PWR_MGMT_CONFIG_STANDBY_TIMEOUT_ENABLED
+#define NRF_PWR_MGMT_CONFIG_STANDBY_TIMEOUT_ENABLED 0
+#endif
+#if  NRF_PWR_MGMT_CONFIG_STANDBY_TIMEOUT_ENABLED
+// <o> NRF_PWR_MGMT_CONFIG_STANDBY_TIMEOUT_S - Standby timeout (in seconds). 
+// <i> Shutdown procedure will begin no earlier than after this number of seconds.
+
+#ifndef NRF_PWR_MGMT_CONFIG_STANDBY_TIMEOUT_S
+#define NRF_PWR_MGMT_CONFIG_STANDBY_TIMEOUT_S 3
+#endif
+
+#endif //NRF_PWR_MGMT_CONFIG_STANDBY_TIMEOUT_ENABLED
+// </e>
+
+// <q> NRF_PWR_MGMT_CONFIG_FPU_SUPPORT_ENABLED  - Enables FPU event cleaning.
+ 
+
+#ifndef NRF_PWR_MGMT_CONFIG_FPU_SUPPORT_ENABLED
+#define NRF_PWR_MGMT_CONFIG_FPU_SUPPORT_ENABLED 0
+#endif
+
+// <q> NRF_PWR_MGMT_CONFIG_AUTO_SHUTDOWN_RETRY  - Blocked shutdown procedure will be retried every second.
+ 
+
+#ifndef NRF_PWR_MGMT_CONFIG_AUTO_SHUTDOWN_RETRY
+#define NRF_PWR_MGMT_CONFIG_AUTO_SHUTDOWN_RETRY 0
+#endif
+
+// <q> NRF_PWR_MGMT_CONFIG_USE_SCHEDULER  - Module will use @ref app_scheduler.
+ 
+
+#ifndef NRF_PWR_MGMT_CONFIG_USE_SCHEDULER
+#define NRF_PWR_MGMT_CONFIG_USE_SCHEDULER 0
+#endif
+
+#endif //NRF_PWR_MGMT_ENABLED
+// </e>
 // </h> 
 //==========================================================
 
@@ -3554,7 +3538,7 @@
 // <e> NRF_LOG_USES_COLORS - If enabled then ANSI escape code for colors is prefixed to every string
 //==========================================================
 #ifndef NRF_LOG_USES_COLORS
-#define NRF_LOG_USES_COLORS 0
+#define NRF_LOG_USES_COLORS 1
 #endif
 #if  NRF_LOG_USES_COLORS
 // <o> NRF_LOG_COLOR_DEFAULT  - ANSI escape code prefix.
@@ -3748,7 +3732,7 @@
 // <i> if it is bigger than default RTT buffer size.
 
 #ifndef NRF_LOG_BACKEND_RTT_OUTPUT_BUFFER_SIZE
-#define NRF_LOG_BACKEND_RTT_OUTPUT_BUFFER_SIZE 256
+#define NRF_LOG_BACKEND_RTT_OUTPUT_BUFFER_SIZE 1298
 #endif
 
 #endif //NRF_LOG_BACKEND_SERIAL_USES_RTT
@@ -3768,7 +3752,7 @@
 //==========================================================
 // <o> SEGGER_RTT_CONFIG_BUFFER_SIZE_UP - Size of upstream buffer. 
 #ifndef SEGGER_RTT_CONFIG_BUFFER_SIZE_UP
-#define SEGGER_RTT_CONFIG_BUFFER_SIZE_UP 64
+#define SEGGER_RTT_CONFIG_BUFFER_SIZE_UP 100
 #endif
 
 // <o> SEGGER_RTT_CONFIG_MAX_NUM_UP_BUFFERS - Size of upstream buffer. 
@@ -3778,7 +3762,7 @@
 
 // <o> SEGGER_RTT_CONFIG_BUFFER_SIZE_DOWN - Size of upstream buffer. 
 #ifndef SEGGER_RTT_CONFIG_BUFFER_SIZE_DOWN
-#define SEGGER_RTT_CONFIG_BUFFER_SIZE_DOWN 16
+#define SEGGER_RTT_CONFIG_BUFFER_SIZE_DOWN 4
 #endif
 
 // <o> SEGGER_RTT_CONFIG_MAX_NUM_DOWN_BUFFERS - Size of upstream buffer. 
