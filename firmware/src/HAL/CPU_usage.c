@@ -9,7 +9,6 @@
 #define NRF_LOG_INFO_COLOR      5          
 #include "nrf_log.h"
 
-#define REPORT_PERIOD_MS    5000
 APP_TIMER_DEF(timer);
 uint32_t  loops;
 uint32_t  workTime;
@@ -48,11 +47,11 @@ static void pwr_mgmt_run(void)
 //------------------------------------------------------------------------------
 void CPU_usage_Startup(void)
 {
-#ifdef TIME_PROFILER
+#ifdef CPU_USAGE_MONITOR
   ret_code_t error = app_timer_create(&timer, APP_TIMER_MODE_REPEATED, OnTimerEvt);
   ASSERT(error == NRF_SUCCESS);
   onTimerEvt = false;
-  error = app_timer_start(timer, MS_TO_TICK(REPORT_PERIOD_MS), NULL);
+  error = app_timer_start(timer, MS_TO_TICK(CPU_USAGE_REPORT_PERIOD_MS), NULL);
   ASSERT(error == NRF_SUCCESS);
 #endif
 
@@ -64,7 +63,7 @@ void CPU_usage_Startup(void)
 //------------------------------------------------------------------------------
 void CPU_usage_Sleep(void)
 {
-#ifdef TIME_PROFILER
+#ifdef CPU_USAGE_MONITOR
   static uint32_t tickBeforeSleep;
   static uint32_t tickAfterSleep;
   tickBeforeSleep = app_timer_cnt_get();

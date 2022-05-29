@@ -1,5 +1,4 @@
-#include <stdint.h>
-#include <stdbool.h>
+#include <sdk_common.h>
 #include "nrf_error.h"
 #include "nrf_assert.h"
 #include "app_timer.h"
@@ -11,6 +10,7 @@
 #include "nrf_log.h"
 
 #define MAX_RTC_COUNTER_VAL       0x00FFFFFF  // (inherit from app_timer.c) maximum value of the RTC counter
+#define HALF_RTC_COUNTER_VAL      (MAX_RTC_COUNTER_VAL / 2)
 #define APP_TIMER_OP_QUEUE_SIZE         6     // Size of timer operation queues.
 
 typedef struct
@@ -55,12 +55,10 @@ static void onHalfRangeTimerEvt(void* context)
 ---------------------------------------------------------------------------  */
 static void lfclk_init(void)
 {
-    uint32_t err_code;
-    err_code = nrf_drv_clock_init();
-    APP_ERROR_CHECK(err_code);
+  ret_code_t err_code = nrf_drv_clock_init();
+  ASSERT(err_code == NRF_SUCCESS);
 
-    nrf_drv_clock_lfclk_request(NULL);
-    nrf_drv_clock_hfclk_request(NULL);
+  nrf_drv_clock_lfclk_request(NULL);
 }
 
 
@@ -84,7 +82,7 @@ void app_time_Init(void)
 //------------------------------------------------------------------------------
 void app_time_Startup(void)
 {
-  ret_code_t err = app_timer_start(ovfl_tmr, MAX_RTC_COUNTER_VAL, NULL);
+  ret_code_t err = app_timer_start(ovfl_tmr, HALF_RTC_COUNTER_VAL, NULL);
   ASSERT(err == NRF_SUCCESS);
 }
 

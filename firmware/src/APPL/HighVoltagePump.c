@@ -1,16 +1,17 @@
-#include <stdint.h>
-#include <stdbool.h>
+#include <sdk_common.h>
 #include "nrf_log_ctrl.h"
 #include "nrf_drv_timer.h"
 #include "nrf_drv_ppi.h"
 #include "nrf_drv_gpiote.h"
 #include "nrf_gpio_adds.h"
 #include "app_timer.h"
+#include "Timer_anomaly_fix.h"
 #include "app_time_lib.h"
 
 #include "HighVoltagePump.h"
 
 #define NRF_LOG_MODULE_NAME "HVP"
+#define NRF_LOG_LEVEL       3
 #include "nrf_log.h"
 
 
@@ -18,7 +19,7 @@
 //  DEFINE MODULE PARAMETER
 // ----------------------------------------------------------------------------
 #define CYC_TIMER_FREQ                NRF_TIMER_FREQ_16MHz
-#define DUTY_ON_TIME_NS               50*1000
+#define DUTY_ON_TIME_NS               500000
 #define MAIN_HW_TIMER_INTERVAL_MS     1000
 
 // ----------------------------------------------------------------------------
@@ -40,6 +41,7 @@ static nrf_ppi_channel_t ppi_ch_tim1_gpiote_rising, ppi_ch_tim1_gpiote_falling;
 static void OnMainTmr(void* context)
 {
   (void)context;
+  timer_anomaly_fix(cycCtrlTmr.p_reg, 1);
   nrf_drv_timer_resume(&cycCtrlTmr);
   NRF_LOG_INFO("Main timer\n");
 }
@@ -47,6 +49,7 @@ static void OnMainTmr(void* context)
 // ---------------------------------------------------------------------------
 static void OnCycCtrlTmr(nrf_timer_event_t event_type, void * p_context)
 {
+  timer_anomaly_fix(cycCtrlTmr.p_reg, 0);
   ret_code_t err_code = app_timer_start(mainHVtmr, MAIN_HW_TIMER_INTERVAL, NULL);
   ASSERT(err_code == NRF_SUCCESS);
   NRF_LOG_INFO("CycTimer\n");
@@ -79,7 +82,7 @@ static void hv_gpio_init(void)
   };
   err_code = nrf_drv_gpiote_out_init(PUMP_HV_PIN, &pumpOut);
   ASSERT(err_code == NRF_SUCCESS);
-  //nrf_gpio_cfg_strong_output(PUMP_HV_PIN);
+  nrf_gpio_cfg_strong_output(PUMP_HV_PIN);
 }
 
 // ---------------------------------------------------------------------------
@@ -163,6 +166,7 @@ void HV_pump_Startup(void)
   err_code = nrf_drv_ppi_channel_enable(ppi_ch_tim1_gpiote_falling);
   ASSERT(err_code == NRF_SUCCESS);;
   
-  nrf_drv_gpiote_out_task_enable(PUMP_HV_PIN);  
- // nrf_drv_timer_enable(&cycCtrlTmr);
+  nrf_drv_gpiote_out_task_enable(PUMP_HV_PIN);
+  timer_anomaly_fix(cycCtrlTmr.p_reg, 1);
+  nrf_drv_timer_enable(&cycCtrlTmr);
 }

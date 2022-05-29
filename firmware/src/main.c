@@ -1,61 +1,6 @@
-/**
- * Copyright (c) 2016 - 2017, Nordic Semiconductor ASA
- * 
- * All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- * 
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- * 
- * 2. Redistributions in binary form, except as embedded into a Nordic
- *    Semiconductor ASA integrated circuit in a product or a software update for
- *    such product, must reproduce the above copyright notice, this list of
- *    conditions and the following disclaimer in the documentation and/or other
- *    materials provided with the distribution.
- * 
- * 3. Neither the name of Nordic Semiconductor ASA nor the names of its
- *    contributors may be used to endorse or promote products derived from this
- *    software without specific prior written permission.
- * 
- * 4. This software, with or without modification, must only be used with a
- *    Nordic Semiconductor ASA integrated circuit.
- * 
- * 5. Any software provided in binary form under this license must not be reverse
- *    engineered, decompiled, modified and/or disassembled.
- * 
- * THIS SOFTWARE IS PROVIDED BY NORDIC SEMICONDUCTOR ASA "AS IS" AND ANY EXPRESS
- * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY, NONINFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL NORDIC SEMICONDUCTOR ASA OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
- * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
- * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- */
-
-/** @file
- *
- * @defgroup ble_sdk_app_cgms_main main.c
- * @{
- * @ingroup ble_sdk_app_cgms
- * @brief Continuous Glucose Monitoring Profile Sample Application
- *
- * This file contains the source code for a sample application using the Continuous Glucose Monitoring service.
- * Bond Management Service, Battery service and Device Information service is also present.
- *
- */
-
-#include <stdint.h>
-#include <string.h>
-
-#include "nordic_common.h"
-#include "nrf.h"
+#include <sdk_common.h>
 #include "app_error.h"
+#include "nrf_log_ctrl.h"
 #include "nrf_gpio.h"
 #include "ble.h"
 #include "ble_srv_common.h"
@@ -71,6 +16,7 @@
 #include "ble_conn_state.h"
 #include "nrf_ble_qwr.h"
 #include "CPU_usage.h"
+#include "HighVoltagePump.h"
 
 //Services
 #include "ble_bas.h"
@@ -79,12 +25,11 @@
 #include "ble_dis.h"
 //#include "ble_racp.h"
 #include "app_time_lib.h"
-#include "HighVoltagePump.h"
 
 
 #define NRF_LOG_MODULE_NAME "APP"
 #include "nrf_log.h"
-#include "nrf_log_ctrl.h"
+
 #define IS_SRVC_CHANGED_CHARACT_PRESENT 0                                           /**< Include or not the service_changed characteristic. if not enabled, the server's database cannot be changed for the lifetime of the device*/
 
 #if (NRF_SD_BLE_API_VERSION == 3)
@@ -1171,13 +1116,11 @@ static uint32_t log_time_provider()
   return (log_timestr.sec*1000 + log_timestr.ms);
 }
 
-/**@brief Function for application main entry.
- */
+/*!  ---------------------------------------------------------------------------
+  \brief Function for application main entry.
+ ---------------------------------------------------------------------------  */
 int main(void)
 {
-  for (uint8_t i=0; i<30; i++)
-    nrf_gpio_cfg_default(i);
-
   app_time_Init();
 
   ret_code_t err_code = NRF_LOG_INIT(log_time_provider);
@@ -1185,17 +1128,17 @@ int main(void)
   
   CPU_usage_Startup();
 
-  //HV_pump_Init();
-  //HV_pump_Startup();
-#if 000
+  HV_pump_Init();
+  HV_pump_Startup();
 
+#if 000
   timers_init();
   buttons_leds_init(&erase_bonds);
   ble_stack_init();
   peer_manager_init(erase_bonds);
   if (erase_bonds == true)
   {
-      NRF_LOG_INFO("Bonds erased!\r\n");
+    NRF_LOG_INFO("Bonds erased!\r\n");
   }
   gap_params_init();
   advertising_init();
@@ -1203,10 +1146,10 @@ int main(void)
   conn_params_init();
 
   // Start execution.
-  NRF_LOG_INFO("Continuous Glucose Monitoring Sensor Start!\r\n");
   application_timers_start();
   advertising_start();
 #endif
+
   // Enter main loop.
   while (true)
   {
@@ -1216,8 +1159,3 @@ int main(void)
     }
   }
 }
-
-
-/**
- * @}
- */
