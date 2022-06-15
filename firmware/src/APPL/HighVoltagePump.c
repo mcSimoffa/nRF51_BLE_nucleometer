@@ -11,7 +11,7 @@
 #include "HighVoltagePump.h"
 
 #define NRF_LOG_MODULE_NAME "HVP"
-#define NRF_LOG_LEVEL       3
+#define NRF_LOG_LEVEL       2
 #include "nrf_log.h"
 
 
@@ -19,8 +19,8 @@
 //  DEFINE MODULE PARAMETER
 // ----------------------------------------------------------------------------
 #define CYC_TIMER_FREQ                NRF_TIMER_FREQ_16MHz
-#define DUTY_ON_TIME_NS               500000
-#define MAIN_HW_TIMER_INTERVAL_MS     1000
+#define DUTY_ON_TIME_NS               10000
+#define MAIN_HW_TIMER_INTERVAL_MS     100
 
 // ----------------------------------------------------------------------------
 //  OTHER DEFINES
@@ -34,7 +34,7 @@
 APP_TIMER_DEF(mainHVtmr);
 static const nrf_drv_timer_t cycCtrlTmr = NRF_DRV_TIMER_INSTANCE(1);
 static nrf_ppi_channel_t ppi_ch_tim1_gpiote_rising, ppi_ch_tim1_gpiote_falling;
-
+static nrf_ppi_channel_t ppi_ch_tim1_gpiote_risingDrv, ppi_ch_tim1_gpiote_fallingDrv;
 // ----------------------------------------------------------------------------
 //    PRIVATE FUNCTION
 // ----------------------------------------------------------------------------
@@ -82,7 +82,13 @@ static void hv_gpio_init(void)
   };
   err_code = nrf_drv_gpiote_out_init(PUMP_HV_PIN, &pumpOut);
   ASSERT(err_code == NRF_SUCCESS);
+
   nrf_gpio_cfg_strong_output(PUMP_HV_PIN);
+
+  err_code = nrf_drv_gpiote_out_init(PUMP_HV_PIN_DRV, &pumpOut);
+  ASSERT(err_code == NRF_SUCCESS);
+
+  nrf_gpio_cfg_strong_output(PUMP_HV_PIN_DRV);
 }
 
 // ---------------------------------------------------------------------------
@@ -125,6 +131,12 @@ static void hv_ppi_init(void)
 
   err_code = nrf_drv_ppi_channel_alloc(&ppi_ch_tim1_gpiote_falling);
   ASSERT(err_code == NRF_SUCCESS);
+
+  err_code = nrf_drv_ppi_channel_alloc(&ppi_ch_tim1_gpiote_risingDrv);
+  ASSERT(err_code == NRF_SUCCESS);
+
+  err_code = nrf_drv_ppi_channel_alloc(&ppi_ch_tim1_gpiote_fallingDrv);
+  ASSERT(err_code == NRF_SUCCESS);
 }
 
 // ---------------------------------------------------------------------------
@@ -135,11 +147,18 @@ static void bind_gpio_to_timer(void)
   uint32_t event_CC0_Addr =  nrf_drv_timer_event_address_get(&cycCtrlTmr, NRF_TIMER_EVENT_COMPARE0);
   uint32_t event_CC1_Addr =  nrf_drv_timer_event_address_get(&cycCtrlTmr, NRF_TIMER_EVENT_COMPARE1);
   uint32_t taskAddr =   nrf_drv_gpiote_out_task_addr_get(PUMP_HV_PIN);
+  uint32_t taskAddrDrv =   nrf_drv_gpiote_out_task_addr_get(PUMP_HV_PIN_DRV);
 
   ret_code_t err_code = nrf_drv_ppi_channel_assign (ppi_ch_tim1_gpiote_rising, event_CC0_Addr, taskAddr);
   ASSERT(err_code == NRF_SUCCESS);
 
+  err_code = nrf_drv_ppi_channel_assign (ppi_ch_tim1_gpiote_risingDrv, event_CC0_Addr, taskAddrDrv);
+  ASSERT(err_code == NRF_SUCCESS);
+
   err_code = nrf_drv_ppi_channel_assign (ppi_ch_tim1_gpiote_falling, event_CC1_Addr, taskAddr);
+  ASSERT(err_code == NRF_SUCCESS);
+
+  err_code = nrf_drv_ppi_channel_assign (ppi_ch_tim1_gpiote_fallingDrv, event_CC1_Addr, taskAddrDrv);
   ASSERT(err_code == NRF_SUCCESS);
 }
 

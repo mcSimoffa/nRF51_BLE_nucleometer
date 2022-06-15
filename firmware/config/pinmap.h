@@ -1,7 +1,8 @@
 #ifndef PIN_MAP_H
 #define PIN_MAP_H
 
-#define PUMP_HV_PIN                   22    //GREEN
-#define PUMP_HV_PIN_INACTIVE_STATE    NRF_GPIOTE_INITIAL_VALUE_HIGH
+#define PUMP_HV_PIN                   9 
+#define PUMP_HV_PIN_DRV               11
+#define PUMP_HV_PIN_INACTIVE_STATE    NRF_GPIOTE_INITIAL_VALUE_LOW
 
 #endif // PIN_MAP_H
