@@ -20,26 +20,63 @@
 // ----------------------------------------------------------------------------
 //  DEFINE MODULE PARAMETER
 // ----------------------------------------------------------------------------
-#define CYC_TIMER_FREQ                NRF_TIMER_FREQ_16MHz
-#define CYC_TIMER_WIDTH_BITS          16      //8 or 16 or 24 or 32
-#define DUTY_ON_TIME_NS               10000
-#define FLY_BACK_TIME_NS              20000
-#define MAIN_HW_TIMER_INTERVAL_MS     100
-#define MAIN_HW_TIMER_PAUSE_MS        2000
-#define HW_PW_UP_DELAYE_MS            1000
+#define CYC_TIMER_FREQ                NRF_TIMER_FREQ_1MHz
+#define CYC_TIMER_WIDTH_BITS          16      //8 or 16
+
+//HV module default parameters
+#define PHASE_ON_NS       10000   //default time mosfet open phase
+#define PHASE_ON_TRY_NS   8000    //default time mosfet open phase in first cycle (to prevent overcahrge) 
+#define WORK_PAUSE_MS     100     //default timespan between pulses in charging state
+#define STEADY_PAUSE_MS   1000    //default timespan between pulses in steady state
+
+// HV module constants
+#define FLY_BACK_TIME_NS    20000   //timespan to feedback voltage control
+#define HW_PW_UP_DELAYE_MS  1000    //timespan before first pulse after device powering
 
 // ----------------------------------------------------------------------------
 //  OTHER DEFINES
 // ----------------------------------------------------------------------------
 #define NS_TO_TICK(ns)((ns) * 16 / (1 << CYC_TIMER_FREQ) / 1000)
 
-// timings static check
-#if ((DUTY_ON_TIME_NS + FLY_BACK_TIME_NS) * 2 > MAIN_HW_TIMER_INTERVAL_MS * 1000000)
-#error "HV PUMP CONTROL TIMING ERROR"
-#endif
-
 #define CYC_TIMER_WIDTH   CONCAT_2(NRF_TIMER_BIT_WIDTH_, CYC_TIMER_WIDTH_BITS)
 #define CYCTIMER_RANGE    (1 << CYC_TIMER_WIDTH_BITS) - 1
+
+// ----------------------------------------------------------------------------
+//   PRIVATE TYPES
+// ----------------------------------------------------------------------------
+typedef struct
+{
+  struct
+  {
+    uint16_t  on_phase;
+    uint16_t  on_try_phase;
+  } cycTimer;
+
+  struct
+  {
+    uint16_t  work_pause;
+    uint16_t  steady_pause;
+  } workTimer;
+} hv_params_t;
+
+// ----------------------------------------------------------------------------
+typedef struct
+{
+  struct
+  {
+    uint16_t  CC1_work;
+    uint16_t  CC2_work;
+    uint16_t  CC1_try;
+    uint16_t  CC2_try;
+  } cycTimer;
+
+  struct
+  {
+    uint32_t  work_pause;
+    uint32_t  steady_pause;
+  } workTimer;  
+} hv_data_t;
+
 
 // ----------------------------------------------------------------------------
 //   PRIVATE VARIABLE
@@ -49,10 +86,61 @@ static const nrf_drv_timer_t cycCtrlTmr = NRF_DRV_TIMER_INSTANCE(1);
 static nrf_ppi_channel_t ppi_ch_tim1_gpiote_rising, ppi_ch_tim1_gpiote_falling;
 static nrf_ppi_channel_t ppi_ch_tim1_gpiote_risingDrv, ppi_ch_tim1_gpiote_fallingDrv;
 static bool enough_hv_fb;     //enough high voltage feedback
+hv_params_t hv_params =
+{
+  .cycTimer.on_phase      = PHASE_ON_NS,
+  .cycTimer.on_try_phase  = PHASE_ON_TRY_NS,
+  .workTimer.work_pause   = WORK_PAUSE_MS,
+  .workTimer.steady_pause = STEADY_PAUSE_MS,
+};
+
+hv_data_t hv_data;
 // ----------------------------------------------------------------------------
 //    PRIVATE FUNCTION
 // ----------------------------------------------------------------------------
+static bool hvDataRefresh(hv_params_t *param)
+{
+  uint32_t CC1_work = 1 + NS_TO_TICK(param->cycTimer.on_phase);
+  uint32_t CC1_try  = 1 + NS_TO_TICK(param->cycTimer.on_try_phase);
+  uint32_t CC2_work = CC1_work + NS_TO_TICK(FLY_BACK_TIME_NS);
+  uint32_t CC2_try  = CC1_try  + NS_TO_TICK(FLY_BACK_TIME_NS);
 
+  uint32_t work_pause    = MS_TO_TICK(param->workTimer.work_pause);
+  uint32_t steady_pause  = MS_TO_TICK(param->workTimer.steady_pause);
+  
+  if ((CC1_work == 1) ||
+      (CC1_try == 1)  ||
+      (CC2_work == CC1_work) ||
+      (CC2_try == CC1_try)   ||
+      (CC2_work >= CYCTIMER_RANGE) ||
+      (CC2_try  >= CYCTIMER_RANGE) ||
+      (work_pause > steady_pause))
+  {
+    return false;
+  }     
+  else
+  {
+    hv_data.cycTimer.CC1_work = (uint16_t)CC1_work;
+    hv_data.cycTimer.CC1_try  = (uint16_t)CC1_try;
+    hv_data.cycTimer.CC2_work = (uint16_t)CC2_work;
+    hv_data.cycTimer.CC2_try  = (uint16_t)CC2_try;
+    hv_data.workTimer.work_pause   = work_pause;
+    hv_data.workTimer.steady_pause = steady_pause;
+    return true;
+  }
+}
+
+// ---------------------------------------------------------------------------
+static void cycTimer_adjust(uint16_t cc1, uint16_t cc2)
+{
+  nrf_drv_timer_compare(&cycCtrlTmr, NRF_TIMER_CC_CHANNEL1, cc1, false); // fallig forming ---|___
+  nrf_drv_timer_extended_compare(&cycCtrlTmr, NRF_TIMER_CC_CHANNEL2, cc2,
+                                  NRF_TIMER_SHORT_COMPARE2_STOP_MASK | TIMER_SHORTS_COMPARE2_CLEAR_Msk,
+                                  true); 
+
+}
+
+// ----------------------------------------------------------------------------
 static void lpcomp_ctrl(bool en)
 {
   if (en)
@@ -67,39 +155,48 @@ static void lpcomp_ctrl(bool en)
   }
 }
 
-// ---------------------------------------------------------------------------
+// ****************************************************************************
 static void OnMainTmr(void* context)
 {
   (void)context;
 
   // enable LPCOMP - first step
   lpcomp_ctrl(true);
-  NRF_LOG_INFO("Main timer\n");
+  NRF_LOG_DEBUG("Main timer\n");
 }
 
 // ---------------------------------------------------------------------------
 static void OnLpcomp(nrf_lpcomp_event_t event)
 {
-  static bool isFirstCycle = true;
+  static uint8_t pulse_num = 0; //0 -first, 1 - second, 2 - another bigger pulses
 
   if (event == NRF_LPCOMP_EVENT_READY)
   {
     // start work cycle timer - second step
     timer_anomaly_fix(cycCtrlTmr.p_reg, 1);
-    if (isFirstCycle)
+    if (pulse_num == 1)
     {
-      isFirstCycle = false;
+      cycTimer_adjust(hv_data.cycTimer.CC1_work, hv_data.cycTimer.CC2_work);
+      pulse_num = 2;
+    }
+
+    if (pulse_num == 0)
+    {
+      cycTimer_adjust(hv_data.cycTimer.CC1_try, hv_data.cycTimer.CC2_try);
       nrf_drv_timer_enable(&cycCtrlTmr);
+      pulse_num = 1;
     }
     else
     {
       nrf_drv_timer_resume(&cycCtrlTmr);
-  }
+    }
   }
   else if (event == NRF_LPCOMP_EVENT_UP)
   {
+    nrf_drv_timer_disable(&cycCtrlTmr);
     enough_hv_fb = true;
-    NRF_LOG_INFO("LPC\n");
+    pulse_num = 0;
+    NRF_LOG_DEBUG("LPC Up\n");
   }
 }
 
@@ -107,26 +204,31 @@ static void OnLpcomp(nrf_lpcomp_event_t event)
 static void OnCycCtrlTmr(nrf_timer_event_t event_type, void * p_context)
 {
   static uint32_t cnt = 0;
-  uint32_t interval = MS_TO_TICK(MAIN_HW_TIMER_INTERVAL_MS);
+  uint32_t interval;
 
-  timer_anomaly_fix(cycCtrlTmr.p_reg, 0);
-  lpcomp_ctrl(false);
+  if (event_type == NRF_TIMER_EVENT_COMPARE2)
+  {
+
+    timer_anomaly_fix(cycCtrlTmr.p_reg, 0);
+    lpcomp_ctrl(false);
   
-  if (enough_hv_fb)
-  {
-    enough_hv_fb = false;
-    cnt = 0;
-    interval = MS_TO_TICK(MAIN_HW_TIMER_PAUSE_MS);
-    NRF_LOG_INFO("Enough HV\n");
-  }
-  else
-  {
-    ++cnt;
-    NRF_LOG_INFO("NOT Enough (%d) HV\n", cnt);
-  }
+    if (enough_hv_fb)
+    {
+      enough_hv_fb = false;
+      cnt = 0;
+      interval = hv_data.workTimer.steady_pause;
+      NRF_LOG_INFO("Enough HV\n");
+    }
+    else
+    {
+      interval = hv_data.workTimer.work_pause;
+      ++cnt;
+      NRF_LOG_INFO("NOT Enough (%d) HV\n", cnt);
+    }
 
-  ret_code_t err_code = app_timer_start(mainHVtmr, interval, NULL);
-  ASSERT(err_code == NRF_SUCCESS);
+    ret_code_t err_code = app_timer_start(mainHVtmr, interval, NULL);
+    ASSERT(err_code == NRF_SUCCESS);
+  }
 }
 
 // ****************************************************************************
@@ -176,7 +278,7 @@ static void hv_gpio_init(void)
 
 // ---------------------------------------------------------------------------
 // cycle control timer init
-static void cycTimet_init(void)
+static void cycTimer_init(void)
 {
   // timer for cycle control.
   nrf_drv_timer_config_t timer_cfg = 
@@ -190,23 +292,9 @@ static void cycTimet_init(void)
   ret_code_t err_code = nrf_drv_timer_init(&cycCtrlTmr, &timer_cfg, OnCycCtrlTmr);
   ASSERT(err_code == NRF_SUCCESS);
 
-  // setting timing for 2 steps
-  uint32_t tics_duty_on = NS_TO_TICK(DUTY_ON_TIME_NS);
-  ASSERT(tics_duty_on);
-
-  uint32_t tics_flyBack = NS_TO_TICK(FLY_BACK_TIME_NS);
-  ASSERT(tics_flyBack);
-
-  ASSERT(1 + tics_duty_on + tics_flyBack < CYCTIMER_RANGE);
-   
-  nrf_drv_timer_compare(&cycCtrlTmr, NRF_TIMER_CC_CHANNEL0, 1, false);                // rising forming ___|---
-  nrf_drv_timer_compare(&cycCtrlTmr, NRF_TIMER_CC_CHANNEL1, 1 + tics_duty_on, false); // fallig forming ---|___
-  nrf_drv_timer_extended_compare(&cycCtrlTmr, NRF_TIMER_CC_CHANNEL2,
-                                  1 + tics_duty_on + tics_flyBack,
-                                  NRF_TIMER_SHORT_COMPARE2_STOP_MASK | TIMER_SHORTS_COMPARE2_CLEAR_Msk,
-                                  true); 
-
-
+  // setting timing for 2 steps   
+  nrf_drv_timer_compare(&cycCtrlTmr, NRF_TIMER_CC_CHANNEL0, 1, false);  // rising forming ___|---
+  cycTimer_adjust(hv_data.cycTimer.CC1_try, hv_data.cycTimer.CC2_try);
 }
 
 // ---------------------------------------------------------------------------
@@ -258,9 +346,14 @@ static void bind_gpio_to_timer(void)
 // ----------------------------------------------------------------------------
 void HV_pump_Init(void)
 {
+  if (hvDataRefresh(&hv_params) == false)
+  {
+    ASSERT(false);
+    return;
+  }
   mainTimet_init();  
   hv_gpio_init();
-  cycTimet_init();
+  cycTimer_init();
   hv_ppi_init();
   lpcomp_init();
   bind_gpio_to_timer();
