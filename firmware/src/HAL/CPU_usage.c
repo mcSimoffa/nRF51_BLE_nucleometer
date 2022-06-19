@@ -5,7 +5,7 @@
 #include "CPU_usage.h"
 
 #define NRF_LOG_MODULE_NAME     "CPU_usage"
-#define NRF_LOG_LEVEL           3
+#define NRF_LOG_LEVEL           2
 #define NRF_LOG_INFO_COLOR      5          
 #include "nrf_log.h"
 
