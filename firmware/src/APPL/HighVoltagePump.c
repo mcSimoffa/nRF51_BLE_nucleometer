@@ -25,7 +25,7 @@
 
 //HV module default parameters
 #define PHASE_ON_NS       10000   //default time mosfet open phase
-#define PHASE_ON_TRY_NS   8000    //default time mosfet open phase in first cycle (to prevent overcahrge) 
+#define PHASE_ON_TRY_NS   10000    //default time mosfet open phase in first cycle (to prevent overcahrge) 
 #define WORK_PAUSE_MS     100     //default timespan between pulses in charging state
 #define STEADY_PAUSE_MS   1000    //default timespan between pulses in steady state
 
