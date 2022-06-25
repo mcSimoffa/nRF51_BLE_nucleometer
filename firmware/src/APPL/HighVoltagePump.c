@@ -25,7 +25,8 @@
 
 //HV module default parameters
 #define PHASE_ON_NS       10000   //default time mosfet open phase
-#define PHASE_ON_TRY_NS   10000    //default time mosfet open phase in first cycle (to prevent overcahrge) 
+#define PHASE_ON_TRY_NS   10000   //default time mosfet open phase in first cycle (to prevent overcahrge)
+#define DISCHARGE_TIME_NS 10000   //default recuperation phase time
 #define WORK_PAUSE_MS     100     //default timespan between pulses in charging state
 #define STEADY_PAUSE_MS   1000    //default timespan between pulses in steady state
 
@@ -50,6 +51,7 @@ typedef struct
   {
     uint16_t  on_phase;
     uint16_t  on_try_phase;
+    uint16_t  discharge;
   } cycTimer;
 
   struct
@@ -66,8 +68,10 @@ typedef struct
   {
     uint16_t  CC1_work;
     uint16_t  CC2_work;
+    uint16_t  CC3_work;
     uint16_t  CC1_try;
     uint16_t  CC2_try;
+    uint16_t  CC3_try;
   } cycTimer;
 
   struct
@@ -90,6 +94,7 @@ hv_params_t hv_params =
 {
   .cycTimer.on_phase      = PHASE_ON_NS,
   .cycTimer.on_try_phase  = PHASE_ON_TRY_NS,
+  .cycTimer.discharge     = DISCHARGE_TIME_NS,
   .workTimer.work_pause   = WORK_PAUSE_MS,
   .workTimer.steady_pause = STEADY_PAUSE_MS,
 };
@@ -100,20 +105,26 @@ hv_data_t hv_data;
 // ----------------------------------------------------------------------------
 static bool hvDataRefresh(hv_params_t *param)
 {
-  uint32_t CC1_work = 1 + NS_TO_TICK(param->cycTimer.on_phase);
-  uint32_t CC1_try  = 1 + NS_TO_TICK(param->cycTimer.on_try_phase);
+  uint32_t CC0_work = 1;
+  uint32_t CC0_try  = 1;
+  uint32_t CC1_work = CC0_work + NS_TO_TICK(param->cycTimer.on_phase);
+  uint32_t CC1_try  = CC0_try  + NS_TO_TICK(param->cycTimer.on_try_phase);
   uint32_t CC2_work = CC1_work + NS_TO_TICK(FLY_BACK_TIME_NS);
   uint32_t CC2_try  = CC1_try  + NS_TO_TICK(FLY_BACK_TIME_NS);
+  uint32_t CC3_work = CC2_work + NS_TO_TICK(DISCHARGE_TIME_NS);
+  uint32_t CC3_try  = CC2_try  + NS_TO_TICK(DISCHARGE_TIME_NS);
 
   uint32_t work_pause    = MS_TO_TICK(param->workTimer.work_pause);
   uint32_t steady_pause  = MS_TO_TICK(param->workTimer.steady_pause);
   
-  if ((CC1_work == 1) ||
-      (CC1_try == 1)  ||
+  if ((CC1_work == CC0_work) ||
+      (CC1_try  == CC0_try)  ||
       (CC2_work == CC1_work) ||
-      (CC2_try == CC1_try)   ||
-      (CC2_work >= CYCTIMER_RANGE) ||
-      (CC2_try  >= CYCTIMER_RANGE) ||
+      (CC2_try  == CC1_try)  ||
+      (CC3_work == CC2_work) ||
+      (CC3_try  == CC2_try)  ||
+      (CC3_work >= CYCTIMER_RANGE) ||
+      (CC3_try  >= CYCTIMER_RANGE) ||
       (work_pause > steady_pause))
   {
     return false;
@@ -124,6 +135,8 @@ static bool hvDataRefresh(hv_params_t *param)
     hv_data.cycTimer.CC1_try  = (uint16_t)CC1_try;
     hv_data.cycTimer.CC2_work = (uint16_t)CC2_work;
     hv_data.cycTimer.CC2_try  = (uint16_t)CC2_try;
+    hv_data.cycTimer.CC3_work = (uint16_t)CC3_work;
+    hv_data.cycTimer.CC3_try  = (uint16_t)CC3_try;
     hv_data.workTimer.work_pause   = work_pause;
     hv_data.workTimer.steady_pause = steady_pause;
     return true;
@@ -131,11 +144,12 @@ static bool hvDataRefresh(hv_params_t *param)
 }
 
 // ---------------------------------------------------------------------------
-static void cycTimer_adjust(uint16_t cc1, uint16_t cc2)
+static void cycTimer_adjust(uint16_t cc1, uint16_t cc2, uint16_t cc3)
 {
   nrf_drv_timer_compare(&cycCtrlTmr, NRF_TIMER_CC_CHANNEL1, cc1, false); // fallig forming ---|___
-  nrf_drv_timer_extended_compare(&cycCtrlTmr, NRF_TIMER_CC_CHANNEL2, cc2,
-                                  NRF_TIMER_SHORT_COMPARE2_STOP_MASK | TIMER_SHORTS_COMPARE2_CLEAR_Msk,
+  nrf_drv_timer_compare(&cycCtrlTmr, NRF_TIMER_CC_CHANNEL2, cc2, true);  // enable recuperation if it needs
+  nrf_drv_timer_extended_compare(&cycCtrlTmr, NRF_TIMER_CC_CHANNEL3, cc3,
+                                  NRF_TIMER_SHORT_COMPARE3_STOP_MASK | TIMER_SHORTS_COMPARE3_CLEAR_Msk,
                                   true); 
 
 }
@@ -176,24 +190,19 @@ static void OnLpcomp(nrf_lpcomp_event_t event)
     timer_anomaly_fix(cycCtrlTmr.p_reg, 1);
     if (pulse_num == 1)
     {
-      cycTimer_adjust(hv_data.cycTimer.CC1_work, hv_data.cycTimer.CC2_work);
+      cycTimer_adjust(hv_data.cycTimer.CC1_work, hv_data.cycTimer.CC2_work, hv_data.cycTimer.CC3_work);
       pulse_num = 2;
     }
-
-    if (pulse_num == 0)
+    else if (pulse_num == 0)
     {
-      cycTimer_adjust(hv_data.cycTimer.CC1_try, hv_data.cycTimer.CC2_try);
-      nrf_drv_timer_enable(&cycCtrlTmr);
+      cycTimer_adjust(hv_data.cycTimer.CC1_try, hv_data.cycTimer.CC2_try, hv_data.cycTimer.CC3_try);
       pulse_num = 1;
     }
-    else
-    {
-      nrf_drv_timer_resume(&cycCtrlTmr);
-    }
+
+    nrf_drv_timer_enable(&cycCtrlTmr);
   }
   else if (event == NRF_LPCOMP_EVENT_UP)
   {
-    nrf_drv_timer_disable(&cycCtrlTmr);
     enough_hv_fb = true;
     pulse_num = 0;
     NRF_LOG_DEBUG("LPC Up\n");
@@ -207,14 +216,22 @@ static void OnCycCtrlTmr(nrf_timer_event_t event_type, void * p_context)
   uint32_t interval;
 
   if (event_type == NRF_TIMER_EVENT_COMPARE2)
-  {
-
-    timer_anomaly_fix(cycCtrlTmr.p_reg, 0);
+  {  
     lpcomp_ctrl(false);
-  
+    if (enough_hv_fb)
+    {
+      nrf_gpio_pin_set(DCRG);
+    }
+  }
+  else if (event_type == NRF_TIMER_EVENT_COMPARE3)
+  {
+    nrf_drv_timer_disable(&cycCtrlTmr);
+    timer_anomaly_fix(cycCtrlTmr.p_reg, 0);
+    
     if (enough_hv_fb)
     {
       enough_hv_fb = false;
+      nrf_gpio_pin_clear(DCRG);
       cnt = 0;
       interval = hv_data.workTimer.steady_pause;
       NRF_LOG_INFO("Enough HV\n");
@@ -274,6 +291,9 @@ static void hv_gpio_init(void)
   err_code = nrf_drv_gpiote_out_init(PUMP_HV_PIN_DRV, &pumpOut);
   ASSERT(err_code == NRF_SUCCESS);
   nrf_gpio_cfg_strong_output(PUMP_HV_PIN_DRV);
+
+  nrf_gpio_pin_clear(DCRG);
+  nrf_gpio_cfg_output(DCRG);
 }
 
 // ---------------------------------------------------------------------------
@@ -294,7 +314,7 @@ static void cycTimer_init(void)
 
   // setting timing for 2 steps   
   nrf_drv_timer_compare(&cycCtrlTmr, NRF_TIMER_CC_CHANNEL0, 1, false);  // rising forming ___|---
-  cycTimer_adjust(hv_data.cycTimer.CC1_try, hv_data.cycTimer.CC2_try);
+  cycTimer_adjust(hv_data.cycTimer.CC1_try, hv_data.cycTimer.CC2_try, hv_data.cycTimer.CC3_try);
 }
 
 // ---------------------------------------------------------------------------
