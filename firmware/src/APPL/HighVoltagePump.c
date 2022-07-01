@@ -31,7 +31,7 @@
 #define STEADY_PAUSE_MS   1000    //default timespan between pulses in steady state
 
 // HV module constants
-#define FLY_BACK_TIME_NS    20000   //timespan to feedback voltage control
+#define FLY_BACK_TIME_NS    10000   //timespan to feedback voltage control
 #define HW_PW_UP_DELAYE_MS  1000    //timespan before first pulse after device powering
 
 // ----------------------------------------------------------------------------
@@ -41,7 +41,7 @@
 
 #define CYC_TIMER_WIDTH   CONCAT_2(NRF_TIMER_BIT_WIDTH_, CYC_TIMER_WIDTH_BITS)
 #define CYCTIMER_RANGE    (1 << CYC_TIMER_WIDTH_BITS) - 1
-
+#define CC0               1 //any value  more than 0
 // ----------------------------------------------------------------------------
 //   PRIVATE TYPES
 // ----------------------------------------------------------------------------
@@ -105,8 +105,8 @@ hv_data_t hv_data;
 // ----------------------------------------------------------------------------
 static bool hvDataRefresh(hv_params_t *param)
 {
-  uint32_t CC0_work = 1;
-  uint32_t CC0_try  = 1;
+  uint32_t CC0_work = CC0;
+  uint32_t CC0_try  = CC0;
   uint32_t CC1_work = CC0_work + NS_TO_TICK(param->cycTimer.on_phase);
   uint32_t CC1_try  = CC0_try  + NS_TO_TICK(param->cycTimer.on_try_phase);
   uint32_t CC2_work = CC1_work + NS_TO_TICK(FLY_BACK_TIME_NS);
@@ -187,7 +187,6 @@ static void OnLpcomp(nrf_lpcomp_event_t event)
   if (event == NRF_LPCOMP_EVENT_READY)
   {
     // start work cycle timer - second step
-    timer_anomaly_fix(cycCtrlTmr.p_reg, 1);
     if (pulse_num == 1)
     {
       cycTimer_adjust(hv_data.cycTimer.CC1_work, hv_data.cycTimer.CC2_work, hv_data.cycTimer.CC3_work);
@@ -198,7 +197,7 @@ static void OnLpcomp(nrf_lpcomp_event_t event)
       cycTimer_adjust(hv_data.cycTimer.CC1_try, hv_data.cycTimer.CC2_try, hv_data.cycTimer.CC3_try);
       pulse_num = 1;
     }
-
+    timer_anomaly_fix(cycCtrlTmr.p_reg, 1);
     nrf_drv_timer_enable(&cycCtrlTmr);
   }
   else if (event == NRF_LPCOMP_EVENT_UP)
@@ -207,6 +206,9 @@ static void OnLpcomp(nrf_lpcomp_event_t event)
     pulse_num = 0;
     NRF_LOG_DEBUG("LPC Up\n");
   }
+  else
+    NRF_LOG_INFO("Another\n");
+
 }
 
 // ---------------------------------------------------------------------------
@@ -313,7 +315,7 @@ static void cycTimer_init(void)
   ASSERT(err_code == NRF_SUCCESS);
 
   // setting timing for 2 steps   
-  nrf_drv_timer_compare(&cycCtrlTmr, NRF_TIMER_CC_CHANNEL0, 1, false);  // rising forming ___|---
+  nrf_drv_timer_compare(&cycCtrlTmr, NRF_TIMER_CC_CHANNEL0, CC0, false);  // rising forming ___|---
   cycTimer_adjust(hv_data.cycTimer.CC1_try, hv_data.cycTimer.CC2_try, hv_data.cycTimer.CC3_try);
 }
 

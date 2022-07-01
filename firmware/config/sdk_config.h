@@ -962,7 +962,7 @@
 // <7=> 7 
 
 #ifndef LPCOMP_CONFIG_IRQ_PRIORITY
-#define LPCOMP_CONFIG_IRQ_PRIORITY 3
+#define LPCOMP_CONFIG_IRQ_PRIORITY 1
 #endif
 
 // <e> LPCOMP_CONFIG_LOG_ENABLED - Enables logging in the module.
