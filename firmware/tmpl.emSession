@@ -84,7 +84,6 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="1122" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="src/main.c" selected="1" top="1098" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="28" y="28" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/main.c" useBinaryEdit="0" left="0" path="src/APPL/HighVoltagePump.c" selected="0" top="0" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="96" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/APPL/HighVoltagePump.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/drivers_nrf/lpcomp/nrf_drv_lpcomp.c" selected="0" top="71" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="21" y="265" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/APPL/HighVoltagePump.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/drivers_nrf/hal/nrf_lpcomp.h" selected="0" top="242" codecName="Default"/>
@@ -99,6 +98,7 @@
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="75" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/libraries/util/app_error.c" selected="0" top="59" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="52" y="93" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/APPL/HighVoltagePump.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/drivers_nrf/lpcomp/nrf_drv_lpcomp.h" selected="0" top="67" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="36" y="964" useTextEdit="1" openedFrom="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/drivers_nrf/lpcomp/nrf_drv_lpcomp.h" useBinaryEdit="0" left="0" path="config/sdk_config.h" selected="0" top="942" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="1122" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="src/main.c" selected="1" top="1098" codecName="Default"/>
  </Files>
  <ARMCrossStudioWindow activeProject="tmpl" fileDialogDefaultFilter="*" autoConnectTarget="J-Link" buildConfiguration="Debug" sessionSettings="" debugSearchFileMap="../../../../../../components/drivers_nrf/common/nrf_drv_common.h&#xa;&#xa;../../../../../../components/drivers_nrf/hal/nrf_clock.h&#xa;&#xa;../../../../../../components/toolchain/cmsis/include/core_cm4.h&#xa;" fileDialogInitialDirectory="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/drivers_nrf/lpcomp" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>
