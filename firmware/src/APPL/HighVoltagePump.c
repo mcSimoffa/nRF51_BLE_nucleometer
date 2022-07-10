@@ -26,9 +26,9 @@
 //HV module default parameters
 #define PHASE_ON_NS       10000   //default time mosfet open phase
 #define PHASE_ON_TRY_NS   10000   //default time mosfet open phase in first cycle (to prevent overcahrge)
-#define DISCHARGE_TIME_NS 10000   //default recuperation phase time
+#define DISCHARGE_TIME_NS 8000   //default recuperation phase time
 #define WORK_PAUSE_MS     100     //default timespan between pulses in charging state
-#define STEADY_PAUSE_MS   1000    //default timespan between pulses in steady state
+#define STEADY_PAUSE_MS   1500    //default timespan between pulses in steady state
 
 // HV module constants
 #define FLY_BACK_TIME_NS    10000   //timespan to feedback voltage control
