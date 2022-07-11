@@ -6,5 +6,6 @@
 #define PUMP_HV_PIN_INACTIVE_STATE    NRF_GPIOTE_INITIAL_VALUE_LOW
 
 #define DCRG                          04
-
+#define GREEN_LED_PIN                 19
+#define ORANGE_LED_PIN                15
 #endif // PIN_MAP_H

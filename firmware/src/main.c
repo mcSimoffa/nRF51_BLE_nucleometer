@@ -1117,7 +1117,7 @@ static uint32_t log_time_provider()
 }
 
 /*!  ---------------------------------------------------------------------------
-  \brief Function for application main entry.
+  \brief Function for application main entry.``
  ---------------------------------------------------------------------------  */
 int main(void)
 {
