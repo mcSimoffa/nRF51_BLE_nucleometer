@@ -24,11 +24,11 @@
 #define CYC_TIMER_WIDTH_BITS          16      //8 or 16
 
 //HV module default parameters
-#define PHASE_ON_NS       10000   //default time mosfet open phase
+#define PHASE_ON_NS       11000   //default time mosfet open phase
 #define PHASE_ON_TRY_NS   10000   //default time mosfet open phase in first cycle (to prevent overcahrge)
-#define DISCHARGE_TIME_NS 1000   //default recuperation phase time
-#define WORK_PAUSE_MS     100     //default timespan between pulses in charging state
-#define STEADY_PAUSE_MS   3000    //default timespan between pulses in steady state
+#define DISCHARGE_TIME_NS 2000   //default recuperation phase time
+#define WORK_PAUSE_MS     50     //default timespan between pulses in charging state
+#define STEADY_PAUSE_MS   5000    //default timespan between pulses in steady state
 
 // HV module constants
 #define FLY_BACK_TIME_NS    10000   //timespan to feedback voltage control
@@ -41,7 +41,9 @@
 
 #define CYC_TIMER_WIDTH   CONCAT_2(NRF_TIMER_BIT_WIDTH_, CYC_TIMER_WIDTH_BITS)
 #define CYCTIMER_RANGE    (1 << CYC_TIMER_WIDTH_BITS) - 1
-#define CC0               1 //any value  more than 0
+#define CC0               1   //any value  more than 0
+
+
 // ----------------------------------------------------------------------------
 //   PRIVATE TYPES
 // ----------------------------------------------------------------------------
@@ -100,6 +102,8 @@ hv_params_t hv_params =
 };
 
 hv_data_t hv_data;
+
+
 // ----------------------------------------------------------------------------
 //    PRIVATE FUNCTION
 // ----------------------------------------------------------------------------
@@ -273,12 +277,6 @@ static void lpcomp_init(void)
 static void hv_gpio_init(void)
 {
   ret_code_t err_code;
-  if (!nrf_drv_gpiote_is_init())
-  {
-    err_code = nrf_drv_gpiote_init();
-    ASSERT(err_code == NRF_SUCCESS);
-  }
-
   nrf_drv_gpiote_out_config_t pumpOut = 
   {
     .init_state = PUMP_HV_PIN_INACTIVE_STATE, 
@@ -323,8 +321,7 @@ static void cycTimer_init(void)
 //PPI init and allocate 2 channel to control hv gpio pin from timer
 static void hv_ppi_init(void)
 { 
-  ret_code_t err_code = nrf_drv_ppi_init();
-  ASSERT(err_code == NRF_SUCCESS);
+  ret_code_t err_code;
 
   err_code = nrf_drv_ppi_channel_alloc(&ppi_ch_tim1_gpiote_rising);
   ASSERT(err_code == NRF_SUCCESS);

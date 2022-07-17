@@ -15,8 +15,11 @@
 #include "fstorage.h"
 #include "ble_conn_state.h"
 #include "nrf_ble_qwr.h"
+
+#include "common_part.h"
 #include "CPU_usage.h"
 #include "HighVoltagePump.h"
+#include "particle_cnt.h"
 
 //Services
 #include "ble_bas.h"
@@ -1121,6 +1124,7 @@ static uint32_t log_time_provider()
  ---------------------------------------------------------------------------  */
 int main(void)
 {
+  common_drv_init();
   app_time_Init();
 
   ret_code_t err_code = NRF_LOG_INIT(log_time_provider);
@@ -1129,8 +1133,11 @@ int main(void)
   CPU_usage_Startup();
 
   HV_pump_Init();
+  particle_cnt_Init();
+  
+  particle_cnt_Startup();
   HV_pump_Startup();
-
+  
 #if 000
   timers_init();
   buttons_leds_init(&erase_bonds);

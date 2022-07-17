@@ -68,11 +68,13 @@
       </file>
       <folder Name="APPL">
         <file file_name="src/APPL/HighVoltagePump.c" />
+        <file file_name="src/APPL/particle_cnt.c" />
       </folder>
       <folder Name="HAL">
         <file file_name="src/HAL/app_time_lib.c" />
         <file file_name="src/HAL/CPU_usage.c" />
         <file file_name="src/HAL/Timer_anomaly_fix.c" />
+        <file file_name="src/HAL/common_part.c" />
       </folder>
       <folder Name="BCS">
         <file file_name="src/ble_ios.c" />
