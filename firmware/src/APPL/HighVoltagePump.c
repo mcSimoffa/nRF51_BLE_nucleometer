@@ -24,7 +24,7 @@
 #define CYC_TIMER_WIDTH_BITS          16      //8 or 16
 
 //HV module default parameters
-#define PHASE_ON_NS       11000   //default time mosfet open phase
+#define PHASE_ON_NS       10000   //default time mosfet open phase
 #define PHASE_ON_TRY_NS   10000   //default time mosfet open phase in first cycle (to prevent overcahrge)
 #define DISCHARGE_TIME_NS 2000   //default recuperation phase time
 #define WORK_PAUSE_MS     50     //default timespan between pulses in charging state

@@ -11,11 +11,19 @@
 
 #define MAX_RTC_COUNTER_VAL       0x00FFFFFF  // (inherit from app_timer.c) maximum value of the RTC counter
 #define HALF_RTC_COUNTER_VAL      (MAX_RTC_COUNTER_VAL / 2)
-#define APP_TIMER_OP_QUEUE_SIZE         6     // Size of timer operation queues.
+#define APP_TIMER_OP_QUEUE_SIZE   6     // Size of timer operation queues.
 
 typedef struct
 {
-  uint64_t time;        // system time in ticks (1/32768 sec)
+  union
+  {
+    struct
+    {
+      uint64_t  low:24;
+      uint64_t  high:40;
+    } field;
+    uint64_t time;        // system time in ticks (1/32768 sec)
+  } time;
   uint64_t offset;      // difference between system time and user (UTC) time
   bool     enabled;     // is user time enabled ?
 } app_time_t;
@@ -32,15 +40,12 @@ APP_TIMER_DEF(ovfl_tmr);
 //------------------------------------------------------------------------------
 static void refresh_64bit_value()
 {
-  static uint64_t ovflRTC = 0;
-  static uint32_t prevRTC = 0;
   uint32_t now = app_timer_cnt_get();
-  if (now < prevRTC)
+  if (now <  app_time_s.time.field.low)
   {
-    prevRTC = now;
-    ovflRTC++;
+    app_time_s.time.field.high++;
   }
-  app_time_s.time = (ovflRTC << 32) + now;
+  app_time_s.time.field.low = now;
 }
 
 //-----------------------------------------------------------------------------
@@ -97,7 +102,7 @@ bool app_time_Set_UTC(uint64_t now_ticks)
 {
   if (now_ticks)
   {
-    app_time_s.offset = now_ticks - app_time_s.time;
+    app_time_s.offset = now_ticks - app_time_s.time.time;
     app_time_s.enabled = true;
   }
   return app_time_s.enabled;
@@ -107,7 +112,7 @@ bool app_time_Set_UTC(uint64_t now_ticks)
 uint64_t app_time_Get_sys_time(void)
 {
   refresh_64bit_value();
-  return app_time_s.time;
+  return app_time_s.time.time;
 }
 
 //------------------------------------------------------------------------------
