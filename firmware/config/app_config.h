@@ -6,14 +6,14 @@
 //==========================================================
 // <q> DISABLE_SOFTDEVICE  - Disable SoftDevice (uses for a step by step debuging)
 #ifndef DISABLE_SOFTDEVICE
-#define DISABLE_SOFTDEVICE
+#define DISABLE_SOFTDEVICE 0
 #endif
 
 //==========================================================
 
-// <h> CPU_USAGE_MONITOR - Enables CPU usage & time profiler module.
+// <e> CPU_USAGE_MONITOR - Enables CPU usage & time profiler module.
 #ifndef CPU_USAGE_MONITOR
-#define CPU_USAGE_MONITOR 1
+#define CPU_USAGE_MONITOR 0
 #endif
 
 #if CPU_USAGE_MONITOR
@@ -24,6 +24,25 @@
 #endif
 
 #endif // CPU_USAGE_MONITOR
-// </h>
+// </e>
+
+
+//==========================================================
+// <e> USE_STATIC_PASSKEY  - Use 6-Digit static passkey
+#ifndef USE_STATIC_PASSKEY
+#define USE_STATIC_PASSKEY 1
+#endif
+
+#if USE_STATIC_PASSKEY
+
+// <s> STATIC_PASSKEY - Static passkey to device access
+#ifndef STATIC_PASSKEY
+#define STATIC_PASSKEY "123456"
+#endif
+
+#endif // USE_STATIC_PASSKEY
+// </e>
+
+
 // <<< end of configuration section >>>
 #endif  // SYS_CONFIG_H

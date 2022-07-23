@@ -72,7 +72,7 @@ static void lfclk_init(void)
 //------------------------------------------------------------------------------
 void app_time_Init(void)
 {
-#ifdef DISABLE_SOFTDEVICE
+#if defined(DISABLE_SOFTDEVICE) && DISABLE_SOFTDEVICE
   lfclk_init();
 #endif
   // Initialize timer module

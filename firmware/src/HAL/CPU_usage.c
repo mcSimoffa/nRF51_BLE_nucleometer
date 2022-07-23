@@ -5,7 +5,7 @@
 #include "CPU_usage.h"
 
 #define NRF_LOG_MODULE_NAME     "CPU_usage"
-#define NRF_LOG_LEVEL           2
+#define NRF_LOG_LEVEL           3
 #define NRF_LOG_INFO_COLOR      5          
 #include "nrf_log.h"
 
@@ -25,7 +25,7 @@ static void OnTimerEvt(void* context)
 static void pwr_mgmt_run(void)
 {
     // Wait for an event.
-#if defined(SOFTDEVICE_PRESENT) && !defined(DISABLE_SOFTDEVICE)
+#if defined(SOFTDEVICE_PRESENT) && (!defined(DISABLE_SOFTDEVICE) || (DISABLE_SOFTDEVICE == 0))
     ret_code_t ret_code = sd_app_evt_wait();
     if (ret_code == NRF_ERROR_SOFTDEVICE_NOT_ENABLED)
     {
@@ -47,7 +47,7 @@ static void pwr_mgmt_run(void)
 //------------------------------------------------------------------------------
 void CPU_usage_Startup(void)
 {
-#ifdef CPU_USAGE_MONITOR
+#if defined(CPU_USAGE_MONITOR) && CPU_USAGE_MONITOR
   ret_code_t error = app_timer_create(&timer, APP_TIMER_MODE_REPEATED, OnTimerEvt);
   ASSERT(error == NRF_SUCCESS);
   onTimerEvt = false;
@@ -55,7 +55,7 @@ void CPU_usage_Startup(void)
   ASSERT(error == NRF_SUCCESS);
 #endif
 
-#if !defined (SOFTDEVICE_PRESENT) || defined(DISABLE_SOFTDEVICE)
+#if !defined (SOFTDEVICE_PRESENT) || (defined(DISABLE_SOFTDEVICE) && DISABLE_SOFTDEVICE)
     SCB->SCR |= SCB_SCR_SEVONPEND_Msk;
 #endif
 }
@@ -63,7 +63,7 @@ void CPU_usage_Startup(void)
 //------------------------------------------------------------------------------
 void CPU_usage_Sleep(void)
 {
-#ifdef CPU_USAGE_MONITOR
+#if defined(CPU_USAGE_MONITOR) && CPU_USAGE_MONITOR
   static uint32_t tickBeforeSleep;
   static uint32_t tickAfterSleep;
   tickBeforeSleep = app_timer_cnt_get();
