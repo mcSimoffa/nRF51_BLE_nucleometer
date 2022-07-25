@@ -5,7 +5,7 @@
 #include "nrf_drv_clock.h"
 #include "app_time_lib.h"
 
-#define NRF_LOG_MODULE_NAME     RTC
+#define NRF_LOG_MODULE_NAME     "time_lib"
 #define NRF_LOG_LEVEL           3
 #include "nrf_log.h"
 

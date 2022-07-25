@@ -16,7 +16,7 @@
       arm_interwork="No"
       arm_keep_preprocessor_output="Yes"
       arm_library_architecture="v6M"
-      arm_linker_heap_size="256"
+      arm_linker_heap_size="0"
       arm_linker_process_stack_size="0"
       arm_linker_stack_size="1024"
       arm_linker_variant="GNU"
@@ -32,6 +32,7 @@
       gcc_debugging_level="Level 3"
       gcc_entry_point="Reset_Handler"
       gcc_optimization_level="None"
+      libcxx="No"
       link_linker_script_file="$(ProjectDir)/nRF/Device/Linker/ses_nrf51822_xxaa.icf"
       linker_memory_map_file=""
       linker_output_format="None"
@@ -81,21 +82,25 @@
         <file file_name="src/BLE/adv.c" />
         <file file_name="src/BLE/conn.c" />
         <file file_name="src/BLE/bond_mgmt_srv.c">
-          <configuration Name="Debug" build_exclude_from_build="Yes" />
+          <configuration Name="Debug" build_exclude_from_build="No" />
         </file>
         <file file_name="src/BLE/pm.c" />
       </folder>
     </folder>
     <configuration
       Name="Debug"
+      arm_linker_symbols_files="sym"
       c_additional_options=""
       c_preprocessor_definitions="DEBUG;DEBUG_NRF;DEBUG_NRF_USER"
       c_user_include_directories=""
       debug_additional_load_file="$(SDK12.3_DIR)/components/softdevice/s130/hex/s130_nrf51_2.0.1_softdevice.hex"
       debug_target_connection="J-Link"
+      debug_type_file="$(StudioDir)/bin/libc++.xml"
       gcc_debugging_level="Level 3"
+      libcxx="No"
       linker_memory_map_file=""
-      linker_printf_width_precision_supported="Yes" />
+      linker_printf_width_precision_supported="Yes"
+      linker_scanf_fmt_level="int" />
     <folder Name="nRF_BLE">
       <file file_name="$(SDK12.3_DIR)/components/ble/common/ble_advdata.c" />
       <file file_name="$(SDK12.3_DIR)/components/ble/common/ble_srv_common.c">

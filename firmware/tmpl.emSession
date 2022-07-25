@@ -1,10 +1,10 @@
 <!DOCTYPE CrossStudio_Session_File>
 <session>
  <Bookmarks>
-  <BookmarkItem objectName="" line="959" column="12" path="D:/nRF51_BLE_nucleometer/Application/main.c" number="4" extra="static void application_timers_start(void)" color="5"/>
+  <BookmarkItem objectName="" line="797" column="2" path="D:/nRF51_BLE_nucleometer/Application/main.c" number="2" extra="err_code = app_timer_create(&amp;m_analogPart_timer_id, APP_TIMER_MODE_REPEATED, analogPart_timeout_handler);" color="5"/>
   <BookmarkItem objectName="" line="104" column="29" path="D:/nRF51_BLE_nucleometer/Application/analog_part.c" number="1" extra="HV_param.BatteryVoltage = p_event->data.sample.sample;" color="5"/>
   <BookmarkItem objectName="" line="316" column="32" path="D:/nRF51_BLE_nucleometer/Application/main.c" number="3" extra="static void battery_level_update(void)" color="5"/>
-  <BookmarkItem objectName="" line="797" column="2" path="D:/nRF51_BLE_nucleometer/Application/main.c" number="2" extra="err_code = app_timer_create(&amp;m_analogPart_timer_id, APP_TIMER_MODE_REPEATED, analogPart_timeout_handler);" color="5"/>
+  <BookmarkItem objectName="" line="959" column="12" path="D:/nRF51_BLE_nucleometer/Application/main.c" number="4" extra="static void application_timers_start(void)" color="5"/>
  </Bookmarks>
  <Breakpoints groups="Breakpoints" active_group="Breakpoints">
   <BreakpointListItem trigger="Execute" line="0" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="0x1aef6" group="Breakpoints" type="Breakpoint" state="3" filename="D:/nRF51_BLE_nucleometer" useHWbreakpoint="false"/>
@@ -12,6 +12,8 @@
   <BreakpointListItem trigger="" line="464" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="4" filename="components/libraries/bsp/bsp.c" useHWbreakpoint="false"/>
   <BreakpointListItem trigger="" line="9" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="4" filename="Application/fs_data_init.s" useHWbreakpoint="false"/>
   <BreakpointListItem trigger="" line="452" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="4" filename="components/libraries/fstorage/fstorage.c" useHWbreakpoint="false"/>
+  <BreakpointListItem trigger="" line="140" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="src/BLE/pm.c" useHWbreakpoint="false"/>
+  <BreakpointListItem trigger="" line="37" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="src/BLE/pm.c" useHWbreakpoint="false"/>
   <Exceptions set="HardFault"/>
  </Breakpoints>
  <ExecutionProfileWindow/>
@@ -34,12 +36,10 @@
   <ProjectSessionItem path="tmpl"/>
   <ProjectSessionItem path="tmpl;tmpl"/>
   <ProjectSessionItem path="tmpl;tmpl;BLE Services"/>
-  <ProjectSessionItem path="tmpl;tmpl;Board Definition"/>
-  <ProjectSessionItem path="tmpl;tmpl;Board Support"/>
   <ProjectSessionItem path="tmpl;tmpl;config"/>
-  <ProjectSessionItem path="tmpl;tmpl;Device"/>
   <ProjectSessionItem path="tmpl;tmpl;nRF Libraries"/>
   <ProjectSessionItem path="tmpl;tmpl;nRF_BLE"/>
+  <ProjectSessionItem path="tmpl;tmpl;nRF_Drivers"/>
   <ProjectSessionItem path="tmpl;tmpl;SoftDevice"/>
   <ProjectSessionItem path="tmpl;tmpl;src"/>
   <ProjectSessionItem path="tmpl;tmpl;src;APPL"/>
@@ -68,6 +68,9 @@
  <Watch1>
   <Watches active="1" update="Never">
    <Watchpoint expression="base_uuid" name="base_uuid" radix="16" linenumber="42" filename="src/BLE/adv.c"/>
+   <Watchpoint expression="sizeof(pm_peer_data_bonding_t)" name="sizeof(pm_peer_data_bonding_t)" radix="-1" linenumber="0" filename=""/>
+   <Watchpoint expression="record_desc" name="record_desc" radix="-1" linenumber="243" filename="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/peer_manager/peer_data_storage.c"/>
+   <Watchpoint expression="record" name="record" radix="-1" linenumber="243" filename="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/peer_manager/peer_data_storage.c"/>
   </Watches>
  </Watch1>
  <Watch2>
@@ -80,24 +83,36 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/ble_main.c" useBinaryEdit="0" left="0" path="src/BLE/conn.c" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="47" y="35" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/ble_main.c" useBinaryEdit="0" left="0" path="src/BLE/conn.c" selected="0" top="0" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="24" y="9" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/main.c" useBinaryEdit="0" left="0" path="src/BLE/conn.h" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="5" y="187" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="src/BLE/adv.c" selected="0" top="175" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="42" y="9" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="src/BLE/adv.c" selected="0" top="9" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="2" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/main.c" useBinaryEdit="0" left="0" path="src/BLE/adv.h" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="12" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/conn.c" useBinaryEdit="0" left="0" path="src/main.c" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="17" y="93" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/conn.c" useBinaryEdit="0" left="0" path="src/BLE/ble_main.c" selected="1" top="69" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="149" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/conn.c" useBinaryEdit="0" left="0" path="src/main.c" selected="0" top="141" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="2" y="93" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/conn.c" useBinaryEdit="0" left="0" path="src/BLE/ble_main.c" selected="0" top="79" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="8" y="3" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/ble_main.c" useBinaryEdit="0" left="0" path="src/BLE/bond_mgmt_srv.h" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="67" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="src/BLE/pm.c" selected="0" top="33" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="64" y="106" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/common/ble_conn_params.c" selected="0" top="71" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="10" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/ble_main.c" useBinaryEdit="0" left="0" path="src/BLE/pm.h" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="130" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="src/BLE/bond_mgmt_srv.c" selected="0" top="120" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/libraries/fifo/app_fifo.c" selected="0" top="40" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/libraries/util/app_util_platform.c" selected="0" top="58" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="1" y="795" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/libraries/fds/fds.c" selected="0" top="777" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/libraries/bsp/bsp.c" selected="0" top="146" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/libraries/bsp/bsp_btn_ble.c" selected="0" top="211" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/libraries/bsp/bsp_nfc.c" selected="0" top="39" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/boards/boards.c" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="23" y="167" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/ble_main.c" useBinaryEdit="0" left="0" path="src/BLE/pm.c" selected="0" top="132" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="15" y="3" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/ble_main.c" useBinaryEdit="0" left="0" path="src/BLE/pm.h" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="1" y="96" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/ble_main.c" useBinaryEdit="0" left="0" path="src/BLE/bond_mgmt_srv.c" selected="1" top="96" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="704" useTextEdit="1" openedFrom="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/peer_manager/peer_manager_types.h" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/softdevice/s130/headers/ble_gap.h" selected="0" top="667" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="2" y="195" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/bond_mgmt_srv.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/ble_services/experimental_nrf_ble_bms/nrf_ble_bms.c" selected="0" top="169" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="54" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/libraries/util/app_error_weak.c" selected="0" top="34" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="75" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/libraries/util/app_error.c" selected="0" top="55" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="5" y="470" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/pm.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/peer_manager/peer_manager.c" selected="0" top="33" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="8" y="63" useTextEdit="1" openedFrom="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/peer_manager/peer_manager.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/softdevice/s130/headers/ble_err.h" selected="0" top="43" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="10" y="300" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/conn.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/softdevice/s130/headers/ble.h" selected="0" top="280" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="2" y="89" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/ble_main.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/softdevice/s130/headers/ble_gatts.h" selected="0" top="69" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="19" y="474" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/adv.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/ble_advertising/ble_advertising.c" selected="0" top="445" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="680" useTextEdit="1" openedFrom="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/ble_advertising/ble_advertising.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/common/ble_advdata.c" selected="0" top="653" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="11" y="425" useTextEdit="1" openedFrom="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/peer_manager/peer_manager.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/peer_manager/id_manager.c" selected="0" top="30" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="32" y="50" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/peer_manager/gatt_cache_manager.c" selected="0" top="36" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="45" y="83" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/peer_manager/peer_database.c" selected="0" top="73" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="23" y="425" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/peer_manager/security_manager.c" selected="0" top="395" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="246" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/peer_manager/peer_data_storage.c" selected="0" top="246" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="104" useTextEdit="1" openedFrom="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/peer_manager/peer_data_storage.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/peer_manager/peer_id.c" selected="0" top="69" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="173" useTextEdit="1" openedFrom="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/peer_manager/peer_database.h" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/peer_manager/peer_manager_types.h" selected="0" top="154" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="8" y="73" useTextEdit="1" openedFrom="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/peer_manager/peer_database.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/peer_manager/pm_buffer.h" selected="0" top="54" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="56" useTextEdit="1" openedFrom="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/peer_manager/pm_buffer.h" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/peer_manager/pm_buffer.c" selected="0" top="49" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="63" useTextEdit="1" openedFrom="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/peer_manager/peer_database.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/peer_manager/peer_database.h" selected="0" top="44" codecName="Default"/>
  </Files>
  <ARMCrossStudioWindow activeProject="tmpl" fileDialogDefaultFilter="*" autoConnectTarget="J-Link" buildConfiguration="Debug" sessionSettings="" debugSearchFileMap="../../../../../../components/drivers_nrf/common/nrf_drv_common.h&#xa;&#xa;../../../../../../components/drivers_nrf/hal/nrf_clock.h&#xa;&#xa;../../../../../../components/toolchain/cmsis/include/core_cm4.h&#xa;" fileDialogInitialDirectory="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>

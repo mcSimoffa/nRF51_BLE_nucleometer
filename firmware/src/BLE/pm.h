@@ -7,4 +7,6 @@ void peer_manager_init(bool erase_bonds);
 
 void pm_evt_handler(pm_evt_t const * p_evt);
 
+void pm_secure_initiate(uint16_t conn_handle);
+
 #endif // PM_H__

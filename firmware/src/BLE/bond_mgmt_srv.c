@@ -35,7 +35,7 @@ static uint8_t   mem[MEM_BUFF_SIZE];
 
 /**@brief Function for handling events from bond management service.
  */
-static void bms_evt_handler(nrf_ble_bms_t * p_ess, nrf_ble_bms_evt_t * p_evt)
+static void evt_handler(nrf_ble_bms_t * p_ess, nrf_ble_bms_evt_t * p_evt)
 {
     ret_code_t err_code;
 
@@ -107,7 +107,7 @@ static void delete_all_bonds(nrf_ble_bms_t const * p_bms)
  *
  * @param[in]   nrf_error   Error code containing information about what went wrong.
  */
-static void service_error_handler(uint32_t nrf_error)
+static void error_handler(uint32_t nrf_error)
 {
   APP_ERROR_HANDLER(nrf_error);
 }
@@ -147,8 +147,8 @@ void BMS_init(void)
     memset(&bms_init, 0, sizeof(bms_init));
 
     m_bms_bonds_to_delete        = ble_conn_state_user_flag_acquire();
-    bms_init.evt_handler         = bms_evt_handler;
-    bms_init.error_handler       = service_error_handler;
+    bms_init.evt_handler         = evt_handler;
+    bms_init.error_handler       = error_handler;
 #if USE_AUTHORIZATION_CODE
     bms_init.feature.delete_requesting_auth         = true;
     bms_init.feature.delete_all_auth                = true;
@@ -186,7 +186,7 @@ void BMS_on_ble_evt(ble_evt_t * p_ble_evt)
 }
 
 // ---------------------------------------------------------------------------
-void delete_disconnected_bonds(void)
+void BMS_delete_disconnected_bonds(void)
 {
     uint32_t err_code;
     sdk_mapped_flags_key_list_t conn_handle_list = ble_conn_state_conn_handles();

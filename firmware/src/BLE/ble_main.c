@@ -47,15 +47,15 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
   {
     case BLE_GAP_EVT_CONNECTED:
       NRF_LOG_INFO("%s: Connected\n", (uint32_t)__func__);
-      //err_code = bsp_indication_set(BSP_INDICATE_CONNECTED);
       uint16_t conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
-    //  BMS_set_conn_handle(conn_handle);
+      BMS_set_conn_handle(conn_handle);
       BLE_conn_handle_set(conn_handle);
+      pm_secure_initiate(conn_handle);
       break;
 
     case BLE_GAP_EVT_DISCONNECTED:
       NRF_LOG_INFO("%s: Disconnected\n", (uint32_t)__func__);
-//      delete_disconnected_bonds();
+      BMS_delete_disconnected_bonds();
       BLE_conn_handle_set(BLE_CONN_HANDLE_INVALID);
       break;
 
@@ -78,12 +78,12 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
       char passkey[7];
       memcpy(passkey, p_ble_evt->evt.gap_evt.params.passkey_display.passkey, 6);
       passkey[6] = 0;
-      NRF_LOG_INFO("Passkey: %s", nrf_log_push(passkey));
+      NRF_LOG_INFO("Passkey: %s\n", nrf_log_push(passkey));
       break;
     }
 
     default:
-      NRF_LOG_DEBUG("%s: event %d\n", (uint32_t)__func__, p_ble_evt->header.evt_id);
+      NRF_LOG_DEBUG("%s: event 0x%X\n", (uint32_t)__func__, p_ble_evt->header.evt_id);
       break;
     }
 }
@@ -101,9 +101,8 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
 {
     ble_conn_state_on_ble_evt(p_ble_evt);
     pm_on_ble_evt(p_ble_evt);
-//    BMS_on_ble_evt(p_ble_evt);
+    BMS_on_ble_evt(p_ble_evt);
     ble_conn_params_on_ble_evt(p_ble_evt);
-    //bsp_btn_ble_on_ble_evt(p_ble_evt);
     on_ble_evt(p_ble_evt);
     ble_advertising_on_ble_evt(p_ble_evt);
 }
@@ -219,7 +218,7 @@ void BLE_Init(void)
 {
   ble_stack_init();
   
-  bool erase_bonds = false;
+  bool erase_bonds = true;
   peer_manager_init(erase_bonds);
   if (erase_bonds == true)
   {
@@ -228,12 +227,12 @@ void BLE_Init(void)
 
   gap_params_init();
 
-  #ifdef USE_STATIC_PASSKEY 
+#if defined(USE_STATIC_PASSKEY) && USE_STATIC_PASSKEY
     static_passkey_def();
-  #endif
+#endif
 
   advertising_init();
-  //BMS_init();
+  BMS_init();
   conn_params_init();
   advertising_start();
 }

@@ -4,6 +4,8 @@
 
 #include "CPU_usage.h"
 
+#if defined(CPU_USAGE_MONITOR) && CPU_USAGE_MONITOR
+
 #define NRF_LOG_MODULE_NAME     "CPU_usage"
 #define NRF_LOG_LEVEL           3
 #define NRF_LOG_INFO_COLOR      5          
@@ -20,6 +22,7 @@ static void OnTimerEvt(void* context)
 {
   onTimerEvt = true;
 }
+#endif
 
 //------------------------------------------------------------------------------
 static void pwr_mgmt_run(void)
