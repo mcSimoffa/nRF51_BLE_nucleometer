@@ -9,8 +9,8 @@
 typedef struct
 {
   uint64_t  sec;  // number of seconds
-  uint32_t  ms;   // number of milliseconds (1/1000 s)
-  uint32_t  frac; // or fractions (1/32768 s)
+  int16_t   ms;   // number of milliseconds (1/1000 s)
+  int16_t   frac; // or fractions (1/32768 s)
 } timestr_t;
 
 
@@ -18,12 +18,6 @@ typedef struct
   \brief Initializes 64-bit time library based on app_timer
 */
 void app_time_Init(void);
-
-
-/*! ---------------------------------------------------------------------------
-  \brief Start 64-bit time library based on app_timer
-*/
-void app_time_Startup(void);
 
 
 /*! ---------------------------------------------------------------------------

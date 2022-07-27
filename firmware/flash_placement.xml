@@ -9,6 +9,7 @@
 <ProgramSection alignment="4" load="Yes" name=".dtors"/>
 <ProgramSection alignment="4" load="Yes" name=".ctors"/>
 <ProgramSection alignment="4" load="Yes" name=".rodata"/>
+<ProgramSection alignment="4" keep="Yes" load="Yes" name=".button_handlers" inputsections="*(.button_handlers*)" address_symbol="__start_button_handlers" end_symbol="__stop_button_handlers"/>
 <ProgramSection alignment="4" load="Yes" name=".ARM.exidx" address_symbol="__exidx_start" end_symbol="__exidx_end"/>
 <ProgramSection alignment="4" load="Yes" runin=".fast_run" name=".fast"/>
 <ProgramSection alignment="4" load="Yes" runin=".data_run" name=".data"/>

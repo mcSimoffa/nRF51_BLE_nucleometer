@@ -6,7 +6,7 @@
 #include "app_time_lib.h"
 
 #define NRF_LOG_MODULE_NAME     "time_lib"
-#define NRF_LOG_LEVEL           3
+#define NRF_LOG_LEVEL           0
 #include "nrf_log.h"
 
 #define MAX_RTC_COUNTER_VAL       0x00FFFFFF  // (inherit from app_timer.c) maximum value of the RTC counter
@@ -41,7 +41,7 @@ APP_TIMER_DEF(ovfl_tmr);
 static void refresh_64bit_value()
 {
   uint32_t now = app_timer_cnt_get();
-  if (now <  app_time_s.time.field.low)
+  if (now <  (uint32_t)app_time_s.time.field.low)
   {
     app_time_s.time.field.high++;
   }
@@ -82,12 +82,8 @@ void app_time_Init(void)
   //create timer to watch overflow RTC scale 
   ret_code_t err = app_timer_create(&ovfl_tmr, APP_TIMER_MODE_REPEATED, onHalfRangeTimerEvt);
   ASSERT(err == NRF_SUCCESS);
-}
 
-//------------------------------------------------------------------------------
-void app_time_Startup(void)
-{
-  ret_code_t err = app_timer_start(ovfl_tmr, HALF_RTC_COUNTER_VAL, NULL);
+  err = app_timer_start(ovfl_tmr, HALF_RTC_COUNTER_VAL, NULL);
   ASSERT(err == NRF_SUCCESS);
 }
 
@@ -125,7 +121,7 @@ uint64_t app_time_Get_UTC(void)
 void app_time_Ticks_to_struct(uint64_t ticks, timestr_t *timestr)
 {
   timestr->sec = ticks >> 15;
-  timestr->frac = (uint32_t)(ticks & 0x7FFF);
+  timestr->frac = (int32_t)(ticks & 0x7FFF);
   timestr->ms = timestr->frac * 1000 / APP_TIMER_CLOCK_FREQ;
 }
 

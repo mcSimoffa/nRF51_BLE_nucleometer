@@ -216,6 +216,7 @@ static void ble_stack_init(void)
 
 void BLE_Init(void)
 {
+#if !defined(DISABLE_SOFTDEVICE) || (DISABLE_SOFTDEVICE == 0)
   ble_stack_init();
   
   bool erase_bonds = true;
@@ -235,4 +236,5 @@ void BLE_Init(void)
   BMS_init();
   conn_params_init();
   advertising_start();
+#endif
 }

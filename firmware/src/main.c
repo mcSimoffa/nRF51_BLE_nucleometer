@@ -7,13 +7,21 @@
 #include "CPU_usage.h"
 #include "HighVoltagePump.h"
 #include "particle_cnt.h"
+#include "button.h"
 #include "ble_main.h"
 
 
 #define NRF_LOG_MODULE_NAME "APP"
 #include "nrf_log.h"
 
-#define DEAD_BEEF                       0xDEADBEEF                                  /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
+#define DEAD_BEEF    0xDEADBEEF //Value used as error code on stack dump, can be used to identify stack location on stack unwind
+
+
+void button_cb(button_event_t event);
+void button_cb1(button_event_t event);
+
+BUTTON_REGISTER_HANDLER(m_button_cb) = button_cb;
+BUTTON_REGISTER_HANDLER(m_button_cb1) = button_cb1;
 
 /**@brief Callback function for asserts in the SoftDevice.
  *
@@ -45,6 +53,18 @@ static uint32_t log_time_provider()
   return (log_timestr.sec*1000 + log_timestr.ms);
 }
 
+
+void button_cb(button_event_t event) 
+{
+  NRF_LOG_INFO("event %d\n", (uint8_t)event.num);
+}
+
+void button_cb1(button_event_t event) 
+{
+  NRF_LOG_INFO("EVENT %d\n", (uint8_t)event.num);
+}
+
+
 /*!  ---------------------------------------------------------------------------
   \brief Function for application main entry.``
  ---------------------------------------------------------------------------  */
@@ -55,7 +75,7 @@ int main(void)
 
   ret_code_t err_code = NRF_LOG_INIT(log_time_provider);
   ASSERT(err_code == NRF_SUCCESS);
-  
+  button_Init();
   BLE_Init();
 
   CPU_usage_Startup();
@@ -63,6 +83,7 @@ int main(void)
   HV_pump_Init();
   particle_cnt_Init();
  
+  button_Startup();
   //particle_cnt_Startup();
   //HV_pump_Startup();
 
@@ -70,6 +91,7 @@ int main(void)
   // Enter main loop.
   while (true)
   {
+    button_Process();
     if (NRF_LOG_PROCESS() == false)
     {
       CPU_usage_Sleep();

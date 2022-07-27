@@ -10,4 +10,10 @@
 #define ORANGE_LED_PIN                15
 
 #define PULSE_PIN                     02
+
+#define BUTTON_PIN                    17
+#define BUTTONS                       {BUTTON_PIN}
+#define BUTTONS_ACTIVE_LEVEL          {0}
+#define BUTTONS_PULL                  {NRF_GPIO_PIN_PULLUP}
+
 #endif // PIN_MAP_H

@@ -25,7 +25,7 @@
       arm_target_device_name="nRF51822_xxAA"
       arm_target_interface_type="SWD"
       c_preprocessor_definitions="NRF51822;NRF51;INITIALIZE_USER_SECTIONS;APP_ENTRY_POINT=main;ARM_MATH_CM0;BOARD_CUSTOM;SOFTDEVICE_PRESENT;S130;BLE_STACK_SUPPORT_REQD;NRF_SD_BLE_API_VERSION=2;USE_APP_CONFIG"
-      c_user_include_directories="$(SDK12.3_DIR)/components/device;$(SDK12.3_DIR)/components/toolchain;$(SDK12.3_DIR)/components/toolchain/cmsis/include;$(SDK12.3_DIR)/components/boards;$(SDK12.3_DIR)/components/drivers_nrf/hal;$(SDK12.3_DIR)/components/drivers_nrf/clock;$(SDK12.3_DIR)/components/drivers_nrf/common;$(SDK12.3_DIR)/components/drivers_nrf/gpiote;$(SDK12.3_DIR)/components/drivers_nrf/delay;$(SDK12.3_DIR)/components/drivers_nrf/uart;$(SDK12.3_DIR)/components/drivers_nrf/ppi;$(SDK12.3_DIR)/components/drivers_nrf/adc;$(SDK12.3_DIR)/components/drivers_nrf/timer;$(SDK12.3_DIR)/components/drivers_nrf/hal;$(SDK12.3_DIR)/components/drivers_nrf/lpcomp;$(SDK12.3_DIR)/components/ble/common;$(SDK12.3_DIR)/components/ble/ble_advertising;$(SDK12.3_DIR)/components/ble/peer_manager;$(SDK12.3_DIR)/components/ble/ble_services/ble_dis;$(SDK12.3_DIR)/components/ble/ble_services/ble_bas;$(SDK12.3_DIR)/components/ble/ble_services/ble_lbs;$(SDK12.3_DIR)/components/ble/nrf_ble_qwr;$(SDK12.3_DIR)\\components\\ble\\ble_services\\experimental_nrf_ble_bms;$(SDK12.3_DIR)/components/libraries/util;$(SDK12.3_DIR)/components/libraries/bsp;$(SDK12.3_DIR)/components/libraries/button;$(SDK12.3_DIR)/components/libraries/timer;$(SDK12.3_DIR)/components/libraries/fds;$(SDK12.3_DIR)/components/libraries/log;$(SDK12.3_DIR)/components/libraries/log/src;$(SDK12.3_DIR)/components/libraries/experimental_section_vars;$(SDK12.3_DIR)/components/libraries/fstorage;$(SDK12.3_DIR)/components/libraries/sensorsim;$(SDK12.3_DIR)/components/libraries/pwr_mgmt;$(SDK12.3_DIR)/components/softdevice/common/softdevice_handler;$(SDK12.3_DIR)/components/softdevice/s130/headers;$(SDK12.3_DIR)/external/segger_rtt;nRF;src;src/HAL;src/APPL;src/BLE;config;."
+      c_user_include_directories="$(SDK12.3_DIR)/components/device;$(SDK12.3_DIR)/components/toolchain;$(SDK12.3_DIR)/components/toolchain/cmsis/include;$(SDK12.3_DIR)/components/boards;$(SDK12.3_DIR)/components/drivers_nrf/hal;$(SDK12.3_DIR)/components/drivers_nrf/clock;$(SDK12.3_DIR)/components/drivers_nrf/common;$(SDK12.3_DIR)/components/drivers_nrf/gpiote;$(SDK12.3_DIR)/components/drivers_nrf/delay;$(SDK12.3_DIR)/components/drivers_nrf/uart;$(SDK12.3_DIR)/components/drivers_nrf/ppi;$(SDK12.3_DIR)/components/drivers_nrf/adc;$(SDK12.3_DIR)/components/drivers_nrf/timer;$(SDK12.3_DIR)/components/drivers_nrf/hal;$(SDK12.3_DIR)/components/drivers_nrf/lpcomp;$(SDK12.3_DIR)/components/ble/common;$(SDK12.3_DIR)/components/ble/ble_advertising;$(SDK12.3_DIR)/components/ble/peer_manager;$(SDK12.3_DIR)/components/ble/ble_services/ble_dis;$(SDK12.3_DIR)/components/ble/ble_services/ble_bas;$(SDK12.3_DIR)/components/ble/ble_services/ble_lbs;$(SDK12.3_DIR)/components/ble/nrf_ble_qwr;$(SDK12.3_DIR)\\components\\ble\\ble_services\\experimental_nrf_ble_bms;$(SDK12.3_DIR)/components/libraries/util;$(SDK12.3_DIR)/components/libraries/bsp;$(SDK12.3_DIR)/components/libraries/button;$(SDK12.3_DIR)/components/libraries/timer;$(SDK12.3_DIR)/components/libraries/fds;$(SDK12.3_DIR)/components/libraries/log;$(SDK12.3_DIR)/components/libraries/log/src;$(SDK12.3_DIR)/components/libraries/experimental_section_vars;$(SDK12.3_DIR)/components/libraries/fstorage;$(SDK12.3_DIR)/components/libraries/sensorsim;$(SDK12.3_DIR)/components/libraries/pwr_mgmt;$(SDK12.3_DIR)/components/softdevice/common/softdevice_handler;$(SDK12.3_DIR)/components/softdevice/s130/headers;$(SDK12.3_DIR)/external/segger_rtt;nRF;src;src/HAL;src/APPL;src/BLE;src/SSL;config;."
       debug_register_definition_file="$(SDK12.3_DIR)/svd/nrf51.svd"
       debug_start_from_entry_point_symbol="No"
       debug_target_connection="J-Link"
@@ -73,6 +73,7 @@
         <file file_name="src/HAL/CPU_usage.c" />
         <file file_name="src/HAL/Timer_anomaly_fix.c" />
         <file file_name="src/HAL/common_part.c" />
+        <file file_name="src/HAL/button.c" />
       </folder>
       <folder Name="BCS">
         <file file_name="src/ble_ios.c" />
@@ -85,6 +86,10 @@
           <configuration Name="Debug" build_exclude_from_build="No" />
         </file>
         <file file_name="src/BLE/pm.c" />
+      </folder>
+      <folder Name="SSL">
+        <file file_name="src/SSL/esm_lib.c" />
+        <file file_name="src/SSL/ringbuf.c" />
       </folder>
     </folder>
     <configuration
