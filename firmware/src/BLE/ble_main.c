@@ -12,6 +12,7 @@
 #include "fstorage.h"
 
 #include "adv.h"
+#include "adv_ctrl.h"
 #include "conn.h"
 #include "bond_mgmt_srv.h"
 #include "pm.h"
@@ -88,6 +89,28 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
     }
 }
 
+void ble_advertising_on_ble_evt(ble_evt_t const * p_ble_evt)
+{
+    switch (p_ble_evt->header.evt_id)
+    {
+        case BLE_GAP_EVT_CONNECTED:
+            NRF_LOG_DEBUG("Connect");
+            break;
+
+        // Upon disconnection, whitelist will be activated and direct advertising is started.
+        case BLE_GAP_EVT_DISCONNECTED:
+            NRF_LOG_DEBUG("Disconnect");
+            break;
+
+        // Upon time-out, the next advertising mode is started.
+        case BLE_GAP_EVT_TIMEOUT:
+            NRF_LOG_DEBUG("Timeout");
+            break;
+
+        default:
+            break;
+    }
+}
 
 
 /*! \brief Function for dispatching a BLE stack event to all modules with a BLE stack event handler.
@@ -213,7 +236,7 @@ static void ble_stack_init(void)
 }
 
 
-
+//------------------------------------------------------------------------------
 void BLE_Init(void)
 {
   dbclichHandler_Init();
@@ -237,10 +260,14 @@ void BLE_Init(void)
   advertising_init();
   BMS_init();
   conn_params_init();
+  advertising_mode_set(BLE_ADV_MODE_FAST, true);
+  advertising_stop();
   advertising_start();
 #endif
 }
 
+
+//------------------------------------------------------------------------------
 void BLE_Process(void)
 {
   dbclick_Process();

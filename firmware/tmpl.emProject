@@ -67,6 +67,7 @@
       <folder Name="APPL">
         <file file_name="src/APPL/HighVoltagePump.c" />
         <file file_name="src/APPL/particle_cnt.c" />
+        <file file_name="src/APPL/adv_ctrl.c" />
       </folder>
       <folder Name="HAL">
         <file file_name="src/HAL/app_time_lib.c" />
@@ -112,7 +113,9 @@
       <file file_name="$(SDK12.3_DIR)/components/ble/common/ble_srv_common.c">
         <configuration Name="Debug" build_exclude_from_build="No" />
       </file>
-      <file file_name="$(SDK12.3_DIR)/components/ble/ble_advertising/ble_advertising.c" />
+      <file file_name="ble_advertising.c">
+        <configuration Name="Debug" build_exclude_from_build="Yes" />
+      </file>
       <file file_name="$(SDK12.3_DIR)/components/ble/common/ble_conn_params.c" />
       <file file_name="$(SDK12.3_DIR)/components/ble/common/ble_conn_state.c" />
       <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/gatt_cache_manager.c">
@@ -147,8 +150,12 @@
       <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/security_manager.c">
         <configuration Name="Debug" build_exclude_from_build="No" />
       </file>
-      <file file_name="$(SDK12.3_DIR)/components/ble/ble_services/experimental_nrf_ble_bms/nrf_ble_bms.c" />
-      <file file_name="$(SDK12.3_DIR)/components/ble/nrf_ble_qwr/nrf_ble_qwr.c" />
+      <file file_name="$(SDK12.3_DIR)/components/ble/ble_services/experimental_nrf_ble_bms/nrf_ble_bms.c">
+        <configuration Name="Debug" build_exclude_from_build="No" />
+      </file>
+      <file file_name="$(SDK12.3_DIR)/components/ble/nrf_ble_qwr/nrf_ble_qwr.c">
+        <configuration Name="Debug" build_exclude_from_build="No" />
+      </file>
     </folder>
     <folder Name="nRF_Drivers">
       <file file_name="$(SDK12.3_DIR)/components/drivers_nrf/clock/nrf_drv_clock.c" />
