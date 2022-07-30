@@ -90,6 +90,7 @@
       <folder Name="SSL">
         <file file_name="src/SSL/esm_lib.c" />
         <file file_name="src/SSL/ringbuf.c" />
+        <file file_name="src/SSL/sys_alive.c" />
       </folder>
     </folder>
     <configuration

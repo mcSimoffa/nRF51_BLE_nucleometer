@@ -4,4 +4,6 @@
 
 void BLE_Init(void);
 
+void BLE_Process(void);
+
 #endif // BLE_MAIN_H__

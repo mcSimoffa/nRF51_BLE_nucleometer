@@ -34,6 +34,12 @@ typedef void (*button_handler_t)(button_event_t event);
 
 void button_Init(void);
 void button_Startup(void);
+
+/*!\brief   Process function to propagate callbacks from main context (non-interrupt context).
+ *          Applications should invoke this function every main loop
+ 
+ * \details Function extract event from ringbuf and invoke all subsvribers by callback function
+ */
 void button_Process(void);
 uint8_t button_IsPressed(uint8_t n_btn);
 

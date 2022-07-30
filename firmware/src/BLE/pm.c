@@ -10,10 +10,10 @@
 #define NRF_LOG_MODULE_NAME "PEER_MG"
 #include "nrf_log.h"
 
-#define SEC_PARAM_BOND                  1                                           /**< Perform bonding. */
-#define SEC_PARAM_MITM                  0                                           /**< Man In The Middle protection not required. */
-#define SEC_PARAM_LESC                  0                                           /**< LE Secure Connections not enabled. */
-#define SEC_PARAM_KEYPRESS              0                                           /**< Keypress notifications not enabled. */
+#define SEC_PARAM_BOND                  1     //Perform bonding.
+#define SEC_PARAM_MITM                  0     // Man In The Middle protection not required.
+#define SEC_PARAM_LESC                  0     // LE Secure Connections not enabled.
+#define SEC_PARAM_KEYPRESS              0     // Keypress notifications not enabled.
 
 // I/O capabilities.
 #if defined(USE_STATIC_PASSKEY) && USE_STATIC_PASSKEY
@@ -22,16 +22,14 @@
 #define SEC_PARAM_IO_CAPABILITIES       BLE_GAP_IO_CAPS_NONE
 #endif
 
-#define SEC_PARAM_OOB                   0                                           /**< Out Of Band data not available. */
-#define SEC_PARAM_MIN_KEY_SIZE          7                                           /**< Minimum encryption key size. */
-#define SEC_PARAM_MAX_KEY_SIZE          16                                          /**< Maximum encryption key size. */
-
-#define SECURITY_REQUEST_DELAY          APP_TIMER_TICKS(4000, APP_TIMER_PRESCALER)  /**< Delay after connection until Security Request is sent, if necessary (ticks). */
+#define SEC_PARAM_OOB                   0     // Out Of Band data not available
+#define SEC_PARAM_MIN_KEY_SIZE          7     // Minimum encryption key size.
+#define SEC_PARAM_MAX_KEY_SIZE          16    // Maximum encryption key size.
 
 // ----------------------------------------------------------------------------
 //   PRIVATE VARIABLE
 // ----------------------------------------------------------------------------
-static pm_peer_id_t                     m_peer_id;                                  /**< Device reference handle to the current bonded central. */
+static pm_peer_id_t                     m_peer_id;  // Device reference handle to the current bonded central.
 
 
 
@@ -44,87 +42,87 @@ static pm_peer_id_t                     m_peer_id;                              
  */
 static void pm_evt_handler(pm_evt_t const * p_evt)
 {
-    ret_code_t err_code;
+  ret_code_t err_code;
 
-    switch (p_evt->evt_id)
+  switch (p_evt->evt_id)
+  {
+    case PM_EVT_BONDED_PEER_CONNECTED:
+      NRF_LOG_INFO("PM_EVT_BONDED_PEER_CONNECTED\n");
+      break;
+
+    case PM_EVT_CONN_SEC_SUCCEEDED:
+      NRF_LOG_INFO("PM_EVT_CONN_SEC_SUCCEEDED. Role: %d. conn_handle: %d, Procedure: %d\r\n",
+                   ble_conn_state_role(p_evt->conn_handle),
+                   p_evt->conn_handle,
+                   p_evt->params.conn_sec_succeeded.procedure);
+      break;
+
+    case PM_EVT_CONN_SEC_FAILED:
+      NRF_LOG_INFO("PM_EVT_CONN_SEC_FAILED\n");
+      //err_code = sd_ble_gap_disconnect(BLE_conn_handle_get(), BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION);
+      //BLE_conn_handle_set(BLE_CONN_HANDLE_INVALID);
+      //APP_ERROR_CHECK(err_code);
+      break;
+
+    case PM_EVT_CONN_SEC_CONFIG_REQ:
+      // Reject pairing request from an already bonded peer.
+      NRF_LOG_INFO("PM_EVT_CONN_SEC_CONFIG_REQ\n");
+      pm_conn_sec_config_t conn_sec_config = {.allow_repairing = false};
+      pm_conn_sec_config_reply(p_evt->conn_handle, &conn_sec_config);
+      break;
+
+    case PM_EVT_STORAGE_FULL:
     {
-        case PM_EVT_BONDED_PEER_CONNECTED:
-          NRF_LOG_INFO("PM_EVT_BONDED_PEER_CONNECTED\n");
-          break;
-
-        case PM_EVT_CONN_SEC_SUCCEEDED:
-          NRF_LOG_INFO("PM_EVT_CONN_SEC_SUCCEEDED. Role: %d. conn_handle: %d, Procedure: %d\r\n",
-                       ble_conn_state_role(p_evt->conn_handle),
-                       p_evt->conn_handle,
-                       p_evt->params.conn_sec_succeeded.procedure);
-          break;
-
-        case PM_EVT_CONN_SEC_FAILED:
-          NRF_LOG_INFO("PM_EVT_CONN_SEC_FAILED\n");
-          //err_code = sd_ble_gap_disconnect(BLE_conn_handle_get(), BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION);
-          //BLE_conn_handle_set(BLE_CONN_HANDLE_INVALID);
-          //APP_ERROR_CHECK(err_code);
-          break;
-
-        case PM_EVT_CONN_SEC_CONFIG_REQ:
-          // Reject pairing request from an already bonded peer.
-          NRF_LOG_INFO("PM_EVT_CONN_SEC_CONFIG_REQ\n");
-          pm_conn_sec_config_t conn_sec_config = {.allow_repairing = false};
-          pm_conn_sec_config_reply(p_evt->conn_handle, &conn_sec_config);
-          break;
-
-        case PM_EVT_STORAGE_FULL:
-        {
-          NRF_LOG_INFO("PM_EVT_STORAGE_FULL\n");
-          // Run garbage collection on the flash.
-          err_code = fds_gc();
-          if (err_code == FDS_ERR_BUSY || err_code == FDS_ERR_NO_SPACE_IN_QUEUES)
-          {
-              // Retry.
-          }
-          else
-          {
-            APP_ERROR_CHECK(err_code);
-          }
-          break;
-        }
-
-        case PM_EVT_PEERS_DELETE_SUCCEEDED:
-          NRF_LOG_INFO("PM_EVT_PEERS_DELETE_SUCCEEDED\n");
-          advertising_start();
-          break;
-
-        case PM_EVT_LOCAL_DB_CACHE_APPLY_FAILED:
-          NRF_LOG_INFO("PM_EVT_LOCAL_DB_CACHE_APPLY_FAILED\n");
-          // The local database has likely changed, send service changed indications.
-          pm_local_database_has_changed();
-          break;
-
-        case PM_EVT_PEER_DATA_UPDATE_FAILED:
-          NRF_LOG_INFO("PM_EVT_LOCAL_DB_CACHE_APPLY_FAILED\n");
-          // Assert.
-          APP_ERROR_CHECK(p_evt->params.peer_data_update_failed.error);
-          break;
-
-        case PM_EVT_PEER_DELETE_FAILED:
-          // Assert.
-          APP_ERROR_CHECK(p_evt->params.peer_delete_failed.error);
-          break;
-
-        case PM_EVT_PEERS_DELETE_FAILED:
-          // Assert.
-          APP_ERROR_CHECK(p_evt->params.peers_delete_failed_evt.error);
-          break;
-
-        case PM_EVT_ERROR_UNEXPECTED:
-          // Assert.
-          APP_ERROR_CHECK(p_evt->params.error_unexpected.error);
-          break;
-
-        default:
-          NRF_LOG_INFO("%s: event %d\n", (uint32_t)__func__, p_evt->evt_id);
-          break;
+      NRF_LOG_INFO("PM_EVT_STORAGE_FULL\n");
+      // Run garbage collection on the flash.
+      err_code = fds_gc();
+      if (err_code == FDS_ERR_BUSY || err_code == FDS_ERR_NO_SPACE_IN_QUEUES)
+      {
+          // Retry.
+      }
+      else
+      {
+        APP_ERROR_CHECK(err_code);
+      }
+      break;
     }
+
+    case PM_EVT_PEERS_DELETE_SUCCEEDED:
+      NRF_LOG_INFO("PM_EVT_PEERS_DELETE_SUCCEEDED\n");
+      advertising_start();
+      break;
+
+    case PM_EVT_LOCAL_DB_CACHE_APPLY_FAILED:
+      NRF_LOG_INFO("PM_EVT_LOCAL_DB_CACHE_APPLY_FAILED\n");
+      // The local database has likely changed, send service changed indications.
+      pm_local_database_has_changed();
+      break;
+
+    case PM_EVT_PEER_DATA_UPDATE_FAILED:
+      NRF_LOG_INFO("PM_EVT_LOCAL_DB_CACHE_APPLY_FAILED\n");
+      // Assert.
+      APP_ERROR_CHECK(p_evt->params.peer_data_update_failed.error);
+      break;
+
+    case PM_EVT_PEER_DELETE_FAILED:
+      // Assert.
+      APP_ERROR_CHECK(p_evt->params.peer_delete_failed.error);
+      break;
+
+    case PM_EVT_PEERS_DELETE_FAILED:
+      // Assert.
+      APP_ERROR_CHECK(p_evt->params.peers_delete_failed_evt.error);
+      break;
+
+    case PM_EVT_ERROR_UNEXPECTED:
+      // Assert.
+      APP_ERROR_CHECK(p_evt->params.error_unexpected.error);
+      break;
+
+    default:
+      NRF_LOG_INFO("%s: event %d\n", (uint32_t)__func__, p_evt->evt_id);
+      break;
+  }
 }
 
 

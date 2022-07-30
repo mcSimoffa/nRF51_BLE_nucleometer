@@ -6,7 +6,7 @@
 //==========================================================
 // <q> DISABLE_SOFTDEVICE  - Disable SoftDevice (uses for a step by step debuging)
 #ifndef DISABLE_SOFTDEVICE
-#define DISABLE_SOFTDEVICE 1
+#define DISABLE_SOFTDEVICE 0
 #endif
 
 //==========================================================

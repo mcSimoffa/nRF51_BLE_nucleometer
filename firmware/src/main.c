@@ -2,6 +2,7 @@
 #include "app_error.h"
 #include "nrf_log_ctrl.h"
 
+#include "sys_alive.h"
 #include "app_time_lib.h"
 #include "common_part.h"
 #include "CPU_usage.h"
@@ -17,10 +18,9 @@
 #define DEAD_BEEF    0xDEADBEEF //Value used as error code on stack dump, can be used to identify stack location on stack unwind
 
 
-void button_cb(button_event_t event);
+
 void button_cb1(button_event_t event);
 
-BUTTON_REGISTER_HANDLER(m_button_cb) = button_cb;
 BUTTON_REGISTER_HANDLER(m_button_cb1) = button_cb1;
 
 /**@brief Callback function for asserts in the SoftDevice.
@@ -54,14 +54,9 @@ static uint32_t log_time_provider()
 }
 
 
-void button_cb(button_event_t event) 
-{
-  NRF_LOG_INFO("event %d\n", (uint8_t)event.num);
-}
-
 void button_cb1(button_event_t event) 
 {
-  NRF_LOG_INFO("EVENT %d\n", (uint8_t)event.num);
+  //NRF_LOG_INFO("EVENT %d\n", (uint8_t)event.num);
 }
 
 
@@ -92,7 +87,10 @@ int main(void)
   while (true)
   {
     button_Process();
-    if (NRF_LOG_PROCESS() == false)
+    BLE_Process();
+    bool log_in_process = NRF_LOG_PROCESS();
+    bool sleep_is_locked = sleepLock_check();
+    if ((log_in_process == false) && (sleep_is_locked == false))
     {
       CPU_usage_Sleep();
     }

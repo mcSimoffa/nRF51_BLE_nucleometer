@@ -216,10 +216,12 @@ static void ble_stack_init(void)
 
 void BLE_Init(void)
 {
+  dbclichHandler_Init();
+
 #if !defined(DISABLE_SOFTDEVICE) || (DISABLE_SOFTDEVICE == 0)
   ble_stack_init();
   
-  bool erase_bonds = true;
+  bool erase_bonds = false;
   peer_manager_init(erase_bonds);
   if (erase_bonds == true)
   {
@@ -237,4 +239,9 @@ void BLE_Init(void)
   conn_params_init();
   advertising_start();
 #endif
+}
+
+void BLE_Process(void)
+{
+  dbclick_Process();
 }

@@ -39,7 +39,7 @@ ret_code_t esmEnable(const ESM_t *inst, bool en, ESM_ctx_t *ctx)
   for (uint16_t i=0; i<inst->total_states; i++)
     if (inst->p_states[i].state != rightOrderState)
     {
-      if (ctx->logLevel >= NRF_LOG_LEVEL_ERROR)
+      if (ctx->logLevel >= NRF_LOG_LEVEL)
         NRF_LOG_ERROR("%s: ESM[%s] Element[%d] has jump. Reorder state table\n", (uint32_t)__func__, (uint32_t)inst->esm_name, i);
 
       ASSERT(false);
@@ -63,7 +63,7 @@ ret_code_t esmEnable(const ESM_t *inst, bool en, ESM_ctx_t *ctx)
     ctx->state = 0;
 
   ctx->isInit = en;
-  if (ctx->logLevel >= NRF_LOG_LEVEL_DEBUG)
+  if (ctx->logLevel >= NRF_LOG_LEVEL)
     NRF_LOG_DEBUG("%s: ESM[%s] in %s\n", (uint32_t)__func__,
                     (uint32_t)inst->esm_name, (uint32_t)(en ? "Enabled" : "Disabled"));
 
@@ -90,7 +90,7 @@ bool esmProcess(const ESM_t *inst, ESM_ctx_t *ctx)
         {
           uint16_t new_state = inst->p_states[active_state].p_signals[i].toState;
 
-          if (ctx->logLevel >= NRF_LOG_LEVEL_DEBUG)
+          if (ctx->logLevel >= NRF_LOG_LEVEL)
             NRF_LOG_DEBUG("%s: ESM[%s] sign %d, %s -> %s\n", (uint32_t)__func__, (uint32_t)inst->esm_name, signal,
                 (uint32_t)getNameFromState(inst, active_state),
                 (uint32_t)getNameFromState(inst, new_state));
@@ -107,7 +107,7 @@ bool esmProcess(const ESM_t *inst, ESM_ctx_t *ctx)
       // check: action for a new state should be described 
       if (i == inst->p_states[active_state].total_signals)
       {
-        if (ctx->logLevel >= NRF_LOG_LEVEL_ERROR)
+        if (ctx->logLevel >= NRF_LOG_LEVEL)
           NRF_LOG_ERROR("%s: ESM[%s] For state %d signal %d not described\n",
                           (uint32_t)__func__, (uint32_t)inst->esm_name, active_state, signal);
         ASSERT(false);

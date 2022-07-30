@@ -1,6 +1,7 @@
 #include <sdk_common.h>
 #include <nrf_drv_gpiote.h>
 #include "app_time_lib.h"
+#include "sys_alive.h"
 #include "ringbuf.h"
 
 #include "button.h"
@@ -12,7 +13,7 @@
 #define SW_DEBIUNCE_SUPPRES_CLOCK_MS  10
 
 #define NRF_LOG_MODULE_NAME     "BTN"
-#define NRF_LOG_LEVEL           4
+#define NRF_LOG_LEVEL           2
 #include "nrf_log.h"
 
 // Helper macros for section variables.
@@ -95,6 +96,7 @@ static void event_to_queue(button_event_t event)
   if (ringbufPut(&btn_rb, (uint8_t*)&event, 1) == 1)
   {
     NRF_LOG_DEBUG("%s: Event[btn# %d, state %d]\n", (uint32_t)__func__, event.field.button_num, event.field.pressed);
+    sleepLock();
   }
   else
   {
