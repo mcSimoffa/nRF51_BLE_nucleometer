@@ -1,0 +1,26 @@
+
+OpenDocument="app_error_weak.c", FilePath="c:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/libraries/util/app_error_weak.c", Line=16
+OpenDocument="app_error.c", FilePath="c:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/libraries/util/app_error.c", Line=51
+OpenDocument="ble_main.c", FilePath="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/ble_main.c", Line=239
+OpenDocument="ses_nrf51_Vectors.s", FilePath="D:/Old_Develops/BLE_nucleoMeter/firmware/ses/ses_nrf51_Vectors.s", Line=27
+OpenDocument="main.c", FilePath="D:/Old_Develops/BLE_nucleoMeter/firmware/src/main.c", Line=41
+OpenToolbar="Debug", Floating=0, x=0, y=0
+OpenWindow="Call Stack", DockArea=RIGHT, x=0, y=2, w=465, h=145, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Registers 1", DockArea=RIGHT, x=0, y=3, w=465, h=71, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, FilteredItems=[], RefreshRate=1
+OpenWindow="Disassembly", DockArea=RIGHT, x=0, y=0, w=465, h=422, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Break & Tracepoints", DockArea=LEFT, x=0, y=0, w=502, h=221, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, VectorCatchIndexMask=254
+OpenWindow="Memory 1", DockArea=BOTTOM, x=1, y=0, w=924, h=215, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, EditorAddress=0x3BC20
+OpenWindow="Global Data", DockArea=RIGHT, x=0, y=1, w=465, h=134, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Watched Data 1", DockArea=LEFT, x=0, y=2, w=502, h=168, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Functions", DockArea=LEFT, x=0, y=1, w=502, h=384, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Console", DockArea=BOTTOM, x=0, y=0, w=931, h=215, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+TableHeader="Global Data", SortCol="Name", SortOrder="ASCENDING", VisibleCols=["Name";"Value";"Location";"Size";"Type";"Scope"], ColWidths=[100;153;100;100;100;344]
+TableHeader="Vector Catches", SortCol="", SortOrder="ASCENDING", VisibleCols=["";"Vector Catch";"Description"], ColWidths=[50;300;500]
+TableHeader="Break & Tracepoints", SortCol="", SortOrder="ASCENDING", VisibleCols=["";"Type";"Location";"Extras"], ColWidths=[100;100;100;202]
+TableHeader="Functions", SortCol="Name", SortOrder="ASCENDING", VisibleCols=["Name";"Address";"Size";"#Insts";"Source"], ColWidths=[1314;100;100;100;200]
+TableHeader="Call Stack", SortCol="Function", SortOrder="ASCENDING", VisibleCols=["Function";"Stack Frame";"Source";"PC";"Return Address";"Stack Used"], ColWidths=[174;112;146;100;112;100]
+TableHeader="Power Sampling", SortCol="None", SortOrder="ASCENDING", VisibleCols=["Index";"Time";"Ch 0"], ColWidths=[100;100;100]
+TableHeader="Registers 1", SortCol="Name", SortOrder="ASCENDING", VisibleCols=["Name";"Value";"Description"], ColWidths=[100;105;260]
+TableHeader="Watched Data 1", SortCol="Expression", SortOrder="ASCENDING", VisibleCols=["Expression";"Value";"Location";"Refresh"], ColWidths=[100;100;100;202]
+TableHeader="RegisterSelectionDialog", SortCol="None", SortOrder="ASCENDING", VisibleCols=[], ColWidths=[]
+TableHeader="TargetExceptionDialog", SortCol="Name", SortOrder="ASCENDING", VisibleCols=["Name";"Value";"Address";"Description"], ColWidths=[200;100;100;684]

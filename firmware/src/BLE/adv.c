@@ -1,5 +1,6 @@
-#include <sdk_common.h>
-#include <nrf_assert.h>
+#include "sdk_common.h"
+#include "nrf_assert.h"
+#include "nrf_error.h"
 #include "ble_advertising.h"
 #include "peer_manager.h"
 #include "fstorage.h"
@@ -12,7 +13,7 @@
 
 #define APP_ADV_FAST_INTERVAL           80    //Fast advertising interval (in units of 0.625 ms. This value corresponds to 50 ms.)
 #define APP_ADV_SLOW_INTERVAL           (1600 * 2)  //Slow advertising interval (in units of 0.625 ms. This value corrsponds to 2 seconds)
-#define APP_ADV_FAST_TIMEOUT            10    //The duration of the fast advertising period (in seconds).
+#define APP_ADV_FAST_TIMEOUT            20    //The duration of the fast advertising period (in seconds).
 #define APP_ADV_SLOW_TIMEOUT            30    //The duration of the slow advertising period (in seconds).
 
 #define NRF_LOG_MODULE_NAME "ADV"
@@ -21,39 +22,12 @@
 
 #define SERVICE_UUID 0xfdf0
 
-//------------------------------------------------------------------------------
-//        PRIVATE TYPES
-//------------------------------------------------------------------------------
-typedef union
-{
-  struct
-  {
-    uint64_t  low:48;
-    uint64_t  Mid:16;
-    uint64_t  mId:16;
-    uint64_t  miD:16;
-    uint64_t  var:16;
-    uint64_t  high:16; 
-  } field;
-  ble_uuid128_t uuid128;
-} uuid_128_t;
+
 
 
 //------------------------------------------------------------------------------
 //        PRIVATE VARIABLE
 //------------------------------------------------------------------------------
-// 5d51fdfX-06c2-11ed-aa05-0800200c9a66 x=0...A
-static volatile uuid_128_t base_uuid=
-{
-  .field.low= 0x0800200c9a66,
-  .field.Mid = 0xaa05,
-  .field.mId = 0x11ed,
-  .field.miD = 0x06c2,
-  .field.var = 0x0000,
-  .field.high = 0x5d51,
-};
-
-
 static ble_uuid_t     m_adv_uuids[] = {{SERVICE_UUID,  BLE_UUID_TYPE_BLE},};    // Universally unique service identifiers.
 static pm_peer_id_t   m_whitelist_peers[BLE_GAP_WHITELIST_ADDR_MAX_COUNT];  // List of peers currently in the whitelist.
 static uint32_t       m_whitelist_peer_cnt;                                 // Number of peers currently in the whitelist.
@@ -147,32 +121,10 @@ static bool whitelist_has_entries()
 //-----------------------------------------------------------------------------
 //      PUBLIC FUNCTIONS
 //-----------------------------------------------------------------------------
-void ble_advertising_on_sys_evt(uint32_t sys_evt)
-{
-  uint32_t ret;
-
-  switch (sys_evt)
-  {
-    //When a flash operation finishes, re-attempt to start advertising operations.
-    case NRF_EVT_FLASH_OPERATION_SUCCESS:
-    case NRF_EVT_FLASH_OPERATION_ERROR:
-        if (m_advertising_start_pending)
-        {
-            m_advertising_start_pending = false;
-            advertising_start();
-        }
-        break;
-
-    default:
-        // No implementation needed.
-        break;
-  }
-}
 
 
-/*! ---------------------------------------------------------------------------
- \brief Function for initializing the Advertising functionality.
- */
+
+//-----------------------------------------------------------------------------
 void advertising_init(void)
 {
   // Build and set advertising data
@@ -199,7 +151,7 @@ void advertising_init(void)
   options.ble_adv_slow_enabled           = true;
   options.ble_adv_slow_interval          = APP_ADV_SLOW_INTERVAL;
   options.ble_adv_slow_timeout           = APP_ADV_SLOW_TIMEOUT;
-  
+  NRF_LOG_INFO("Adv Option Init\n");
   // prepare whitelist array and elements binding
   for (int i = 0; i <BLE_GAP_WHITELIST_ADDR_MAX_COUNT ; i++)
   {
@@ -212,9 +164,8 @@ void advertising_init(void)
   }
 }
 
-/*! ---------------------------------------------------------------------------
-* \brief Function for setting advertising mode before start.
- */
+
+//-----------------------------------------------------------------------------
 ret_code_t advertising_mode_set(ble_adv_mode_t advertising_mode, bool whitelist_en)
 {
    // Only BLE_ADV_MODE_FAST and BLE_ADV_MODE_SLOW modes are supporded
@@ -228,10 +179,8 @@ ret_code_t advertising_mode_set(ble_adv_mode_t advertising_mode, bool whitelist_
 }
 
 
-/*! ---------------------------------------------------------------------------
- * \brief Function for starting advertising.
- */
-void advertising_start(void)
+//-----------------------------------------------------------------------------
+ret_code_t advertising_start(void)
 {
   ble_gap_adv_params_t adv_params;
   ret_code_t ret;
@@ -239,8 +188,9 @@ void advertising_start(void)
   // Delay starting advertising until the flash operations are complete.
   if (flash_access_in_progress())
   {
-    m_advertising_start_pending = true;
-    return;
+     NRF_LOG_INFO("%s: BUSY\n", (uint32_t)__func__);
+    return NRF_ERROR_BUSY;
+
   }
 
   // Fetch the whitelist.
@@ -301,10 +251,14 @@ void advertising_start(void)
 
   ret = sd_ble_gap_adv_start(&adv_params);
   APP_ERROR_CHECK(ret);
+  return NRF_SUCCESS;
 }
 
+
+//-----------------------------------------------------------------------------
 void advertising_stop(void)
 {
-   ret_code_t ret = sd_ble_gap_adv_stop();
-   NRF_LOG_DEBUG("Stop Code %d\n",ret);
+  m_advertising_start_pending = false;
+  ret_code_t ret = sd_ble_gap_adv_stop();
+  NRF_LOG_DEBUG("Stop Code %d\n", ret);
 }

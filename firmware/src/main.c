@@ -1,4 +1,4 @@
-#include <sdk_common.h>
+#include "sdk_common.h"
 #include "app_error.h"
 #include "nrf_log_ctrl.h"
 
@@ -13,6 +13,7 @@
 
 
 #define NRF_LOG_MODULE_NAME "APP"
+#define NRF_LOG_LEVEL           4
 #include "nrf_log.h"
 
 #define DEAD_BEEF    0xDEADBEEF //Value used as error code on stack dump, can be used to identify stack location on stack unwind
@@ -61,10 +62,11 @@ void button_cb1(button_event_t event)
 
 
 /*!  ---------------------------------------------------------------------------
-  \brief Function for application main entry.``
+  \brief Function for application main entry.
  ---------------------------------------------------------------------------  */
 int main(void)
 {
+
   common_drv_init();
   app_time_Init();
 
@@ -81,7 +83,6 @@ int main(void)
   button_Startup();
   //particle_cnt_Startup();
   //HV_pump_Startup();
-
 
   // Enter main loop.
   while (true)

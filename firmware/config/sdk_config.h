@@ -34,7 +34,7 @@
  
 
 #ifndef NRF_BLE_QWR_ENABLED
-#define NRF_BLE_QWR_ENABLED 1
+#define NRF_BLE_QWR_ENABLED 0
 #endif
 
 // <q> PEER_MANAGER_ENABLED  - peer_manager - Peer Manager
@@ -3609,7 +3609,7 @@
 // <i> Log data is buffered and can be processed in idle.
 //==========================================================
 #ifndef NRF_LOG_DEFERRED
-#define NRF_LOG_DEFERRED 1
+#define NRF_LOG_DEFERRED 0
 #endif
 #if  NRF_LOG_DEFERRED
 // <o> NRF_LOG_DEFERRED_BUFSIZE - Size of the buffer for logs in words. 

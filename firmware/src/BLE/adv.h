@@ -2,13 +2,20 @@
 #define ADV_H__
 #include "ble_advertising.h"
 
-void ble_advertising_on_sys_evt(uint32_t sys_evt);
-
+/*! ---------------------------------------------------------------------------
+ \brief Function for initializing the Advertising functionality.
+ */
 void advertising_init(void);
 
+/*! ---------------------------------------------------------------------------
+* \brief Function for setting advertising mode before start.
+ */
 ret_code_t advertising_mode_set(ble_adv_mode_t advertising_mode, bool whitelist_en);
 
-void advertising_start(void);
+/*! ---------------------------------------------------------------------------
+ * \brief Function for starting advertising.
+ */
+ret_code_t advertising_start(void);
 
 void advertising_stop(void);
 

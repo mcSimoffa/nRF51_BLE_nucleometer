@@ -1,261 +1,174 @@
-/**
- * Copyright (c) 2013 - 2017, Nordic Semiconductor ASA
- * 
- * All rights reserved.
- * 
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
- * 
- * 1. Redistributions of source code must retain the above copyright notice, this
- *    list of conditions and the following disclaimer.
- * 
- * 2. Redistributions in binary form, except as embedded into a Nordic
- *    Semiconductor ASA integrated circuit in a product or a software update for
- *    such product, must reproduce the above copyright notice, this list of
- *    conditions and the following disclaimer in the documentation and/or other
- *    materials provided with the distribution.
- * 
- * 3. Neither the name of Nordic Semiconductor ASA nor the names of its
- *    contributors may be used to endorse or promote products derived from this
- *    software without specific prior written permission.
- * 
- * 4. This software, with or without modification, must only be used with a
- *    Nordic Semiconductor ASA integrated circuit.
- * 
- * 5. Any software provided in binary form under this license must not be reverse
- *    engineered, decompiled, modified and/or disassembled.
- * 
- * THIS SOFTWARE IS PROVIDED BY NORDIC SEMICONDUCTOR ASA "AS IS" AND ANY EXPRESS
- * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
- * OF MERCHANTABILITY, NONINFRINGEMENT, AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL NORDIC SEMICONDUCTOR ASA OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
- * GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
- * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- * 
- */
 #include "sdk_common.h"
-#include "ble_ios.h"
+#include "app_error.h"
 #include "ble_srv_common.h"
+#include "nrf_assert.h"
+
+#include "ble_ios.h"
+
+#define NRF_LOG_MODULE_NAME "BLEIOS"
+#define NRF_LOG_LEVEL        3
+#include "nrf_log.h"
+//------------------------------------------------------------------------------
+//        PRIVATE TYPES
+//------------------------------------------------------------------------------
 
 
-/**@brief Function for handling the Connect event.
+
+/*! ------------------------------------------------------------------------------
+ * \brief Function for handling the Write event.
  *
- * @param[in] p_ios      Input Output Service structure.
- * @param[in] p_ble_evt  Event received from the BLE stack.
+ * \param[in] cd          Char descriptor pointer.
+ * \param[in] p_ble_evt   Event received from the BLE stack.
  */
-static void on_connect(ble_ios_t * p_ios, ble_evt_t * p_ble_evt)
+static void on_write(const char_desc_t *cd, ble_evt_t const * p_ble_evt)
 {
-    p_ios->conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
+  ble_gatts_evt_write_t const * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
+  NRF_LOG_HEXDUMP_INFO(&p_evt_write->data, p_evt_write->len);
+  if ((p_evt_write->len > 0) && (cd->wrCb != NULL))
+  {
+    cd->wrCb(p_ble_evt->evt.gatts_evt.conn_handle, p_evt_write->len, (uint8_t*)&p_evt_write->data);
+  }
 }
 
 
-/**@brief Function for handling the Disconnect event.
- *
- * @param[in] p_ios      Input Output Service structure.
- * @param[in] p_ble_evt  Event received from the BLE stack.
- */
-static void on_disconnect(ble_ios_t * p_ios, ble_evt_t * p_ble_evt)
+static void on_read(const char_desc_t *cd, ble_evt_t const * p_ble_evt)
 {
-    UNUSED_PARAMETER(p_ble_evt);
-    p_ios->conn_handle = BLE_CONN_HANDLE_INVALID;
+  if (cd->rdCb != NULL)
+  {
+    cd->rdCb(p_ble_evt->evt.gatts_evt.conn_handle);
+  }
 }
 
-
-/**@brief Function for handling the Write event.
- *
- * @param[in] p_ios      Input Output Service structure.
- * @param[in] p_ble_evt  Event received from the BLE stack.
- */
-static void on_write(ble_ios_t * p_ios, ble_evt_t * p_ble_evt)
+//-----------------------------------------------------------------------------
+//      PUBLIC FUNCTIONS
+//-----------------------------------------------------------------------------
+void ble_ios_init(const ble_ios_t *p_ios)
 {
-    ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
+    uint32_t              err_code;
+    ble_uuid_t            ble_uuid;
+    ble_add_char_params_t add_char_params;
 
-    if ((p_evt_write->handle == p_ios->led_char_handles.value_handle) &&
-        (p_evt_write->len > 0) &&
-        (p_ios->ios_input_handler != NULL))
-    {
-        p_ios->ios_input_handler(p_ios, &p_evt_write->data);
-    }
-}
-
-
-void ble_ios_on_ble_evt(ble_ios_t * p_ios, ble_evt_t * p_ble_evt)
-{
-    switch (p_ble_evt->header.evt_id)
-    {
-        case BLE_GAP_EVT_CONNECTED:
-            on_connect(p_ios, p_ble_evt);
-            break;
-
-        case BLE_GAP_EVT_DISCONNECTED:
-            on_disconnect(p_ios, p_ble_evt);
-            break;
-
-        case BLE_GATTS_EVT_WRITE:
-            on_write(p_ios, p_ble_evt);
-            break;
-
-        default:
-            // No implementation needed.
-            break;
-    }
-}
-
-
-/**@brief Function for adding the LED Characteristic.
- *
- * @param[in] p_lbs      LED Button Service structure.
- * @param[in] p_lbs_init LED Button Service initialization structure.
- *
- * @retval NRF_SUCCESS on success, else an error value from the SoftDevice
- */
-static uint32_t input_char_add(ble_ios_t * p_lbs)
-{
-    ble_gatts_char_md_t char_md;
-    ble_gatts_attr_t    attr_char_value;
-    ble_uuid_t          ble_uuid;
-    ble_gatts_attr_md_t attr_md;
-
-    memset(&char_md, 0, sizeof(char_md));
-
-    char_md.char_props.read   = 1;
-    char_md.char_props.write  = 1;
-    char_md.p_char_user_desc  = NULL;
-    char_md.p_char_pf         = NULL;
-    char_md.p_user_desc_md    = NULL;
-    char_md.p_cccd_md         = NULL;
-    char_md.p_sccd_md         = NULL;
-
-    ble_uuid.type = p_lbs->uuid_type;
-    ble_uuid.uuid = LBS_UUID_LED_CHAR;
-
-    memset(&attr_md, 0, sizeof(attr_md));
-
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.read_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.write_perm);
-    attr_md.vloc       = BLE_GATTS_VLOC_STACK;
-    attr_md.rd_auth    = 0;
-    attr_md.wr_auth    = 0;
-    attr_md.vlen       = 0;
-
-    memset(&attr_char_value, 0, sizeof(attr_char_value));
-
-    attr_char_value.p_uuid       = &ble_uuid;
-    attr_char_value.p_attr_md    = &attr_md;
-    attr_char_value.init_len     = INPUT_CHAR_LEN;
-    attr_char_value.init_offs    = 0;
-    attr_char_value.max_len      = INPUT_CHAR_LEN_MAX;
-    attr_char_value.p_value      = NULL;
-
-    return sd_ble_gatts_characteristic_add(p_lbs->service_handle,
-                                           &char_md,
-                                           &attr_char_value,
-                                           &p_lbs->led_char_handles);
-}
-
-
-/**@brief Function for adding the Button Characteristic.
- *
- * @param[in] p_lbs      LED Button Service structure.
- * @param[in] p_lbs_init LED Button Service initialization structure.
- *
- * @retval NRF_SUCCESS on success, else an error value from the SoftDevice
- */
-static uint32_t output_char_add(ble_ios_t * p_lbs)
-{
-    ble_gatts_char_md_t char_md;
-    ble_gatts_attr_md_t cccd_md;
-    ble_gatts_attr_t    attr_char_value;
-    ble_uuid_t          ble_uuid;
-    ble_gatts_attr_md_t attr_md;
-
-    memset(&cccd_md, 0, sizeof(cccd_md));
-
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.write_perm);
-    cccd_md.vloc = BLE_GATTS_VLOC_STACK;
-
-    memset(&char_md, 0, sizeof(char_md));
-
-    char_md.char_props.read   = 1;
-    char_md.char_props.notify = 1;
-    char_md.p_char_user_desc  = NULL;
-    char_md.p_char_pf         = NULL;
-    char_md.p_user_desc_md    = NULL;
-    char_md.p_cccd_md         = &cccd_md;
-    char_md.p_sccd_md         = NULL;
-
-    ble_uuid.type = p_lbs->uuid_type;
-    ble_uuid.uuid = LBS_UUID_BUTTON_CHAR;
-
-    memset(&attr_md, 0, sizeof(attr_md));
-
-    BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.read_perm);
-    BLE_GAP_CONN_SEC_MODE_SET_NO_ACCESS(&attr_md.write_perm);
-    attr_md.vloc       = BLE_GATTS_VLOC_STACK;
-    attr_md.rd_auth    = 0;
-    attr_md.wr_auth    = 0;
-    attr_md.vlen       = 0;
-
-    memset(&attr_char_value, 0, sizeof(attr_char_value));
-
-    attr_char_value.p_uuid       = &ble_uuid;
-    attr_char_value.p_attr_md    = &attr_md;
-    attr_char_value.init_len     = OUTPUT_CHAR_LEN;
-    attr_char_value.init_offs    = 0;
-    attr_char_value.max_len      = OUTPUT_CHAR_LEN_MAX;
-    attr_char_value.p_value      = NULL;
-
-    return sd_ble_gatts_characteristic_add(p_lbs->service_handle,
-                                               &char_md,
-                                               &attr_char_value,
-                                               &p_lbs->button_char_handles);
-}
-
-
-uint32_t ble_ios_init(ble_ios_t * p_ios, ble_ios_input_handler_t input_handler)
-{
-    uint32_t   err_code;
-    ble_uuid_t ble_uuid;
-
-    // Initialize service structure.
-    p_ios->conn_handle       = BLE_CONN_HANDLE_INVALID;
-    p_ios->ios_input_handler = input_handler;
 
     // Add service.
-    ble_uuid128_t base_uuid = {LBS_UUID_BASE};
-    err_code = sd_ble_uuid_vs_add(&base_uuid, &p_ios->uuid_type);
-    VERIFY_SUCCESS(err_code);
+    uint8_t     uuid_type;
+    err_code = sd_ble_uuid_vs_add(&p_ios->p_base_uuid->uuid128, &uuid_type);
+    APP_ERROR_CHECK(err_code);
 
-    ble_uuid.type = p_ios->uuid_type;
-    ble_uuid.uuid = LBS_UUID_SERVICE;
+    ble_uuid.type = uuid_type;
+    ble_uuid.uuid = p_ios->service_uuid;
 
-    err_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY, &ble_uuid, &p_ios->service_handle);
-    VERIFY_SUCCESS(err_code);
+    err_code = sd_ble_gatts_service_add(BLE_GATTS_SRVC_TYPE_PRIMARY, &ble_uuid, p_ios->service_handle);
+    APP_ERROR_CHECK(err_code);
+    
+    // Add Output characteristics.
+    for (uint8_t i=0; i<p_ios->chars_total; i++)
+    {
+      memset(&add_char_params, 0, sizeof(add_char_params));
+      add_char_params.uuid              = p_ios->char_list[i].uuid;
+      add_char_params.uuid_type         = uuid_type;
+      add_char_params.init_len          = p_ios->char_list[i].len.init;
+      add_char_params.max_len           = p_ios->char_list[i].len.max;
+      add_char_params.is_var_len        = p_ios->char_list[i].len.var;
+      add_char_params.char_props        = p_ios->char_list[i].prop;
+      add_char_params.is_defered_read   = true;
 
-    // Add characteristics.
-    err_code = output_char_add(p_ios);
-    VERIFY_SUCCESS(err_code);
+      add_char_params.read_access       = p_ios->char_list[i].rd_access;
+      add_char_params.write_access      = p_ios->char_list[i].wr_access;
+      add_char_params.cccd_write_access = p_ios->char_list[i].cccd_wr_access;
 
-    err_code = input_char_add(p_ios);
-    VERIFY_SUCCESS(err_code);
-
-    return NRF_SUCCESS;
+      err_code = characteristic_add(*p_ios->service_handle, &add_char_params, &p_ios->char_handles[i]);
+      APP_ERROR_CHECK(err_code);
+    }
 }
 
-uint32_t ble_ios_on_output_change(ble_ios_t * p_ios, void * p_value_to_output, uint16_t len)
+
+// -----------------------------------------------------------------------------
+void ble_ios_on_ble_evt(ble_evt_t const * p_ble_evt, void * p_context)
 {
-    ble_gatts_hvx_params_t params;
+  ble_ios_t *p_ios = (ble_ios_t*)p_context;
+  
+  switch (p_ble_evt->header.evt_id)
+  {
+    case BLE_GATTS_EVT_WRITE:
+      for(uint8_t i=0; i<p_ios->chars_total; i++)
+      {
+        if (p_ble_evt->evt.gatts_evt.params.write.handle == p_ios->char_handles[i].value_handle)
+        {
+          NRF_LOG_INFO("got data for UUID 0x%4X\n", p_ios->char_list[i].uuid);
+          on_write(&p_ios->char_list[i], p_ble_evt);
+          break;
+        }
+      }
+      break;
 
-    memset(&params, 0, sizeof(params));
-    params.type = BLE_GATT_HVX_NOTIFICATION;
-    params.handle = p_ios->button_char_handles.value_handle;
-    params.p_data = p_value_to_output;
-    params.p_len = &len;
+    case BLE_GATTS_EVT_RW_AUTHORIZE_REQUEST:
+      if (p_ble_evt->evt.gatts_evt.params.authorize_request.type == BLE_GATTS_AUTHORIZE_TYPE_READ)
+      {
+        for(uint8_t i=0; i<p_ios->chars_total; i++)
+        {
+          if (p_ble_evt->evt.gatts_evt.params.authorize_request.request.read.handle == p_ios->char_handles[i].value_handle)
+          {
+            NRF_LOG_INFO("auth request for UUID 0x%4X\n", p_ios->char_list[i].uuid);
+            on_read(&p_ios->char_list[i], p_ble_evt);
+            break;
+          }
+        }
+      }
+      break;
 
-    return sd_ble_gatts_hvx(p_ios->conn_handle, &params);
+    default:
+      // No implementation needed.
+      break;
+  }
 }
+
+// -----------------------------------------------------------------------------
+ret_code_t ble_ios_rd_reply(uint16_t conn_handle, void *p_data, uint16_t len)
+{
+  ret_code_t ret_code;
+  ble_gatts_rw_authorize_reply_params_t reply_params = {0};
+
+  reply_params.type = BLE_GATTS_AUTHORIZE_TYPE_READ;
+  reply_params.params.read.p_data    = p_data;
+  reply_params.params.read.len       = len;
+  reply_params.params.read.offset    = 0;
+  reply_params.params.read.update    = 1;
+  reply_params.params.read.gatt_status = NRF_SUCCESS;
+
+  ret_code = sd_ble_gatts_rw_authorize_reply(conn_handle, &reply_params);
+  if (ret_code == NRF_ERROR_BUSY)
+  {
+    NRF_LOG_WARNING("%s: retcode BUSY", (uint32_t)__func__, ret_code);
+  }
+  else
+  {
+    APP_ERROR_CHECK(ret_code);
+  }
+  return ret_code;
+}
+
+// -----------------------------------------------------------------------------
+ret_code_t ble_ios_on_output_change(uint16_t conn_handle, ble_ios_t * p_ios, uint16_t uuid, void *p_data, uint8_t len)
+{
+  ble_gatts_hvx_params_t params = {0};
+  uint16_t length = len;
+  uint16_t value_handle;
+
+  for(uint8_t i=0; i<p_ios->chars_total; i++)
+  {
+    if (p_ios->char_list[i].uuid == uuid)
+    {
+      value_handle = p_ios->char_handles[i].value_handle;
+      NRF_LOG_INFO("Set data for UUID 0x%4X handle %d\n", uuid, value_handle);
+
+      params.type   = BLE_GATT_HVX_NOTIFICATION;
+      params.handle = value_handle;
+      params.p_data = (uint8_t*)p_data;
+      params.p_len  = &length;
+
+      return sd_ble_gatts_hvx(conn_handle, &params);
+    }
+  }
+  ASSERT(false);  //unknown UUID
+}
+

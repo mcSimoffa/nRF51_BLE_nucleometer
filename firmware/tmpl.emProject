@@ -84,7 +84,7 @@
         <file file_name="src/BLE/adv.c" />
         <file file_name="src/BLE/conn.c" />
         <file file_name="src/BLE/bond_mgmt_srv.c">
-          <configuration Name="Debug" build_exclude_from_build="No" />
+          <configuration Name="Debug" build_exclude_from_build="Yes" />
         </file>
         <file file_name="src/BLE/pm.c" />
       </folder>
@@ -151,10 +151,10 @@
         <configuration Name="Debug" build_exclude_from_build="No" />
       </file>
       <file file_name="$(SDK12.3_DIR)/components/ble/ble_services/experimental_nrf_ble_bms/nrf_ble_bms.c">
-        <configuration Name="Debug" build_exclude_from_build="No" />
+        <configuration Name="Debug" build_exclude_from_build="Yes" />
       </file>
       <file file_name="$(SDK12.3_DIR)/components/ble/nrf_ble_qwr/nrf_ble_qwr.c">
-        <configuration Name="Debug" build_exclude_from_build="No" />
+        <configuration Name="Debug" build_exclude_from_build="Yes" />
       </file>
     </folder>
     <folder Name="nRF_Drivers">

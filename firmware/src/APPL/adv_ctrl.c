@@ -1,9 +1,12 @@
 #include <sdk_common.h>
 #include <nrf_assert.h>
+#include "softdevice_handler.h"
 #include "app_time_lib.h"
 #include "esm_lib.h"
 #include "sys_alive.h"
 #include "button.h"
+#include "conn.h"
+#include "adv.h"
 
 #include "adv_ctrl.h"
 
@@ -22,38 +25,44 @@ typedef enum
   STATE_RELEASED1,
   STATE_PRESSED2,
   STATE_RELEASED2,
-} dbclick_state_t;
+} adv_ctrl_state_t;
 
 typedef enum
 {
   SIGNAL_NO_ACTION = 0,
   SIGNAL_BUTTON_ACTION,
   SIGNAL_TIMER_EXPIRED,
-} dbclick_signal_t;
+} adv_ctrl_signal_t;
 
 typedef struct
 {
   uint8_t isTimrEvt:1;
   uint8_t isPressedEvt:1;
   uint8_t isReleaseEvt:1;
-} dbclick_ctx_t;
+  uint8_t adv_en:1;
+  uint8_t fds_busy:1;
+} adv_ctrl_ctx_t;
 
 //------------------------------------------------------------------------------
 //        PROTOTYPES
 //------------------------------------------------------------------------------
 static void button_cb(button_event_t event);
 
-
+//------------------------------------------------------------------------------
+//        PRIVATE VARIABLES
+//------------------------------------------------------------------------------
 static ESM_ctx_t      dbclick_esm_ctx = {.logLevel = 4};
-static dbclick_ctx_t  dbclick_ctx;
+static adv_ctrl_ctx_t  adv_ctrl_ctx;
 
 BUTTON_REGISTER_HANDLER(m_button_cb) = button_cb;
 APP_TIMER_DEF(to_tmr);
 
 //------------------------------------------------------------------------------
+//        PRIVATE FUNCTIONS
+//------------------------------------------------------------------------------
 static void OnTimerEvent(void * p_context)
 {
-  dbclick_ctx.isTimrEvt = 1;
+  adv_ctrl_ctx.isTimrEvt = 1;
   sleepLock();
 }
 
@@ -63,9 +72,13 @@ static void button_cb(button_event_t event)
   if (event.field.button_num == 0)
   {
     if (event.field.pressed == 1)
-      dbclick_ctx.isPressedEvt = 1;
+    {
+      adv_ctrl_ctx.isPressedEvt = 1;
+    }
     else
-      dbclick_ctx.isReleaseEvt = 1;
+    {
+      adv_ctrl_ctx.isReleaseEvt = 1;
+    }
 
     sleepLock();
   }
@@ -74,10 +87,10 @@ static void button_cb(button_event_t event)
 //------------------------------------------------------------------------------
 static uint16_t  idleProc(void * ctx)
 {
-  if(dbclick_ctx.isPressedEvt)
+  if(adv_ctrl_ctx.isPressedEvt)
   {
-    dbclick_ctx.isPressedEvt = 0;
-    dbclick_ctx.isReleaseEvt = 0;
+    adv_ctrl_ctx.isPressedEvt = 0;
+    adv_ctrl_ctx.isReleaseEvt = 0;
     return SIGNAL_BUTTON_ACTION;
   }
   return SIGNAL_NO_ACTION;
@@ -86,15 +99,15 @@ static uint16_t  idleProc(void * ctx)
 //------------------------------------------------------------------------------
 static uint16_t  waitPressed(void * ctx)
 {
-  if(dbclick_ctx.isTimrEvt)
+  if(adv_ctrl_ctx.isTimrEvt)
   {
-    dbclick_ctx.isTimrEvt = 0;
+    adv_ctrl_ctx.isTimrEvt = 0;
     return SIGNAL_TIMER_EXPIRED;
   }
 
-  if(dbclick_ctx.isPressedEvt)
+  if(adv_ctrl_ctx.isPressedEvt)
   {
-    dbclick_ctx.isPressedEvt = 0;
+    adv_ctrl_ctx.isPressedEvt = 0;
     return SIGNAL_BUTTON_ACTION;
   }
   return SIGNAL_NO_ACTION;
@@ -103,15 +116,15 @@ static uint16_t  waitPressed(void * ctx)
 //------------------------------------------------------------------------------
 static uint16_t  waitReleased(void * ctx)
 {
-  if(dbclick_ctx.isTimrEvt)
+  if(adv_ctrl_ctx.isTimrEvt)
   {
-    dbclick_ctx.isTimrEvt = 0;
+    adv_ctrl_ctx.isTimrEvt = 0;
     return SIGNAL_TIMER_EXPIRED;
   }
 
-  if(dbclick_ctx.isReleaseEvt)
+  if(adv_ctrl_ctx.isReleaseEvt)
   {
-    dbclick_ctx.isReleaseEvt = 0;
+    adv_ctrl_ctx.isReleaseEvt = 0;
     return SIGNAL_BUTTON_ACTION;
   }
   return SIGNAL_NO_ACTION;
@@ -122,7 +135,7 @@ static void timerRestart(uint32_t duration_tick)
 {
   ret_code_t err_code = app_timer_stop(to_tmr);
   APP_ERROR_CHECK(err_code);
-  dbclick_ctx.isTimrEvt = 0;
+  adv_ctrl_ctx.isTimrEvt = 0;
   
   err_code = app_timer_start(to_tmr, duration_tick, NULL);
   APP_ERROR_CHECK(err_code);
@@ -143,14 +156,17 @@ static void longInterval(void *ctx)
 //-----------------------------------------------------------------------------
 static void singleClickAction(void *ctx)
 {
-  NRF_LOG_INFO("ADV START WITH WHITELIST\n");
-
+  NRF_LOG_INFO("set adv mode %d whitelist %d\n", BLE_ADV_MODE_FAST, true);
+  advertising_mode_set(BLE_ADV_MODE_FAST, true);
+  adv_ctrl_ctx.adv_en = 1;
 }
 
 //-----------------------------------------------------------------------------
 static void dbclickAction(void *ctx)
 {
-  NRF_LOG_INFO("ADV START WITHOUT WHITELIST\n");
+  NRF_LOG_INFO("set adv mode %d whitelist %d\n", BLE_ADV_MODE_FAST, false);
+  advertising_mode_set(BLE_ADV_MODE_FAST, false);
+  adv_ctrl_ctx.adv_en = 1;
 }
 
 //------------------------------------------------------------------------------
@@ -188,10 +204,10 @@ static const ESM_t dbclick_esm =
 
 
 
-/*! ---------------------------------------------------------------------------
- \brief Function for initializing button double click processing.
- */
-void dbclichHandler_Init(void)
+//------------------------------------------------------------------------------
+//        EXTERN FUNCTIONS
+//------------------------------------------------------------------------------
+void adv_ctrl_Init(void)
 {
   ret_code_t err_code = app_timer_create(&to_tmr, APP_TIMER_MODE_SINGLE_SHOT, OnTimerEvent);
   APP_ERROR_CHECK(err_code);
@@ -202,8 +218,47 @@ void dbclichHandler_Init(void)
 }
 
 //------------------------------------------------------------------------------
-void dbclick_Process(void)
+void adv_ctrl_Process(void)
 {
   if (esmProcess(&dbclick_esm, &dbclick_esm_ctx) == true)
+  {
     sleepLock();
+  }
+
+  if ((adv_ctrl_ctx.adv_en == 1) && (adv_ctrl_ctx.fds_busy == 0))
+  {
+    adv_ctrl_ctx.adv_en = 0;
+    if (BLE_conn_handle_get() == BLE_CONN_HANDLE_INVALID)
+    {
+      advertising_stop();
+      NRF_LOG_INFO("ADV START\n");
+      if (advertising_start() == NRF_ERROR_BUSY)
+      {
+        adv_ctrl_ctx.fds_busy = 1;
+      }
+    }
+    else
+    {
+      NRF_LOG_WARNING("No ADV during connection active");
+    }
+  }
+}
+
+//------------------------------------------------------------------------------
+void ble_advertising_on_sys_evt(uint32_t sys_evt)
+{
+  uint32_t ret;
+
+  switch (sys_evt)
+  {
+    //When a flash operation finishes, clear certain flag.
+    case NRF_EVT_FLASH_OPERATION_SUCCESS: //FALLTHROUGH
+    case NRF_EVT_FLASH_OPERATION_ERROR:
+      adv_ctrl_ctx.fds_busy = 0;
+      sleepLock();
+      break;
+
+    default:
+      break;
+  }
 }

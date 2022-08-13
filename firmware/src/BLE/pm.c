@@ -11,7 +11,7 @@
 #include "nrf_log.h"
 
 #define SEC_PARAM_BOND                  1     //Perform bonding.
-#define SEC_PARAM_MITM                  0     // Man In The Middle protection not required.
+#define SEC_PARAM_MITM                  1     // Man In The Middle protection not required.
 #define SEC_PARAM_LESC                  0     // LE Secure Connections not enabled.
 #define SEC_PARAM_KEYPRESS              0     // Keypress notifications not enabled.
 
@@ -89,7 +89,7 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
 
     case PM_EVT_PEERS_DELETE_SUCCEEDED:
       NRF_LOG_INFO("PM_EVT_PEERS_DELETE_SUCCEEDED\n");
-      advertising_start();
+      //advertising_start();
       break;
 
     case PM_EVT_LOCAL_DB_CACHE_APPLY_FAILED:

@@ -94,11 +94,11 @@ bool app_time_Is_UTC_en(void)
 }
 
 //------------------------------------------------------------------------------
-bool app_time_Set_UTC(uint64_t now_ticks)
+bool app_time_Set_UTC(uint64_t utc_sec)
 {
-  if (now_ticks)
+  if (utc_sec)
   {
-    app_time_s.offset = now_ticks - app_time_s.time.time;
+    app_time_s.offset = (utc_sec << 15) - app_time_s.time.time;
     app_time_s.enabled = true;
   }
   return app_time_s.enabled;
@@ -114,7 +114,7 @@ uint64_t app_time_Get_sys_time(void)
 //------------------------------------------------------------------------------
 uint64_t app_time_Get_UTC(void)
 {
-  return app_time_Get_sys_time() + app_time_s.offset;
+  return (app_time_Get_sys_time() + app_time_s.offset) >> 15;
 }
 
 //-----------------------------------------------------------------------------

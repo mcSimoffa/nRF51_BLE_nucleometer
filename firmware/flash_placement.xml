@@ -2,7 +2,7 @@
 <Root name="Flash Section Placement">
 <MemorySegment name="$(FLASH_NAME:FLASH)">
 <ProgramSection load="no" name=".reserved_flash" start="$(FLASH_PH_START)" size="$(FLASH_START)-$(FLASH_PH_START)" size_symbol="__m_sd_size"/>
-<ProgramSection alignment="4" load="Yes" name=".vectors" start="$(FLASH_START:)"/>
+<ProgramSection alignment="100" load="Yes" name=".vectors" start="$(FLASH_START:)"/>
 <ProgramSection alignment="4" load="Yes" name=".init"/>
 <ProgramSection alignment="4" load="Yes" name=".init_rodata"/>
 <ProgramSection alignment="4" load="Yes" name=".text"/>
@@ -19,7 +19,7 @@
 </MemorySegment>
 <MemorySegment name="$(RAM_NAME:RAM);SRAM">
 <ProgramSection load="no" name=".reserved_ram" start="$(RAM_PH_START)" size="$(RAM_START)-$(RAM_PH_START)" />
-<ProgramSection alignment="4" load="No" name=".vectors_ram" start="$(RAM_START:$(SRAM_START:))"/>
+<ProgramSection alignment="100" load="No" name=".vectors_ram" start="$(RAM_START:$(SRAM_START:))"/>
 <ProgramSection alignment="4" load="No" name=".fast_run"/>
 <ProgramSection alignment="4" load="No" name=".data_run"/>
 <ProgramSection alignment="4" load="No" name=".tdata_run"/>
