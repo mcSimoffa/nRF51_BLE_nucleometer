@@ -76,16 +76,6 @@ static const char_desc_t ios_chars[] =
     .rdCb = NULL,//ios_get_pulse,
   },
   {
-    .uuid = IOS_BARS_CHAR,
-    .len =  {.init = 4, .max = 20, .var = true},
-    .prop = {.read = 1, .write = 1},
-    .rd_access = SEC_JUST_WORKS,
-    .wr_access = SEC_JUST_WORKS,
-    .cccd_wr_access = SEC_JUST_WORKS,
-    .wrCb = NULL,
-    .rdCb = NULL,
-  },
-  {
     .uuid = IOS_DEVSTAT_CHAR,
     .len =  {.init = 1, .max = 3, .var = true},
     .prop = {.read = 1, .write = 1},

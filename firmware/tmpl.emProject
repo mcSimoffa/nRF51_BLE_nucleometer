@@ -75,6 +75,7 @@
         <file file_name="src/HAL/Timer_anomaly_fix.c" />
         <file file_name="src/HAL/common_part.c" />
         <file file_name="src/HAL/button.c" />
+        <file file_name="src/HAL/batMea.c" />
       </folder>
       <folder Name="BCS">
         <file file_name="src/ble_ios.c" />
@@ -169,7 +170,7 @@
       </file>
       <file file_name="$(SDK12.3_DIR)/components/drivers_nrf/ppi/nrf_drv_ppi.c" />
       <file file_name="$(SDK12.3_DIR)/components/drivers_nrf/adc/nrf_drv_adc.c">
-        <configuration Name="Debug" build_exclude_from_build="Yes" />
+        <configuration Name="Debug" build_exclude_from_build="No" />
         <configuration Name="Release" build_exclude_from_build="Yes" />
       </file>
       <file file_name="$(SDK12.3_DIR)/components/drivers_nrf/timer/nrf_drv_timer.c" />

@@ -10,7 +10,7 @@
 #include "particle_cnt.h"
 #include "button.h"
 #include "ble_main.h"
-
+#include "batMea.h"
 
 #define NRF_LOG_MODULE_NAME "APP"
 #define NRF_LOG_LEVEL           4
@@ -85,6 +85,7 @@ int main(void)
   //HV_pump_Startup();
 
   // Enter main loop.
+  //batMea_Start();
   while (true)
   {
     button_Process();
