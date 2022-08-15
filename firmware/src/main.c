@@ -61,6 +61,12 @@ void button_cb1(button_event_t event)
 }
 
 
+static void bat_acqure(uint16_t mv)
+{
+  uint8_t unit = (mv - 1500) >> 3;  //1 unit = 8mV after 1500mV
+  NRF_LOG_INFO("Battery = %d mv, %d unit\n", mv, unit);
+}
+
 /*!  ---------------------------------------------------------------------------
   \brief Function for application main entry.
  ---------------------------------------------------------------------------  */
@@ -85,9 +91,10 @@ int main(void)
   //HV_pump_Startup();
 
   // Enter main loop.
-  //batMea_Start();
+  batMea_Start(bat_acqure);
   while (true)
   {
+    batMea_Process();
     button_Process();
     BLE_Process();
     bool log_in_process = NRF_LOG_PROCESS();

@@ -1,6 +1,12 @@
 #ifndef BATMEA_H
 #define BATMEA_H
 
-void batMea_Start(void);
+#define INVALID_BATT_VOLTAGE    0xFFFF
+
+typedef void (*bat_cb_t)(uint16_t mv);
+
+bool batMea_Start(bat_cb_t bat_cb);
+
+void batMea_Process(void);
 
 #endif //BATMEA_H
