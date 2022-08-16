@@ -13,7 +13,7 @@
 // ----------------------------------------------------------------------------
 //  DEFINE MODULE PARAMETER
 // ----------------------------------------------------------------------------
-#define CNT_EXTRACT_INTERVAL    1000
+#define WATCH_INTERVAL_DEFAULT    1000
 
 
 // ----------------------------------------------------------------------------
@@ -37,6 +37,7 @@ static nrf_ppi_channel_t ppi_pulse_to_count;
 static const nrf_drv_timer_t cntTmr = NRF_DRV_TIMER_INSTANCE(2);
 APP_TIMER_DEF(main_cnt_timer);
 pulse_cnt_t pulse_cnt;
+uint32_t    watch_interval =  MS_TO_TICK(WATCH_INTERVAL_DEFAULT);
 
 
 // ----------------------------------------------------------------------------
@@ -54,6 +55,9 @@ static void OnMainTmr(void* context)
   pulse_cnt.field.low = totalPulse;
 
   NRF_LOG_DEBUG("total pulses %d\n", pulse_cnt.word);
+
+  ret_code_t err_code = app_timer_start(main_cnt_timer, watch_interval, NULL);
+  ASSERT(err_code == NRF_SUCCESS);
 }
 
 // --------------------------------------------------------------------------
@@ -113,7 +117,7 @@ static void cnt_ppi_bind(void)
 // ---------------------------------------------------------------------------
 static void main_timer_init(void)
 {
-  ret_code_t err_code = app_timer_create(&main_cnt_timer, APP_TIMER_MODE_REPEATED, OnMainTmr);
+  ret_code_t err_code = app_timer_create(&main_cnt_timer, APP_TIMER_MODE_SINGLE_SHOT, OnMainTmr);
   ASSERT(err_code == NRF_SUCCESS);
 }
 
@@ -140,6 +144,17 @@ void particle_cnt_Startup()
   
   nrf_drv_timer_enable(&cntTmr);
 
-  err_code = app_timer_start(main_cnt_timer, MS_TO_TICK(CNT_EXTRACT_INTERVAL), NULL);
+  err_code = app_timer_start(main_cnt_timer, watch_interval, NULL);
   ASSERT(err_code == NRF_SUCCESS);
+}
+
+// ---------------------------------------------------------------------------
+void particle_cnt_WatchIntervalSet(uint32_t ms)
+{
+  if ((ms >= 100) && (ms <= 120000))
+  {
+    CRITICAL_REGION_ENTER();
+    watch_interval = MS_TO_TICK(ms);
+    CRITICAL_REGION_EXIT();
+  }
 }

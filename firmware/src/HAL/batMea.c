@@ -29,6 +29,7 @@ static nrf_drv_adc_channel_t m_channel_config =
 static uint16_t mv = INVALID_BATT_VOLTAGE;
 static mea_state_t mea_state;
 static bat_cb_t cb = NULL;
+static void *ctx = NULL;
 static bool isMeaCompleted = false;
 
 //------------------------------------------------------------------------------
@@ -64,13 +65,14 @@ void runmea(void)
 //-----------------------------------------------------------------------------
 //      PUBLIC FUNCTIONS
 //-----------------------------------------------------------------------------
-bool batMea_Start(bat_cb_t bat_cb)
+bool batMea_Start(bat_cb_t bat_cb, void *bat_ctx)
 {
   bool retval = false;
   if (mea_state == BAT_IDLE)
   {
     mea_state = BAT_IN_PROCESS;
     cb = bat_cb;
+    ctx = bat_ctx;
     runmea();
     retval = true;
   }
@@ -85,9 +87,10 @@ void batMea_Process(void)
     isMeaCompleted = false;
     if (cb)
     {
-      cb(mv);
+      cb(mv, ctx);
     }
     cb = NULL;
+    ctx = NULL;
     nrf_drv_adc_uninit();
     mea_state = BAT_IDLE;
   }

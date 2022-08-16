@@ -1,9 +1,11 @@
 #ifndef CONN_H__
 #define CONN_H__
 
-void gap_params_init(void);
+#include "ble_main.h"
 
-void static_passkey_def(void) ;
+void gap_params_init(ble_ctx_t *ctx);
+
+void static_passkey_def(void);
 
 void conn_params_init(void);
 

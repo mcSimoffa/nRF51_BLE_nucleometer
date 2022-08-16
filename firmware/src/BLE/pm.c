@@ -4,7 +4,7 @@
 #include "ble_conn_state.h"
 #include "peer_manager.h"
 #include "fds.h"
-#include "conn.h"
+#include "ble_main.h"
 #include "adv.h"
 
 #define NRF_LOG_MODULE_NAME "PEER_MG"
@@ -30,7 +30,7 @@
 //   PRIVATE VARIABLE
 // ----------------------------------------------------------------------------
 static pm_peer_id_t                     m_peer_id;  // Device reference handle to the current bonded central.
-
+static ble_ctx_t *ble_context;
 
 
 // ----------------------------------------------------------------------------
@@ -51,7 +51,7 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
       break;
 
     case PM_EVT_CONN_SEC_SUCCEEDED:
-      NRF_LOG_INFO("PM_EVT_CONN_SEC_SUCCEEDED. Role: %d. conn_handle: %d, Procedure: %d\r\n",
+      NRF_LOG_INFO("PM_EVT_CONN_SEC_SUCCEEDED. Role: %d. conn_handle: %d, Procedure: %d\n",
                    ble_conn_state_role(p_evt->conn_handle),
                    p_evt->conn_handle,
                    p_evt->params.conn_sec_succeeded.procedure);
@@ -59,9 +59,9 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
 
     case PM_EVT_CONN_SEC_FAILED:
       NRF_LOG_INFO("PM_EVT_CONN_SEC_FAILED\n");
-      //err_code = sd_ble_gap_disconnect(BLE_conn_handle_get(), BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION);
-      //BLE_conn_handle_set(BLE_CONN_HANDLE_INVALID);
-      //APP_ERROR_CHECK(err_code);
+      err_code = sd_ble_gap_disconnect(ble_context->conn_handle, BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION);
+      ble_context->conn_handle = BLE_CONN_HANDLE_INVALID;
+      APP_ERROR_CHECK(err_code);
       break;
 
     case PM_EVT_CONN_SEC_CONFIG_REQ:
@@ -89,7 +89,6 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
 
     case PM_EVT_PEERS_DELETE_SUCCEEDED:
       NRF_LOG_INFO("PM_EVT_PEERS_DELETE_SUCCEEDED\n");
-      //advertising_start();
       break;
 
     case PM_EVT_LOCAL_DB_CACHE_APPLY_FAILED:
@@ -135,11 +134,12 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
  * \param[in] erase_bonds  Indicates whether bonding information should be cleared from
  *                         persistent storage during initialization of the Peer Manager.
  */
-void peer_manager_init(bool erase_bonds)
+void peer_manager_init(bool erase_bonds, ble_ctx_t *ctx)
 {
   ble_gap_sec_params_t sec_param;
   ret_code_t err_code;
 
+  ble_context = ctx;
   err_code = pm_init();
   APP_ERROR_CHECK(err_code);
 

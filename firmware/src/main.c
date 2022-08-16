@@ -61,12 +61,6 @@ void button_cb1(button_event_t event)
 }
 
 
-static void bat_acqure(uint16_t mv)
-{
-  uint8_t unit = (mv - 1500) >> 3;  //1 unit = 8mV after 1500mV
-  NRF_LOG_INFO("Battery = %d mv, %d unit\n", mv, unit);
-}
-
 /*!  ---------------------------------------------------------------------------
   \brief Function for application main entry.
  ---------------------------------------------------------------------------  */
@@ -83,15 +77,14 @@ int main(void)
 
   CPU_usage_Startup();
 
-  HV_pump_Init();
-  particle_cnt_Init();
+  //HV_pump_Init();
+  //particle_cnt_Init();
  
   button_Startup();
   //particle_cnt_Startup();
   //HV_pump_Startup();
 
   // Enter main loop.
-  batMea_Start(bat_acqure);
   while (true)
   {
     batMea_Process();

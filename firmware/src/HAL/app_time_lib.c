@@ -114,7 +114,12 @@ uint64_t app_time_Get_sys_time(void)
 //------------------------------------------------------------------------------
 uint64_t app_time_Get_UTC(void)
 {
-  return (app_time_Get_sys_time() + app_time_s.offset) >> 15;
+  uint64_t retval = 0;
+  if (app_time_s.enabled)
+  {
+    retval = (app_time_Get_sys_time() + app_time_s.offset) >> 15;
+  }
+  return retval;
 }
 
 //-----------------------------------------------------------------------------

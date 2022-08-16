@@ -14,6 +14,8 @@
 #include "conn.h"
 #include "bond_mgmt_srv.h"
 #include "pm.h"
+#include "pm.h"
+#include "batMea.h"
 #include "ble_ios.h"
 
 #include "ble_main.h"
@@ -37,6 +39,7 @@
 //------------------------------------------------------------------------------
 static void ios_set_sys_time(uint16_t conn_handle, uint16_t datalen, uint8_t *p_data);
 static void ios_sys_time_request(uint16_t conn_handle);
+static void ios_dev_stat_request(uint16_t conn_handle);
 
 //------------------------------------------------------------------------------
 //        PRIVATE VARIABLES
@@ -83,7 +86,7 @@ static const char_desc_t ios_chars[] =
     .wr_access = SEC_JUST_WORKS,
     .cccd_wr_access = SEC_JUST_WORKS,
     .wrCb = NULL,
-    .rdCb = NULL,
+    .rdCb = ios_dev_stat_request,
   },
   {
     .uuid = IOS_HW_PARAM_CHAR,
@@ -99,7 +102,7 @@ static const char_desc_t ios_chars[] =
 
 BLE_IOS_DEF(main_ios, &base_uuid, INPUT_OUTPUT_SERV, ios_chars, sizeof(ios_chars)/sizeof(char_desc_t));
 APP_TIMER_DEF(sec_tmr);
-
+static ble_ctx_t ble_ctx;
 
 //------------------------------------------------------------------------------
 //        PRIVATE FUNCTIONS
@@ -122,14 +125,44 @@ static void ios_sys_time_request(uint16_t conn_handle)
   APP_ERROR_CHECK(ret_code);
 }
 
+// ---------------------------------------------------------------------------
+static void bat_acqure(uint16_t mv, void *ctx)
+{
+  ble_ctx_t *context = (ble_ctx_t*)ctx;
+
+  if ((context->conn_handle == BLE_CONN_HANDLE_INVALID) || (context->auth_rd_conn_handle != context->conn_handle))
+  {
+    return; //don't send response if connection was lost or new connection established
+  }
+
+  uint8_t unit = (mv - 1500) >> 3;  //1 unit = 8mV after 1500mV
+  NRF_LOG_INFO("Battery = %d mv, %d unit\n", mv, unit);
+
+  ret_code_t ret_code = ble_ios_rd_reply(context->conn_handle, &unit, sizeof(unit));
+  APP_ERROR_CHECK(ret_code);
+}
+
+// ---------------------------------------------------------------------------
+static void ios_dev_stat_request(uint16_t conn_handle)
+{
+  ble_ctx.auth_rd_conn_handle = conn_handle;
+
+  if (batMea_Start(bat_acqure, (void*)&ble_ctx) == false)
+  {
+    bat_acqure(1500, (void*)&ble_ctx);
+  }
+}
+
 /*! ---------------------------------------------------------------------------
  * \brief Function for secure procedure start by server initiative.
  */
 static void OnTimerEvent(void * p_context)
 {
   NRF_LOG_INFO("SECURE timer\n");
-  if (BLE_conn_handle_get() !=BLE_CONN_HANDLE_INVALID)
-    pm_secure_initiate(BLE_conn_handle_get());
+  if (ble_ctx.conn_handle !=BLE_CONN_HANDLE_INVALID)
+  {
+    pm_secure_initiate(ble_ctx.conn_handle);
+  }
 }
 
 
@@ -148,7 +181,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
     {
       NRF_LOG_INFO("%s: Connected\n", (uint32_t)__func__);
       uint16_t conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
-      BLE_conn_handle_set(conn_handle);
+      ble_ctx.conn_handle = conn_handle;
       ret_code_t error = app_timer_start(sec_tmr, MS_TO_TICK(1000), NULL);
       ASSERT(error == NRF_SUCCESS);
       
@@ -157,7 +190,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
 
     case BLE_GAP_EVT_DISCONNECTED:
       NRF_LOG_INFO("%s: Disconnected\n", (uint32_t)__func__);
-      BLE_conn_handle_set(BLE_CONN_HANDLE_INVALID);
+      ble_ctx.conn_handle = BLE_CONN_HANDLE_INVALID;
       break;
 
     case BLE_GATTC_EVT_TIMEOUT:
@@ -340,22 +373,23 @@ static void ble_stack_init(void)
 //------------------------------------------------------------------------------
 void BLE_Init(void)
 {
-  adv_ctrl_Init();
+  ble_ctx.conn_handle = BLE_CONN_HANDLE_INVALID;
+  adv_ctrl_Init(&ble_ctx);
 
   ret_code_t ret = app_timer_create(&sec_tmr, APP_TIMER_MODE_SINGLE_SHOT, OnTimerEvent);
   ASSERT(ret == NRF_SUCCESS);
 
 #if !defined(DISABLE_SOFTDEVICE) || (DISABLE_SOFTDEVICE == 0)
   ble_stack_init();
-  
+
   bool erase_bonds = false;
-  peer_manager_init(erase_bonds);
+  peer_manager_init(erase_bonds, &ble_ctx);
   if (erase_bonds == true)
   {
     NRF_LOG_INFO("Bonds erased!\r\n");
   }
 
-  gap_params_init();
+  gap_params_init(&ble_ctx);
 
 #if defined(USE_STATIC_PASSKEY) && USE_STATIC_PASSKEY
     static_passkey_def();

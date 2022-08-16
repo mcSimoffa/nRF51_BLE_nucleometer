@@ -1,10 +1,11 @@
 #ifndef ADV_CTRL_H
 #define ADV_CTRL_H
 
+#include "ble_main.h"
 /*! ---------------------------------------------------------------------------
  \brief Function for initializing button double click processing.
  */
-void adv_ctrl_Init(void);
+void adv_ctrl_Init(ble_ctx_t *ctx);
 
 void adv_ctrl_Process(void);
 

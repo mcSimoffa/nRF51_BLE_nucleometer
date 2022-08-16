@@ -7,6 +7,7 @@
 #include "button.h"
 #include "conn.h"
 #include "adv.h"
+#include "ble_main.h"
 
 #include "adv_ctrl.h"
 
@@ -36,11 +37,12 @@ typedef enum
 
 typedef struct
 {
-  uint8_t isTimrEvt:1;
-  uint8_t isPressedEvt:1;
-  uint8_t isReleaseEvt:1;
-  uint8_t adv_en:1;
-  uint8_t fds_busy:1;
+  ble_ctx_t   *ble_context;
+  uint8_t     isTimrEvt:1;
+  uint8_t     isPressedEvt:1;
+  uint8_t     isReleaseEvt:1;
+  uint8_t     adv_en:1;
+  uint8_t     fds_busy:1;
 } adv_ctrl_ctx_t;
 
 //------------------------------------------------------------------------------
@@ -207,8 +209,9 @@ static const ESM_t dbclick_esm =
 //------------------------------------------------------------------------------
 //        EXTERN FUNCTIONS
 //------------------------------------------------------------------------------
-void adv_ctrl_Init(void)
+void adv_ctrl_Init(ble_ctx_t *ctx)
 {
+  adv_ctrl_ctx.ble_context = ctx;
   ret_code_t err_code = app_timer_create(&to_tmr, APP_TIMER_MODE_SINGLE_SHOT, OnTimerEvent);
   APP_ERROR_CHECK(err_code);
 
@@ -228,7 +231,7 @@ void adv_ctrl_Process(void)
   if ((adv_ctrl_ctx.adv_en == 1) && (adv_ctrl_ctx.fds_busy == 0))
   {
     adv_ctrl_ctx.adv_en = 0;
-    if (BLE_conn_handle_get() == BLE_CONN_HANDLE_INVALID)
+    if (adv_ctrl_ctx.ble_context->conn_handle == BLE_CONN_HANDLE_INVALID)
     {
       advertising_stop();
       NRF_LOG_INFO("ADV START\n");
@@ -239,7 +242,7 @@ void adv_ctrl_Process(void)
     }
     else
     {
-      NRF_LOG_WARNING("No ADV during connection active");
+      NRF_LOG_WARNING("No ADV during connection active\n");
     }
   }
 }

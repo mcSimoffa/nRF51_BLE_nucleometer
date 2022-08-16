@@ -1,10 +1,11 @@
-#include <sdk_common.h>
-#include <nrf_assert.h>
-#include <app_error.h>
-#include <app_time_lib.h>
-#include <ble_gap.h>
-#include <ble.h>
-#include <ble_hci.h>
+#include "sdk_common.h"
+#include "nrf_assert.h"
+#include "app_error.h"
+#include "app_time_lib.h"
+#include "ble_gap.h"
+#include "ble.h"
+#include "ble_hci.h"
+#include "ble_main.h"
 #include "ble_conn_params.h"
 
 #define DEVICE_NAME         "NucMe"   //Name of device. Will be included in the advertising data.
@@ -21,7 +22,7 @@
 #define NEXT_CONN_PARAMS_UPDATE_DELAY   APP_TIMER_TICKS(5000, APP_TIMER_PRESCALER)  /**< Time between each call to sd_ble_gap_conn_param_update after the first call (30 seconds). */
 #define MAX_CONN_PARAMS_UPDATE_COUNT    3                                           /**< Number of attempts before giving up the connection parameter negotiation. */
 
-static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID;
+static ble_ctx_t  *ble_context;
 
 // ----------------------------------------------------------------------------
 void static_passkey_def(void) 
@@ -54,7 +55,7 @@ static void on_conn_params_evt(ble_conn_params_evt_t * p_evt)
 
   if (p_evt->evt_type == BLE_CONN_PARAMS_EVT_FAILED)
   {
-    err_code = sd_ble_gap_disconnect(m_conn_handle, BLE_HCI_CONN_INTERVAL_UNACCEPTABLE);
+    err_code = sd_ble_gap_disconnect(ble_context->conn_handle, BLE_HCI_CONN_INTERVAL_UNACCEPTABLE);
     APP_ERROR_CHECK(err_code);
   }
 }
@@ -75,7 +76,7 @@ static void conn_params_error_handler(uint32_t nrf_error)
  * \details This function sets up all the necessary GAP (Generic Access Profile) parameters of the
  *          device including the device name, appearance, and the preferred connection parameters.
  */
-void gap_params_init(void)
+void gap_params_init(ble_ctx_t *ctx)
 {
   uint32_t                err_code;
   ble_gap_conn_params_t   gap_conn_params;
@@ -104,7 +105,8 @@ void gap_params_init(void)
 
 
 
-/*! \brief Function for initializing the Connection Parameters module.
+/*! ---------------------------------------------------------------------------
+ * \brief Function for initializing the Connection Parameters module.
  */
 void conn_params_init(void)
 {
@@ -124,14 +126,4 @@ void conn_params_init(void)
 
   err_code = ble_conn_params_init(&cp_init);
   APP_ERROR_CHECK(err_code);
-}
-
-void BLE_conn_handle_set(uint16_t hnd)
-{
-  m_conn_handle = hnd;
-}
-
-uint16_t BLE_conn_handle_get(void)
-{
-  return m_conn_handle;
 }

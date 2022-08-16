@@ -14,4 +14,7 @@ void particle_cnt_Init();
  ----------------------------------------------------------------------------*/
 void particle_cnt_Startup();
 
+
+void particle_cnt_WatchIntervalSet(uint32_t ms);
+
 #endif	// PARTICLE_CNT_H

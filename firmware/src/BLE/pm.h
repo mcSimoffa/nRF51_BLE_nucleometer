@@ -3,7 +3,7 @@
 
 #include "peer_manager.h"
 
-void peer_manager_init(bool erase_bonds);
+void peer_manager_init(bool erase_bonds, ble_ctx_t *ctx);
 
 void pm_evt_handler(pm_evt_t const * p_evt);
 
