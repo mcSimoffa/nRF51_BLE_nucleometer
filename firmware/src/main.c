@@ -77,12 +77,12 @@ int main(void)
 
   CPU_usage_Startup();
 
-  //HV_pump_Init();
-  //particle_cnt_Init();
+  HV_pump_Init();
+  particle_cnt_Init();
  
   button_Startup();
-  //particle_cnt_Startup();
-  //HV_pump_Startup();
+  particle_cnt_Startup();
+  HV_pump_Startup();
 
   // Enter main loop.
   while (true)

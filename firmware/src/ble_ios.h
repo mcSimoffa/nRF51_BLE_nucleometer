@@ -127,7 +127,7 @@ ret_code_t ble_ios_rd_reply(uint16_t conn_handle, void *p_data, uint16_t len);
  *
  * \retval NRF_SUCCESS If the notification was sent successfully. Otherwise, an error code is returned.
  */
-ret_code_t ble_ios_on_output_change(uint16_t conn_handle, ble_ios_t * p_ios, uint16_t uuid, void *p_data, uint8_t len);
+ret_code_t ble_ios_on_output_change(uint16_t conn_handle, const ble_ios_t *p_ios, uint16_t uuid, void *p_data, uint8_t len);
 
 #ifdef __cplusplus
 }

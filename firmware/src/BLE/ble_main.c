@@ -102,7 +102,11 @@ static const char_desc_t ios_chars[] =
 
 BLE_IOS_DEF(main_ios, &base_uuid, INPUT_OUTPUT_SERV, ios_chars, sizeof(ios_chars)/sizeof(char_desc_t));
 APP_TIMER_DEF(sec_tmr);
-static ble_ctx_t ble_ctx;
+static ble_ctx_t ble_ctx =
+{
+  .conn_handle = BLE_CONN_HANDLE_INVALID,
+  .auth_rd_conn_handle = BLE_CONN_HANDLE_INVALID,
+};
 
 //------------------------------------------------------------------------------
 //        PRIVATE FUNCTIONS
@@ -222,30 +226,6 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
     }
 }
 
-// ----------------------------------------------------------------------------
-void ble_advertising_on_ble_evt(ble_evt_t const * p_ble_evt)
-{
-  switch (p_ble_evt->header.evt_id)
-  {
-    case BLE_GAP_EVT_CONNECTED:
-      NRF_LOG_DEBUG("Connect\n");
-      break;
-
-    // Upon disconnection, whitelist will be activated and direct advertising is started.
-    case BLE_GAP_EVT_DISCONNECTED:
-      NRF_LOG_DEBUG("Disconnect\n");
-      break;
-
-    // Upon time-out, the next advertising mode is started.
-    case BLE_GAP_EVT_TIMEOUT:
-      NRF_LOG_DEBUG("Timeout\n");
-      break;
-
-    default:
-      break;
-  }
-}
-
 /*! ------------------------------------------------------------------------------
  * \brief Function for dispatching a BLE stack event to all modules with a BLE stack event handler.
  *
@@ -324,13 +304,8 @@ static void sys_evt_dispatch(uint32_t sys_evt)
 }
 */
 
-
-
-
-//-----------------------------------------------------------------------------
-//      PUBLIC FUNCTIONS
-//------------------------------------------------------------------------------
-/*! \brief Function for initializing the BLE stack.
+/*! ---------------------------------------------------------------------------
+ * \brief Function for initializing the BLE stack.
  *
  * \details Initializes the SoftDevice and the BLE event interrupt.
  */
@@ -347,7 +322,7 @@ static void ble_stack_init(void)
   ret_code = softdevice_enable_get_default_config(CENTRAL_LINK_COUNT,
                                                   PERIPHERAL_LINK_COUNT,
                                                   &ble_enable_params);
-  ASSERT(ret_code == NRF_SUCCESS);
+  APP_ERROR_CHECK(ret_code);
 
   //Check the ram settings against the used number of links
   CHECK_RAM_START_ADDR(CENTRAL_LINK_COUNT, PERIPHERAL_LINK_COUNT);
@@ -358,26 +333,28 @@ static void ble_stack_init(void)
   #endif
 
   ret_code = softdevice_enable(&ble_enable_params);
-  ASSERT(ret_code == NRF_SUCCESS);
+  APP_ERROR_CHECK(ret_code);
 
   // Register with the SoftDevice handler module for BLE events.
   ret_code = softdevice_ble_evt_handler_set(ble_evt_dispatch);
-  ASSERT(ret_code == NRF_SUCCESS);
+  APP_ERROR_CHECK(ret_code);
 
   // Register with the SoftDevice handler module for BLE events.
   ret_code = softdevice_sys_evt_handler_set(sys_evt_dispatch);
-  ASSERT(ret_code == NRF_SUCCESS);
+  APP_ERROR_CHECK(ret_code);
 }
 
 
+
+//-----------------------------------------------------------------------------
+//      PUBLIC FUNCTIONS
 //------------------------------------------------------------------------------
 void BLE_Init(void)
 {
-  ble_ctx.conn_handle = BLE_CONN_HANDLE_INVALID;
   adv_ctrl_Init(&ble_ctx);
 
   ret_code_t ret = app_timer_create(&sec_tmr, APP_TIMER_MODE_SINGLE_SHOT, OnTimerEvent);
-  ASSERT(ret == NRF_SUCCESS);
+  APP_ERROR_CHECK(ret);
 
 #if !defined(DISABLE_SOFTDEVICE) || (DISABLE_SOFTDEVICE == 0)
   ble_stack_init();
@@ -406,4 +383,47 @@ void BLE_Init(void)
 void BLE_Process(void)
 {
  adv_ctrl_Process();
+}
+
+// ----------------------------------------------------------------------------
+void ble_advertising_on_ble_evt(ble_evt_t const * p_ble_evt)
+{
+  switch (p_ble_evt->header.evt_id)
+  {
+    case BLE_GAP_EVT_CONNECTED:
+      NRF_LOG_DEBUG("Connect\n");
+      break;
+
+    // Upon disconnection, whitelist will be activated and direct advertising is started.
+    case BLE_GAP_EVT_DISCONNECTED:
+      NRF_LOG_DEBUG("Disconnect\n");
+      break;
+
+    // Upon time-out, the next advertising mode is started.
+    case BLE_GAP_EVT_TIMEOUT:
+      NRF_LOG_DEBUG("Timeout\n");
+      break;
+
+    default:
+      break;
+  }
+}
+
+
+// ----------------------------------------------------------------------------
+void ble_ios_pulse_hvx(uint32_t pulse)
+{
+  if (ble_ctx.conn_handle == BLE_CONN_HANDLE_INVALID)
+  {
+    return;
+  }
+
+  ret_code_t ret_code = ble_ios_on_output_change(ble_ctx.conn_handle, &main_ios, IOS_PULSE_CHAR, &pulse, sizeof(pulse));
+
+  if (ret_code != NRF_SUCCESS &&
+      ret_code != BLE_ERROR_INVALID_CONN_HANDLE &&
+      ret_code != NRF_ERROR_INVALID_STATE)
+  {
+      APP_ERROR_CHECK(ret_code);
+  }
 }

@@ -5,6 +5,7 @@
 #include "nrf_drv_ppi.h"
 #include "app_timer.h"
 #include "app_time_lib.h"
+#include "ble_main.h"
 
 #define NRF_LOG_MODULE_NAME "PCNT"
 #define NRF_LOG_LEVEL       4
@@ -55,6 +56,8 @@ static void OnMainTmr(void* context)
   pulse_cnt.field.low = totalPulse;
 
   NRF_LOG_DEBUG("total pulses %d\n", pulse_cnt.word);
+
+  ble_ios_pulse_hvx(pulse_cnt.word);
 
   ret_code_t err_code = app_timer_start(main_cnt_timer, watch_interval, NULL);
   ASSERT(err_code == NRF_SUCCESS);
