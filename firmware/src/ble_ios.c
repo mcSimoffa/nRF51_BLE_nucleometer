@@ -63,6 +63,12 @@ void ble_ios_init(const ble_ios_t *p_ios)
     // Add Output characteristics.
     for (uint8_t i=0; i<p_ios->chars_total; i++)
     {
+      if (((p_ios->char_list[i].is_defered_read == false) && (p_ios->char_list[i].rdCb)) ||
+          ((p_ios->char_list[i].is_defered_read == true) && (p_ios->char_list[i].rdCb == NULL)))
+      {
+        ASSERT(false);
+      }
+
       memset(&add_char_params, 0, sizeof(add_char_params));
       add_char_params.uuid              = p_ios->char_list[i].uuid;
       add_char_params.uuid_type         = uuid_type;
@@ -70,7 +76,7 @@ void ble_ios_init(const ble_ios_t *p_ios)
       add_char_params.max_len           = p_ios->char_list[i].len.max;
       add_char_params.is_var_len        = p_ios->char_list[i].len.var;
       add_char_params.char_props        = p_ios->char_list[i].prop;
-      add_char_params.is_defered_read   = true;
+      add_char_params.is_defered_read   = p_ios->char_list[i].is_defered_read;
 
       add_char_params.read_access       = p_ios->char_list[i].rd_access;
       add_char_params.write_access      = p_ios->char_list[i].wr_access;
@@ -159,7 +165,7 @@ ret_code_t ble_ios_on_output_change(uint16_t conn_handle, const ble_ios_t *p_ios
     if (p_ios->char_list[i].uuid == uuid)
     {
       value_handle = p_ios->char_handles[i].value_handle;
-      NRF_LOG_INFO("Set data for UUID 0x%4X handle %d\n", uuid, value_handle);
+      NRF_LOG_DEBUG("Notify data for UUID 0x%4X handle_value %d\n", uuid, value_handle);
 
       params.type   = BLE_GATT_HVX_NOTIFICATION;
       params.handle = value_handle;
@@ -172,3 +178,24 @@ ret_code_t ble_ios_on_output_change(uint16_t conn_handle, const ble_ios_t *p_ios
   ASSERT(false);  //unknown UUID
 }
 
+// -----------------------------------------------------------------------------
+ret_code_t ble_ios_output_set(uint16_t conn_handle, const ble_ios_t *p_ios, uint16_t uuid, void *p_data, uint8_t len)
+{
+  ble_gatts_value_t gatts_value = {0};
+
+  for(uint8_t i=0; i<p_ios->chars_total; i++)
+  {
+    if (uuid == p_ios->char_list[i].uuid)
+    {
+      NRF_LOG_DEBUG("Set data for UUID 0x%4X handle_value %d\n",
+                    p_ios->char_list[i].uuid, p_ios->char_handles[i].value_handle);
+
+      gatts_value.len     = len;
+      gatts_value.offset  = 0;
+      gatts_value.p_value = p_data;
+      // Update database.
+      return sd_ble_gatts_value_set(conn_handle, p_ios->char_handles[i].value_handle, &gatts_value);
+    }
+  }
+  ASSERT(false);  //unknown UUID
+}

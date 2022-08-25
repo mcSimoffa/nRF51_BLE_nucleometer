@@ -51,6 +51,7 @@ typedef struct
   security_req_t        cccd_wr_access;       // Security requirement for writing the characteristic's CCCD.
   ble_ios_rd_handler_t  rdCb;                 // Callback on authorize read action
   ble_ios_wr_handler_t  wrCb;                 // Callback on write action
+  bool                  is_defered_read;      // The defered read properties cause to BLE_GATTS_EVT_RW_AUTHORIZE_REQUEST event when char is read
 } char_desc_t;
 
 
@@ -128,6 +129,10 @@ ret_code_t ble_ios_rd_reply(uint16_t conn_handle, void *p_data, uint16_t len);
  * \retval NRF_SUCCESS If the notification was sent successfully. Otherwise, an error code is returned.
  */
 ret_code_t ble_ios_on_output_change(uint16_t conn_handle, const ble_ios_t *p_ios, uint16_t uuid, void *p_data, uint8_t len);
+
+
+ret_code_t ble_ios_output_set(uint16_t conn_handle, const ble_ios_t *p_ios, uint16_t uuid, void *p_data, uint8_t len);
+
 
 #ifdef __cplusplus
 }

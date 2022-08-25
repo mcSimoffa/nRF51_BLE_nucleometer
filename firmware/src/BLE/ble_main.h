@@ -17,6 +17,6 @@ void BLE_Init(void);
 
 void BLE_Process(void);
 
-void ble_ios_pulse_hvx(uint32_t pulse);
+void ble_ios_pulse_transfer(uint32_t pulse);
 
 #endif // BLE_MAIN_H__

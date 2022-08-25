@@ -76,6 +76,10 @@
         <file file_name="src/HAL/common_part.c" />
         <file file_name="src/HAL/button.c" />
         <file file_name="src/HAL/batMea.c" />
+        <file file_name="src/HAL/sound.c">
+          <configuration Name="Release" build_exclude_from_build="Yes" />
+          <configuration Name="Debug" build_exclude_from_build="No" />
+        </file>
       </folder>
       <folder Name="BCS">
         <file file_name="src/ble_ios.c" />
@@ -84,9 +88,6 @@
         <file file_name="src/BLE/ble_main.c" />
         <file file_name="src/BLE/adv.c" />
         <file file_name="src/BLE/conn.c" />
-        <file file_name="src/BLE/bond_mgmt_srv.c">
-          <configuration Name="Debug" build_exclude_from_build="Yes" />
-        </file>
         <file file_name="src/BLE/pm.c" />
       </folder>
       <folder Name="SSL">
@@ -111,70 +112,33 @@
       linker_scanf_fmt_level="int" />
     <folder Name="nRF_BLE">
       <file file_name="$(SDK12.3_DIR)/components/ble/common/ble_advdata.c" />
-      <file file_name="$(SDK12.3_DIR)/components/ble/common/ble_srv_common.c">
-        <configuration Name="Debug" build_exclude_from_build="No" />
-      </file>
-      <file file_name="ble_advertising.c">
-        <configuration Name="Debug" build_exclude_from_build="Yes" />
-      </file>
+      <file file_name="$(SDK12.3_DIR)/components/ble/common/ble_srv_common.c" />
       <file file_name="$(SDK12.3_DIR)/components/ble/common/ble_conn_params.c" />
       <file file_name="$(SDK12.3_DIR)/components/ble/common/ble_conn_state.c" />
-      <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/gatt_cache_manager.c">
-        <configuration Name="Debug" build_exclude_from_build="No" />
-      </file>
-      <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/gatts_cache_manager.c">
-        <configuration Name="Debug" build_exclude_from_build="No" />
-      </file>
-      <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/id_manager.c">
-        <configuration Name="Debug" build_exclude_from_build="No" />
-      </file>
-      <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/peer_data.c">
-        <configuration Name="Debug" build_exclude_from_build="No" />
-      </file>
-      <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/peer_data_storage.c">
-        <configuration Name="Debug" build_exclude_from_build="No" />
-      </file>
+      <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/gatt_cache_manager.c" />
+      <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/gatts_cache_manager.c" />
+      <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/id_manager.c" />
+      <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/peer_data.c" />
+      <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/peer_data_storage.c" />
       <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/peer_database.c" />
-      <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/peer_id.c">
-        <configuration Name="Debug" build_exclude_from_build="No" />
-      </file>
-      <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/peer_manager.c">
-        <configuration Name="Debug" build_exclude_from_build="No" />
-      </file>
-      <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/pm_buffer.c">
-        <configuration Name="Debug" build_exclude_from_build="No" />
-      </file>
+      <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/peer_id.c" />
+      <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/peer_manager.c" />
+      <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/pm_buffer.c" />
       <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/pm_mutex.c" />
-      <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/security_dispatcher.c">
-        <configuration Name="Debug" build_exclude_from_build="No" />
-      </file>
-      <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/security_manager.c">
-        <configuration Name="Debug" build_exclude_from_build="No" />
-      </file>
-      <file file_name="$(SDK12.3_DIR)/components/ble/ble_services/experimental_nrf_ble_bms/nrf_ble_bms.c">
-        <configuration Name="Debug" build_exclude_from_build="Yes" />
-      </file>
-      <file file_name="$(SDK12.3_DIR)/components/ble/nrf_ble_qwr/nrf_ble_qwr.c">
-        <configuration Name="Debug" build_exclude_from_build="Yes" />
-      </file>
+      <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/security_dispatcher.c" />
+      <file file_name="$(SDK12.3_DIR)/components/ble/peer_manager/security_manager.c" />
     </folder>
     <folder Name="nRF_Drivers">
       <file file_name="$(SDK12.3_DIR)/components/drivers_nrf/clock/nrf_drv_clock.c" />
       <file file_name="$(SDK12.3_DIR)/components/drivers_nrf/gpiote/nrf_drv_gpiote.c" />
-      <file file_name="$(SDK12.3_DIR)/components/drivers_nrf/common/nrf_drv_common.c">
-        <configuration Name="Debug" build_exclude_from_build="No" />
-      </file>
-      <file file_name="$(SDK12.3_DIR)/components/drivers_nrf/uart/nrf_drv_uart.c">
-        <configuration Name="Debug" build_exclude_from_build="Yes" />
-        <configuration Name="Release" build_exclude_from_build="Yes" />
-      </file>
+      <file file_name="$(SDK12.3_DIR)/components/drivers_nrf/common/nrf_drv_common.c" />
       <file file_name="$(SDK12.3_DIR)/components/drivers_nrf/ppi/nrf_drv_ppi.c" />
-      <file file_name="$(SDK12.3_DIR)/components/drivers_nrf/adc/nrf_drv_adc.c">
-        <configuration Name="Debug" build_exclude_from_build="No" />
-        <configuration Name="Release" build_exclude_from_build="Yes" />
-      </file>
+      <file file_name="$(SDK12.3_DIR)/components/drivers_nrf/adc/nrf_drv_adc.c" />
       <file file_name="$(SDK12.3_DIR)/components/drivers_nrf/timer/nrf_drv_timer.c" />
-      <file file_name="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/drivers_nrf/lpcomp/nrf_drv_lpcomp.c" />
+      <file file_name="$(SDK12.3_DIR)/components/drivers_nrf/lpcomp/nrf_drv_lpcomp.c" />
+      <file file_name="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/drivers_nrf/uart/nrf_drv_uart.c">
+        <configuration Name="Debug" build_exclude_from_build="Yes" />
+      </file>
     </folder>
     <folder Name="nRF Libraries">
       <file file_name="$(SDK12.3_DIR)/components/libraries/util/app_error.c" />
@@ -189,9 +153,6 @@
       <file file_name="$(SDK12.3_DIR)/components/libraries/util/sdk_errors.c" />
       <file file_name="$(SDK12.3_DIR)/components/libraries/util/sdk_mapped_flags.c" />
       <file file_name="$(SDK12.3_DIR)/components/libraries/log/src/nrf_log_frontend.c" />
-      <file file_name="$(SDK12.3_DIR)/components/libraries/fifo/app_fifo.c">
-        <configuration Name="Debug" build_exclude_from_build="Yes" />
-      </file>
       <file file_name="$(SDK12.3_DIR)/components/libraries/log/src/nrf_log_backend_serial.c" />
     </folder>
     <folder Name="SoftDevice">

@@ -25,7 +25,7 @@
 static ble_ctx_t  *ble_context;
 
 // ----------------------------------------------------------------------------
-void static_passkey_def(void) 
+void static_passkey_def(void)
 {
   static uint8_t static_passkey[] = STATIC_PASSKEY;
   ASSERT(sizeof(static_passkey) == (6 + 1));
@@ -56,6 +56,7 @@ static void on_conn_params_evt(ble_conn_params_evt_t * p_evt)
   if (p_evt->evt_type == BLE_CONN_PARAMS_EVT_FAILED)
   {
     err_code = sd_ble_gap_disconnect(ble_context->conn_handle, BLE_HCI_CONN_INTERVAL_UNACCEPTABLE);
+    ble_context->conn_handle = BLE_CONN_HANDLE_INVALID;
     APP_ERROR_CHECK(err_code);
   }
 }

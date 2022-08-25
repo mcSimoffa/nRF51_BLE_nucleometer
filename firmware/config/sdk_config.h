@@ -2680,7 +2680,7 @@
 // <e> UART_ENABLED - nrf_drv_uart - UART/UARTE peripheral driver
 //==========================================================
 #ifndef UART_ENABLED
-#define UART_ENABLED 0
+#define UART_ENABLED 1
 #endif
 #if  UART_ENABLED
 // <o> UART_DEFAULT_CONFIG_HWFC  - Hardware Flow Control
@@ -2738,7 +2738,7 @@
 // <7=> 7 
 
 #ifndef UART_DEFAULT_CONFIG_IRQ_PRIORITY
-#define UART_DEFAULT_CONFIG_IRQ_PRIORITY 7
+#define UART_DEFAULT_CONFIG_IRQ_PRIORITY 1
 #endif
 
 // <q> UART_EASY_DMA_SUPPORT  - Driver supporting EasyDMA

@@ -67,6 +67,7 @@ static const char_desc_t ios_chars[] =
     .cccd_wr_access = SEC_JUST_WORKS,
     .wrCb = ios_set_sys_time,
     .rdCb = ios_sys_time_request,
+    .is_defered_read = true,
   },
   {
     .uuid = IOS_PULSE_CHAR,
@@ -76,7 +77,8 @@ static const char_desc_t ios_chars[] =
     .wr_access = SEC_NO_ACCESS,
     .cccd_wr_access = SEC_JUST_WORKS,
     .wrCb = NULL,
-    .rdCb = NULL,//ios_get_pulse,
+    .rdCb = NULL,
+    .is_defered_read = false,
   },
   {
     .uuid = IOS_DEVSTAT_CHAR,
@@ -87,6 +89,7 @@ static const char_desc_t ios_chars[] =
     .cccd_wr_access = SEC_JUST_WORKS,
     .wrCb = NULL,
     .rdCb = ios_dev_stat_request,
+    .is_defered_read = true,
   },
   {
     .uuid = IOS_HW_PARAM_CHAR,
@@ -97,6 +100,7 @@ static const char_desc_t ios_chars[] =
     .cccd_wr_access = SEC_JUST_WORKS,
     .wrCb = NULL,
     .rdCb = NULL,
+    .is_defered_read = false,
   },
 };
 
@@ -184,6 +188,10 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
     case BLE_GAP_EVT_CONNECTED:
     {
       NRF_LOG_INFO("%s: Connected\n", (uint32_t)__func__);
+
+      ret_code = sd_ble_gatts_sys_attr_set(p_ble_evt->evt.gap_evt.conn_handle, NULL, 0, 0);
+      APP_ERROR_CHECK(ret_code);
+
       uint16_t conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
       ble_ctx.conn_handle = conn_handle;
       ret_code_t error = app_timer_start(sec_tmr, MS_TO_TICK(1000), NULL);
@@ -241,7 +249,6 @@ static void ble_evt_dispatch(ble_evt_t * p_ble_evt)
     ble_conn_params_on_ble_evt(p_ble_evt);
     on_ble_evt(p_ble_evt);
     ble_ios_on_ble_evt(p_ble_evt, (void*)&main_ios);
-    ble_advertising_on_ble_evt(p_ble_evt);
 }
 
 
@@ -344,9 +351,20 @@ static void ble_stack_init(void)
   APP_ERROR_CHECK(ret_code);
 }
 
+//------------------------------------------------------------------------------
+static void retCodeCheck(ret_code_t ret_code)
+{
+  if (ret_code != NRF_SUCCESS &&
+      ret_code != BLE_ERROR_INVALID_CONN_HANDLE &&
+      ret_code != NRF_ERROR_INVALID_STATE)
+  {
+      APP_ERROR_CHECK(ret_code);
+  }
+
+}
 
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 //      PUBLIC FUNCTIONS
 //------------------------------------------------------------------------------
 void BLE_Init(void)
@@ -385,45 +403,20 @@ void BLE_Process(void)
  adv_ctrl_Process();
 }
 
-// ----------------------------------------------------------------------------
-void ble_advertising_on_ble_evt(ble_evt_t const * p_ble_evt)
-{
-  switch (p_ble_evt->header.evt_id)
-  {
-    case BLE_GAP_EVT_CONNECTED:
-      NRF_LOG_DEBUG("Connect\n");
-      break;
-
-    // Upon disconnection, whitelist will be activated and direct advertising is started.
-    case BLE_GAP_EVT_DISCONNECTED:
-      NRF_LOG_DEBUG("Disconnect\n");
-      break;
-
-    // Upon time-out, the next advertising mode is started.
-    case BLE_GAP_EVT_TIMEOUT:
-      NRF_LOG_DEBUG("Timeout\n");
-      break;
-
-    default:
-      break;
-  }
-}
-
 
 // ----------------------------------------------------------------------------
-void ble_ios_pulse_hvx(uint32_t pulse)
+void ble_ios_pulse_transfer(uint32_t pulse)
 {
+  ret_code_t ret_code;
+
   if (ble_ctx.conn_handle == BLE_CONN_HANDLE_INVALID)
   {
     return;
   }
 
-  ret_code_t ret_code = ble_ios_on_output_change(ble_ctx.conn_handle, &main_ios, IOS_PULSE_CHAR, &pulse, sizeof(pulse));
+  ret_code = ble_ios_on_output_change(ble_ctx.conn_handle, &main_ios, IOS_PULSE_CHAR, &pulse, sizeof(pulse));
+  retCodeCheck(ret_code);
 
-  if (ret_code != NRF_SUCCESS &&
-      ret_code != BLE_ERROR_INVALID_CONN_HANDLE &&
-      ret_code != NRF_ERROR_INVALID_STATE)
-  {
-      APP_ERROR_CHECK(ret_code);
-  }
+  ret_code = ble_ios_output_set(ble_ctx.conn_handle, &main_ios, IOS_PULSE_CHAR, &pulse, sizeof(pulse));
+  retCodeCheck(ret_code);
 }

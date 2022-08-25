@@ -57,7 +57,7 @@ static void OnMainTmr(void* context)
 
   NRF_LOG_DEBUG("total pulses %d\n", pulse_cnt.word);
 
-  ble_ios_pulse_hvx(pulse_cnt.word);
+  ble_ios_pulse_transfer(pulse_cnt.word);
 
   ret_code_t err_code = app_timer_start(main_cnt_timer, watch_interval, NULL);
   ASSERT(err_code == NRF_SUCCESS);

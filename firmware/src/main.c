@@ -66,7 +66,8 @@ void button_cb1(button_event_t event)
  ---------------------------------------------------------------------------  */
 int main(void)
 {
-
+//sound_Init();
+//sound_Start();
   common_drv_init();
   app_time_Init();
 

@@ -16,4 +16,6 @@
 #define BUTTONS_ACTIVE_LEVEL          {0}
 #define BUTTONS_PULL                  {NRF_GPIO_PIN_PULLUP}
 
+#define BUZZER_PIN                    06
+
 #endif // PIN_MAP_H
