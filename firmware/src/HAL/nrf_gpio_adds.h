@@ -17,6 +17,9 @@ extern "C" {
  */
 __STATIC_INLINE void nrf_gpio_cfg_strong_output(uint32_t pin_number);
 
+__STATIC_INLINE void nrf_gpio_pull_set(uint32_t pin_number, nrf_gpio_pin_pull_t pull);
+
+
 
 __STATIC_INLINE void nrf_gpio_cfg_strong_output(uint32_t pin_number)
 {
@@ -30,6 +33,16 @@ __STATIC_INLINE void nrf_gpio_cfg_strong_output(uint32_t pin_number)
 }
 
 
+
+__STATIC_INLINE void nrf_gpio_pull_set(uint32_t pin_number, nrf_gpio_pin_pull_t pull)
+{
+  NRF_GPIO_Type * reg = nrf_gpio_pin_port_decode(&pin_number);
+
+  uint32_t conf = reg->PIN_CNF[pin_number];
+  conf &= ~GPIO_PIN_CNF_PULL_Msk;
+  conf |= pull << GPIO_PIN_CNF_PULL_Pos;
+  reg->PIN_CNF[pin_number] = conf;
+}
 
 #ifdef __cplusplus
 }
