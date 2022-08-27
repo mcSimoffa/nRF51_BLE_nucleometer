@@ -60,16 +60,29 @@ void button_cb1(button_event_t event)
   //NRF_LOG_INFO("EVENT %d\n", (uint8_t)event.num);
 }
 
-
+#include "sound.h"
 /*!  ---------------------------------------------------------------------------
   \brief Function for application main entry.
  ---------------------------------------------------------------------------  */
 int main(void)
 {
-//sound_Init();
-//sound_Start();
   common_drv_init();
   app_time_Init();
+
+  sound_Init();
+  sound_Startup();
+  sound_note_t play[] =
+  {
+    {100, 1047},
+    {100, 1109},
+    {100, 1175},
+    {100, 1275},
+    {100, 1175},
+    {100, 1109},
+    {100, 1047},
+  };
+
+sound_Start(&play[0], ARRAY_SIZE(play));
 
   ret_code_t err_code = NRF_LOG_INIT(log_time_provider);
   ASSERT(err_code == NRF_SUCCESS);

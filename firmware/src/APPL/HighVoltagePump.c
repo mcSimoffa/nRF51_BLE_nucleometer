@@ -80,7 +80,7 @@ typedef struct
   {
     uint32_t  work_pause;
     uint32_t  steady_pause;
-  } workTimer;  
+  } workTimer;
 } hv_data_t;
 
 
@@ -154,7 +154,7 @@ static void cycTimer_adjust(uint16_t cc1, uint16_t cc2, uint16_t cc3)
   nrf_drv_timer_compare(&cycCtrlTmr, NRF_TIMER_CC_CHANNEL2, cc2, true);  // enable recuperation if it needs
   nrf_drv_timer_extended_compare(&cycCtrlTmr, NRF_TIMER_CC_CHANNEL3, cc3,
                                   NRF_TIMER_SHORT_COMPARE3_STOP_MASK | TIMER_SHORTS_COMPARE3_CLEAR_Msk,
-                                  true); 
+                                  true);
 
 }
 
@@ -277,9 +277,9 @@ static void lpcomp_init(void)
 static void hv_gpio_init(void)
 {
   ret_code_t err_code;
-  nrf_drv_gpiote_out_config_t pumpOut = 
+  nrf_drv_gpiote_out_config_t pumpOut =
   {
-    .init_state = PUMP_HV_PIN_INACTIVE_STATE, 
+    .init_state = PUMP_HV_PIN_INACTIVE_STATE,
     .task_pin   = true,
     .action     = NRF_GPIOTE_POLARITY_TOGGLE,
   };
@@ -301,7 +301,7 @@ static void hv_gpio_init(void)
 static void cycTimer_init(void)
 {
   // timer for cycle control.
-  nrf_drv_timer_config_t timer_cfg = 
+  nrf_drv_timer_config_t timer_cfg =
   {
     .frequency          = CYC_TIMER_FREQ,
     .mode               = NRF_TIMER_MODE_TIMER,
@@ -320,7 +320,7 @@ static void cycTimer_init(void)
 // ---------------------------------------------------------------------------
 //PPI init and allocate 2 channel to control hv gpio pin from timer
 static void hv_ppi_init(void)
-{ 
+{
   ret_code_t err_code;
 
   err_code = nrf_drv_ppi_channel_alloc(&ppi_ch_tim1_gpiote_rising);
@@ -370,7 +370,7 @@ void HV_pump_Init(void)
     ASSERT(false);
     return;
   }
-  mainTimet_init();  
+  mainTimet_init();
   hv_gpio_init();
   cycTimer_init();
   hv_ppi_init();

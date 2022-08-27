@@ -1,7 +1,7 @@
 #ifndef PIN_MAP_H
 #define PIN_MAP_H
 
-#define PUMP_HV_PIN                   05 
+#define PUMP_HV_PIN                   05
 #define PUMP_HV_PIN_DRV               11
 #define PUMP_HV_PIN_INACTIVE_STATE    NRF_GPIOTE_INITIAL_VALUE_LOW
 
@@ -16,6 +16,8 @@
 #define BUTTONS_ACTIVE_LEVEL          {0}
 #define BUTTONS_PULL                  {NRF_GPIO_PIN_PULLUP}
 
-#define BUZZER_PIN                    06
+#define BUZZER_PIN_A                  01
+#define BUZZER_PIN_B                  06
+
 
 #endif // PIN_MAP_H
