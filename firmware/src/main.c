@@ -11,6 +11,8 @@
 #include "button.h"
 #include "ble_main.h"
 #include "batMea.h"
+#include "particle_watcher.h"
+
 
 #define NRF_LOG_MODULE_NAME "APP"
 #define NRF_LOG_LEVEL           4
@@ -69,41 +71,36 @@ int main(void)
   common_drv_init();
   app_time_Init();
 
-  sound_Init();
-  sound_Startup();
-  sound_note_t play[] =
-  {
-    {100, 1047},
-    {100, 1109},
-    {100, 1175},
-    {100, 1275},
-    {100, 1175},
-    {100, 1109},
-    {100, 1047},
-  };
-
-sound_Start(&play[0], ARRAY_SIZE(play));
-
   ret_code_t err_code = NRF_LOG_INIT(log_time_provider);
   ASSERT(err_code == NRF_SUCCESS);
   button_Init();
   BLE_Init();
+  sound_Init();
 
   CPU_usage_Startup();
 
   HV_pump_Init();
   particle_cnt_Init();
- 
+  PWT_Init();
+
+  sound_Startup();
   button_Startup();
   particle_cnt_Startup();
   HV_pump_Startup();
+  PWT_Startup();
+
+  sound_hello();
+
 
   // Enter main loop.
   while (true)
   {
     batMea_Process();
     button_Process();
+    particle_cnt_Process();
+    PWT_Process();
     BLE_Process();
+
     bool log_in_process = NRF_LOG_PROCESS();
     bool sleep_is_locked = sleepLock_check();
     if ((log_in_process == false) && (sleep_is_locked == false))

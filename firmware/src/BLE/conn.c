@@ -13,10 +13,10 @@
 
 #define SECOND_10_MS_UNITS              100   // Definition of 1 second, when 1 unit is 10 ms.
 
-#define MIN_CONN_INTERVAL               7                           // Minimum acceptable connection interval (0.25 seconds), Connection interval uses 1.25 ms units.
-#define MAX_CONN_INTERVAL               400                         // Maximum acceptable connection interval (0.5 second), Connection interval uses 1.25 ms units.
-#define SLAVE_LATENCY                   0                           // Slave latency.
-#define CONN_SUP_TIMEOUT                (4 * SECOND_10_MS_UNITS)    // Connection supervisory timeout (4 seconds), Supervision Timeout uses 10 ms units.
+#define MIN_CONN_INTERVAL               200                           // Minimum acceptable connection interval (0.25 seconds), Connection interval uses 1.25 ms units.
+#define MAX_CONN_INTERVAL               800                         // Maximum acceptable connection interval (0.5 second), Connection interval uses 1.25 ms units.
+#define SLAVE_LATENCY                   1                           // Slave latency.
+#define CONN_SUP_TIMEOUT                (6 * SECOND_10_MS_UNITS)    // Connection supervisory timeout (4 seconds), Supervision Timeout uses 10 ms units.
 
 #define FIRST_CONN_PARAMS_UPDATE_DELAY  APP_TIMER_TICKS(15000, APP_TIMER_PRESCALER) /**< Time from initiating event (connect or start of notification) to first time sd_ble_gap_conn_param_update is called (5 seconds). */
 #define NEXT_CONN_PARAMS_UPDATE_DELAY   APP_TIMER_TICKS(5000, APP_TIMER_PRESCALER)  /**< Time between each call to sd_ble_gap_conn_param_update after the first call (30 seconds). */
@@ -57,7 +57,7 @@ static void on_conn_params_evt(ble_conn_params_evt_t * p_evt)
   {
     err_code = sd_ble_gap_disconnect(ble_context->conn_handle, BLE_HCI_CONN_INTERVAL_UNACCEPTABLE);
     ble_context->conn_handle = BLE_CONN_HANDLE_INVALID;
-    APP_ERROR_CHECK(err_code);
+    //APP_ERROR_CHECK(err_code);
   }
 }
 

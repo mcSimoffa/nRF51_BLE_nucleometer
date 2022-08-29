@@ -68,6 +68,7 @@
         <file file_name="src/APPL/HighVoltagePump.c" />
         <file file_name="src/APPL/particle_cnt.c" />
         <file file_name="src/APPL/adv_ctrl.c" />
+        <file file_name="src/APPL/particle_watcher.c" />
       </folder>
       <folder Name="HAL">
         <file file_name="src/HAL/app_time_lib.c" />

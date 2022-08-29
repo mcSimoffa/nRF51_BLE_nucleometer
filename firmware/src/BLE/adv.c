@@ -11,7 +11,7 @@
 #error "This API only for version 2"
 #endif
 
-#define APP_ADV_FAST_INTERVAL           80    //Fast advertising interval (in units of 0.625 ms. This value corresponds to 50 ms.)
+#define APP_ADV_FAST_INTERVAL           160    //Fast advertising interval (in units of 0.625 ms. This value corresponds to 100 ms.)
 #define APP_ADV_SLOW_INTERVAL           (1600 * 2)  //Slow advertising interval (in units of 0.625 ms. This value corrsponds to 2 seconds)
 #define APP_ADV_FAST_TIMEOUT            20    //The duration of the fast advertising period (in seconds).
 #define APP_ADV_SLOW_TIMEOUT            30    //The duration of the slow advertising period (in seconds).

@@ -17,6 +17,7 @@
 #include "pm.h"
 #include "batMea.h"
 #include "ble_ios.h"
+#include "particle_watcher.h"
 
 #include "ble_main.h"
 #define NRF_LOG_MODULE_NAME "BLEmain"
@@ -40,6 +41,8 @@
 static void ios_set_sys_time(uint16_t conn_handle, uint16_t datalen, uint8_t *p_data);
 static void ios_sys_time_request(uint16_t conn_handle);
 static void ios_dev_stat_request(uint16_t conn_handle);
+static void ios_set_bar_num(uint16_t conn_handle, uint16_t datalen, uint8_t *p_data);
+static void ios_bar_request(uint16_t conn_handle);
 
 //------------------------------------------------------------------------------
 //        PRIVATE VARIABLES
@@ -79,6 +82,17 @@ static const char_desc_t ios_chars[] =
     .wrCb = NULL,
     .rdCb = NULL,
     .is_defered_read = false,
+  },
+    {
+    .uuid = IOS_BARS_CHAR,
+    .len =  {.init = 1, .max = 4, .var = true},
+    .prop = {.read = 1, .write = 1},
+    .rd_access = SEC_JUST_WORKS,
+    .wr_access = SEC_JUST_WORKS,
+    .cccd_wr_access = SEC_JUST_WORKS,
+    .wrCb = ios_set_bar_num,
+    .rdCb = ios_bar_request,
+    .is_defered_read = true,
   },
   {
     .uuid = IOS_DEVSTAT_CHAR,
@@ -161,6 +175,23 @@ static void ios_dev_stat_request(uint16_t conn_handle)
   }
 }
 
+//------------------------------------------------------------------------------
+static void ios_set_bar_num(uint16_t conn_handle, uint16_t datalen, uint8_t *p_data)
+{
+  if (datalen == sizeof(uint8_t))
+  {
+    PWT_Set_active_tf(*p_data);
+  }
+}
+
+// ---------------------------------------------------------------------------
+static void ios_bar_request(uint16_t conn_handle)
+{
+  uint32_t bar_volume = PWT_GetBarVol();
+  ret_code_t ret_code = ble_ios_rd_reply(conn_handle, &bar_volume, sizeof(bar_volume));
+  APP_ERROR_CHECK(ret_code);
+}
+
 /*! ---------------------------------------------------------------------------
  * \brief Function for secure procedure start by server initiative.
  */
@@ -188,7 +219,6 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
     case BLE_GAP_EVT_CONNECTED:
     {
       NRF_LOG_INFO("%s: Connected\n", (uint32_t)__func__);
-
       ret_code = sd_ble_gatts_sys_attr_set(p_ble_evt->evt.gap_evt.conn_handle, NULL, 0, 0);
       APP_ERROR_CHECK(ret_code);
 
@@ -377,7 +407,7 @@ void BLE_Init(void)
 #if !defined(DISABLE_SOFTDEVICE) || (DISABLE_SOFTDEVICE == 0)
   ble_stack_init();
 
-  bool erase_bonds = false;
+  bool erase_bonds = true;
   peer_manager_init(erase_bonds, &ble_ctx);
   if (erase_bonds == true)
   {
@@ -402,7 +432,6 @@ void BLE_Process(void)
 {
  adv_ctrl_Process();
 }
-
 
 // ----------------------------------------------------------------------------
 void ble_ios_pulse_transfer(uint32_t pulse)

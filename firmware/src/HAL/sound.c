@@ -21,7 +21,39 @@ static const nrf_drv_timer_t tone_tmr = NRF_DRV_TIMER_INSTANCE(2);
 static nrf_ppi_channel_t ppi_A, ppi_B;
 static uint16_t   curr_note_play;
 static uint16_t   notes_total;
-static sound_note_t *p_seq;
+static bool isPause;
+static const sound_note_t *p_seq;
+
+static const sound_note_t hello[] =
+{
+  {50, 1047},
+  {50, 0},
+  {50, 1109},
+  {50, 0},
+  {50, 1175},
+};
+
+static const sound_note_t alarm[] =
+{
+  {100, 1568},
+  {100, 0},
+  {100, 1568},
+  {100, 0},
+  {100, 1568},
+  {100, 0},
+  {300, 1318},
+};
+
+static const sound_note_t danger[] =
+{
+  {500, 1479 * 2},
+  {100, 0},
+  {500, 1479 * 2},
+  {100, 0},
+  {500, 1479 * 2},
+  {100, 0},
+  {2000, 1174 * 2},
+};
 
 // ----------------------------------------------------------------------------
 //    PRIVATE FUNCTION
@@ -40,21 +72,33 @@ static void frequency_set(uint16_t freq)
 // ----------------------------------------------------------------------------
 static void note_play_start(uint16_t freq, uint32_t duration)
 {
-  frequency_set(freq);
+  if (freq > 0)
+  {
+    frequency_set(freq);
+    timer_anomaly_fix(tone_tmr.p_reg, 1);
+    nrf_drv_timer_enable(&tone_tmr);
+  }
+  else
+  {
+    isPause = true;
+  }
 
   ret_code_t err_code = app_timer_start(note_delay_tmr, MS_TO_TICK(duration), NULL);
   ASSERT(err_code == NRF_SUCCESS);
-
-  timer_anomaly_fix(tone_tmr.p_reg, 1);
-  nrf_drv_timer_enable(&tone_tmr);
 }
 
 // ----------------------------------------------------------------------------
 static void OnNoteTmr(void* context)
 {
   (void)context;
-  nrf_drv_timer_disable(&tone_tmr);
-  timer_anomaly_fix(tone_tmr.p_reg, 0);
+
+  if (isPause == false)
+  {
+    nrf_drv_timer_disable(&tone_tmr);
+    timer_anomaly_fix(tone_tmr.p_reg, 0);
+  }
+  isPause = false;
+
   if (++curr_note_play < notes_total)
   {
     note_play_start(p_seq[curr_note_play].freq, p_seq[curr_note_play].duration);
@@ -133,6 +177,15 @@ static void note_delay_timer_init(void)
 }
 
 // ----------------------------------------------------------------------------
+static void play(const sound_note_t *sequence, uint16_t seq_long)
+{
+  ASSERT(seq_long > 0);
+  p_seq = sequence;
+  notes_total = seq_long;
+  curr_note_play = 0;
+  note_play_start(p_seq[0].freq, p_seq[0].duration);
+}
+// ----------------------------------------------------------------------------
 //    PUBLIC FUNCTION
 // ----------------------------------------------------------------------------
 void sound_Init(void)
@@ -157,13 +210,20 @@ void sound_Startup(void)
   nrf_drv_gpiote_out_task_enable(BUZZER_PIN_B);
 }
 
+// ----------------------------------------------------------------------------
+void sound_hello(void)
+{
+  play(&hello[0], ARRAY_SIZE(hello));
+}
 
 // ----------------------------------------------------------------------------
-void sound_Start(sound_note_t *sequence, uint16_t seq_long)
+void sound_alarm(void)
 {
-  ASSERT(seq_long > 0);
-  p_seq = sequence;
-  notes_total = seq_long;
-  curr_note_play = 0;
-  note_play_start(p_seq[0].freq, p_seq[0].duration);
+  play(&alarm[0], ARRAY_SIZE(alarm));
+}
+
+// ----------------------------------------------------------------------------
+void sound_danger(void)
+{
+  play(&danger[0], ARRAY_SIZE(danger));
 }

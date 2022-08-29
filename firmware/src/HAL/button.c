@@ -156,13 +156,13 @@ static void in_event_init(void)
   ret_code_t err_code;
   nrf_drv_gpiote_in_config_t pin_cfg = GPIOTE_CONFIG_IN_SENSE_TOGGLE(false);  
 
-  for(uint8_t i = 0; i < BUTTONS_TOTAL; i++) 
+  for(uint8_t i = 0; i < BUTTONS_TOTAL; i++)
   {
     pin_cfg.pull = pin_pull_type[i];
     err_code = nrf_drv_gpiote_in_init(pin_array[i], &pin_cfg, sense_pin_cb);
     ASSERT(err_code == NRF_SUCCESS);
     nrf_drv_gpiote_in_event_enable(pin_array[i], true);
-  }  
+  }
 }
 
 
@@ -196,7 +196,7 @@ void button_Startup(void)
         .field.button_num = i,
       };
       event_to_queue(evt);
-    }      
+    }
   }
 }
 
@@ -213,7 +213,7 @@ void button_Process(void)
     ret_code_t err_code = ringbufGet(&btn_rb, (uint8_t*)&evt, &sz);
     while ((sz == sizeof(button_event_t)) && (m_next_handler < BUTTON_SECTION_VARS_COUNT))
     {
-      (*BUTTON_SECTION_VARS_GET(m_next_handler))(evt);      
+      (*BUTTON_SECTION_VARS_GET(m_next_handler))(evt);
       m_next_handler++;
     }
   } while (sz == sizeof(button_event_t));
