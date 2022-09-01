@@ -11,9 +11,9 @@
 #error "This API only for version 2"
 #endif
 
-#define APP_ADV_FAST_INTERVAL           160    //Fast advertising interval (in units of 0.625 ms. This value corresponds to 100 ms.)
+#define APP_ADV_FAST_INTERVAL           320    //Fast advertising interval (in units of 0.625 ms. This value corresponds to 200 ms.)
 #define APP_ADV_SLOW_INTERVAL           (1600 * 2)  //Slow advertising interval (in units of 0.625 ms. This value corrsponds to 2 seconds)
-#define APP_ADV_FAST_TIMEOUT            20    //The duration of the fast advertising period (in seconds).
+#define APP_ADV_FAST_TIMEOUT            30    //The duration of the fast advertising period (in seconds).
 #define APP_ADV_SLOW_TIMEOUT            30    //The duration of the slow advertising period (in seconds).
 
 #define NRF_LOG_MODULE_NAME "ADV"
@@ -130,7 +130,7 @@ void advertising_init(void)
   // Build and set advertising data
   memset(&advdata, 0, sizeof(advdata));
   advdata.name_type               = BLE_ADVDATA_FULL_NAME;
-  advdata.include_appearance      = true;
+  advdata.include_appearance      = false;//true;
   advdata.flags                   = BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE;
   advdata.uuids_complete.uuid_cnt = sizeof(m_adv_uuids) / sizeof(m_adv_uuids[0]);
   advdata.uuids_complete.p_uuids  = m_adv_uuids;

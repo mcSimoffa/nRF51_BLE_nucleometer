@@ -407,7 +407,7 @@ void BLE_Init(void)
 #if !defined(DISABLE_SOFTDEVICE) || (DISABLE_SOFTDEVICE == 0)
   ble_stack_init();
 
-  bool erase_bonds = true;
+  bool erase_bonds = false;
   peer_manager_init(erase_bonds, &ble_ctx);
   if (erase_bonds == true)
   {

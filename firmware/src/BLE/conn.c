@@ -8,19 +8,25 @@
 #include "ble_main.h"
 #include "ble_conn_params.h"
 
+#define NRF_LOG_MODULE_NAME "CONN"
+#define NRF_LOG_LEVEL         4
+#define NRF_LOG_DEBUG_COLOR   5
+#include "nrf_log.h"
+
 #define DEVICE_NAME         "NucMe"   //Name of device. Will be included in the advertising data.
 #define MANUFACTURER_NAME   "maximo"  //Manufacturer. Will be passed to Device Information Service.
 
-#define SECOND_10_MS_UNITS              100   // Definition of 1 second, when 1 unit is 10 ms.
+/*! \brief connection param guide
+ *  \link https://devzone.nordicsemi.com/guides/short-range-guides/b/hardware-and-layout/posts/nrf51-current-consumption-guide
+*/
+#define MIN_CONN_INTERVAL   40  // Minimum acceptable connection interval (0.05 seconds), Connection interval uses 1.25 ms units.
+#define MAX_CONN_INTERVAL   400 // Maximum acceptable connection interval (0.5 second), Connection interval uses 1.25 ms units.
+#define SLAVE_LATENCY       2   // Slave latency.
+#define CONN_SUP_TIMEOUT    480 // 4.8sec in 10ms inits Connection supervisory timeout (4 seconds), Supervision Timeout uses 10 ms units.
 
-#define MIN_CONN_INTERVAL               200                           // Minimum acceptable connection interval (0.25 seconds), Connection interval uses 1.25 ms units.
-#define MAX_CONN_INTERVAL               800                         // Maximum acceptable connection interval (0.5 second), Connection interval uses 1.25 ms units.
-#define SLAVE_LATENCY                   1                           // Slave latency.
-#define CONN_SUP_TIMEOUT                (6 * SECOND_10_MS_UNITS)    // Connection supervisory timeout (4 seconds), Supervision Timeout uses 10 ms units.
-
-#define FIRST_CONN_PARAMS_UPDATE_DELAY  APP_TIMER_TICKS(15000, APP_TIMER_PRESCALER) /**< Time from initiating event (connect or start of notification) to first time sd_ble_gap_conn_param_update is called (5 seconds). */
-#define NEXT_CONN_PARAMS_UPDATE_DELAY   APP_TIMER_TICKS(5000, APP_TIMER_PRESCALER)  /**< Time between each call to sd_ble_gap_conn_param_update after the first call (30 seconds). */
-#define MAX_CONN_PARAMS_UPDATE_COUNT    3                                           /**< Number of attempts before giving up the connection parameter negotiation. */
+#define FIRST_CONN_PARAMS_UPDATE_DELAY  APP_TIMER_TICKS(4000, APP_TIMER_PRESCALER) /**< Time from initiating event (connect or start of notification) to first time sd_ble_gap_conn_param_update is called (5 seconds). */
+#define NEXT_CONN_PARAMS_UPDATE_DELAY   APP_TIMER_TICKS(2000, APP_TIMER_PRESCALER)  /**< Time between each call to sd_ble_gap_conn_param_update after the first call (30 seconds). */
+#define MAX_CONN_PARAMS_UPDATE_COUNT    5                                           /**< Number of attempts before giving up the connection parameter negotiation. */
 
 static ble_ctx_t  *ble_context;
 
@@ -52,7 +58,7 @@ void static_passkey_def(void)
 static void on_conn_params_evt(ble_conn_params_evt_t * p_evt)
 {
   uint32_t err_code;
-
+  NRF_LOG_INFO("%s:evt_type %d\n", (uint32_t)__func__, p_evt->evt_type);
   if (p_evt->evt_type == BLE_CONN_PARAMS_EVT_FAILED)
   {
     err_code = sd_ble_gap_disconnect(ble_context->conn_handle, BLE_HCI_CONN_INTERVAL_UNACCEPTABLE);
@@ -62,9 +68,9 @@ static void on_conn_params_evt(ble_conn_params_evt_t * p_evt)
 }
 
 // ----------------------------------------------------------------------------
-/**@brief Function for handling a Connection Parameters error.
+/*! \brief Function for handling a Connection Parameters error.
  *
- * @param[in]   nrf_error   Error code containing information about what went wrong.
+ * \param[in]   nrf_error   Error code containing information about what went wrong.
  */
 static void conn_params_error_handler(uint32_t nrf_error)
 {
@@ -90,8 +96,8 @@ void gap_params_init(ble_ctx_t *ctx)
                                         strlen(DEVICE_NAME));
   ASSERT(err_code == NRF_SUCCESS);
 
-  err_code = sd_ble_gap_appearance_set(BLE_APPEARANCE_CYCLING_POWER_SENSOR);
-  ASSERT(err_code == NRF_SUCCESS);
+  //err_code = sd_ble_gap_appearance_set(BLE_APPEARANCE_CYCLING_POWER_SENSOR);
+  //ASSERT(err_code == NRF_SUCCESS);
 
   memset(&gap_conn_params, 0, sizeof(gap_conn_params));
 

@@ -54,7 +54,7 @@ static particle_time_frame_t frames[TIMEFRAMES_TOTAL]=
 static bool is_timer_evt;
 static uint8_t active_tf = 0;
 static uint16_t particle_danger = 42;   //42*4 = 168uRh/h ~10 times over
-static uint16_t particle_alarm  = 12;   //12*4 = 48uRh/h  ~3 times over
+static uint16_t particle_alarm  = 15;   //14*4 = 60uRh/h  ~3.3 times over
 
 APP_TIMER_DEF(tmr);
 
