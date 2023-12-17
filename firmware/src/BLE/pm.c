@@ -125,6 +125,17 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
 }
 
 
+void pmd(void)
+{
+  pm_peer_id_t current_peer_id = pm_next_peer_id_get(PM_PEER_ID_INVALID);
+  while (current_peer_id != PM_PEER_ID_INVALID)
+  {
+    pm_peer_data_bonding_t b_data;
+    ret_code_t rr = pm_peer_data_bonding_load(current_peer_id, &b_data);
+    current_peer_id = pm_next_peer_id_get(current_peer_id);
+  }
+}
+
 // ----------------------------------------------------------------------------
 //    PUBLIC FUNCTION
 // ----------------------------------------------------------------------------
@@ -142,7 +153,7 @@ void peer_manager_init(bool erase_bonds, ble_ctx_t *ctx)
   ble_context = ctx;
   err_code = pm_init();
   APP_ERROR_CHECK(err_code);
-
+//pmd();
   if (erase_bonds)
   {
     err_code = pm_peers_delete();
