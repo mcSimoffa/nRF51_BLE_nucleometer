@@ -10,7 +10,7 @@
 #define BUTTONS_TOTAL                 1
 #define UNUSED_PIN                    0xFF
 #define SW_DETECTION_DELAY_MS         50
-#define SW_DEBIUNCE_SUPPRES_CLOCK_MS  10
+#define SW_DEBOUNCE_SUPPRESS_CLOCK_MS 10
 
 #define NRF_LOG_MODULE_NAME     "BTN"
 #define NRF_LOG_LEVEL           2
@@ -69,7 +69,7 @@ static void sense_pin_cb(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action)
   // enable timer if at least one switcher has not stable state
   if (is_need_to_takting && (is_timer_active == false))
   {
-    ret_code_t error = app_timer_start(debounce_tmr, MS_TO_TICK(SW_DEBIUNCE_SUPPRES_CLOCK_MS), NULL);
+    ret_code_t error = app_timer_start(debounce_tmr, MS_TO_TICK(SW_DEBOUNCE_SUPPRESS_CLOCK_MS), NULL);
     ASSERT(error == NRF_SUCCESS);
     is_timer_active = true;
     NRF_LOG_DEBUG("Debounce timer start\n");

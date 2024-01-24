@@ -12,6 +12,7 @@
 #include "ble_main.h"
 #include "batMea.h"
 #include "particle_watcher.h"
+#include "sound.h"
 
 
 #define NRF_LOG_MODULE_NAME "APP"
@@ -22,7 +23,7 @@
 
 
 
-void button_cb1(button_event_t event);
+static void button_cb1(button_event_t event);
 
 BUTTON_REGISTER_HANDLER(m_button_cb1) = button_cb1;
 
@@ -49,7 +50,7 @@ void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
 
   \return milliseconds value after system start (RTC1 was started)
  ----------------------------------------------------------------------------*/
-static uint32_t log_time_provider()
+static uint32_t log_time_provider() //TODO probably here should be not in millisecons
 {
   timestr_t log_timestr;
   app_time_Ticks_to_struct(app_time_Get_sys_time(), &log_timestr);
@@ -57,17 +58,28 @@ static uint32_t log_time_provider()
 }
 
 
-void button_cb1(button_event_t event) 
+static void button_cb1(button_event_t event)
 {
   //NRF_LOG_INFO("EVENT %d\n", (uint8_t)event.num);
 }
 
-#include "sound.h"
+static void chip_check(void)
+{
+  uint32_t deviceID[2] =
+  {
+    NRF_FICR->DEVICEID[0],
+    NRF_FICR->DEVICEID[1]
+  };
+  while ((deviceID[0] != TARGET_DEVID_0) && (deviceID[1] != TARGET_DEVID_1));
+  // preventing run a configuration to another chip
+}
+
 /*!  ---------------------------------------------------------------------------
   \brief Function for application main entry.
  ---------------------------------------------------------------------------  */
 int main(void)
 {
+  chip_check();
   common_drv_init();
   app_time_Init();
 

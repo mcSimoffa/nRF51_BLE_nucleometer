@@ -265,7 +265,16 @@ static void mainTimet_init(void)
 static void lpcomp_init(void)
 {
   uint32_t err_code;
-  nrf_drv_lpcomp_config_t config = NRF_DRV_LPCOMP_DEFAULT_CONFIG;
+  nrf_drv_lpcomp_config_t config =    //NRF_DRV_LPCOMP_DEFAULT_CONFIG;
+  {
+    .input = LPCOMP_INPUT_CHANNEL,
+    .hal =
+    {
+      .reference = LPCOMP_REFERENCE,
+      .detection = NRF_LPCOMP_DETECT_UP,
+    },
+    .interrupt_priority = LPCOMP_CONFIG_IRQ_PRIORITY,
+  };
 
   err_code = nrf_drv_lpcomp_init(&config, OnLpcomp);
   ASSERT(err_code == NRF_SUCCESS);

@@ -42,7 +42,6 @@ static void OnPulsePinEvt(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action
     __asm("nop");
     sleepLock();
     nrf_gpio_pull_set(PULSE_PIN, NRF_GPIO_PIN_PULLDOWN);
-
   }
 }
 

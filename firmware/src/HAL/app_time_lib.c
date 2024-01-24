@@ -28,7 +28,7 @@ typedef struct
   bool     enabled;     // is user time enabled ?
 } app_time_t;
 
-static  app_time_t app_time_s; 
+static  app_time_t app_time_s;
 
 APP_TIMER_DEF(ovfl_tmr);
 
@@ -94,7 +94,7 @@ bool app_time_Is_UTC_en(void)
 }
 
 //------------------------------------------------------------------------------
-bool app_time_Set_UTC(uint64_t utc_sec)
+bool app_time_Set_UTC(uint64_t utc_sec) //TODO probably not corresponded with function declaration
 {
   if (utc_sec)
   {
@@ -119,7 +119,7 @@ uint64_t app_time_Get_UTC(void)
   {
     retval = (app_time_Get_sys_time() + app_time_s.offset) >> 15;
   }
-  return retval;
+  return retval;  //TODO probably not corresponded with function declaration
 }
 
 //-----------------------------------------------------------------------------

@@ -4,7 +4,7 @@
 #include "nrf_drv_gpiote.h"
 
 void common_drv_init(void)
-{  
+{
   ret_code_t err_code;
   if (!nrf_drv_gpiote_is_init())
   {
