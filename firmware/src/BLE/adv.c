@@ -132,8 +132,8 @@ void advertising_init(void)
   advdata.name_type               = BLE_ADVDATA_FULL_NAME;
   advdata.include_appearance      = false;//true;
   advdata.flags                   = BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE;
-  advdata.uuids_complete.uuid_cnt = sizeof(m_adv_uuids) / sizeof(m_adv_uuids[0]);
-  advdata.uuids_complete.p_uuids  = m_adv_uuids;
+  advdata.uuids_complete.uuid_cnt = 0;  //sizeof(m_adv_uuids) / sizeof(m_adv_uuids[0]);
+  advdata.uuids_complete.p_uuids  = NULL; //m_adv_uuids;
 
   ret_code_t ret = ble_advdata_set(&advdata, NULL);
   APP_ERROR_CHECK(ret);
