@@ -13,7 +13,7 @@
 #include "batMea.h"
 #include "particle_watcher.h"
 #include "sound.h"
-
+#include "hw_test.h"
 
 #define NRF_LOG_MODULE_NAME "APP"
 #define NRF_LOG_LEVEL           4
@@ -85,6 +85,11 @@ int main(void)
 
   ret_code_t err_code = NRF_LOG_INIT(log_time_provider);
   ASSERT(err_code == NRF_SUCCESS);
+#if defined(HW_TEST) && (HW_TEST == 1)
+  hw_test_Run();
+  return 1;
+#endif
+
   button_Init();
   BLE_Init();
   sound_Init();

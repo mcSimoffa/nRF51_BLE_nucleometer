@@ -4,9 +4,15 @@
 // <<< Use Configuration Wizard in Context Menu >>>\n
 
 //==========================================================
+// <q> HW_TEST  - Hardware test for new board first launching
+#ifndef HW_TEST
+#define HW_TEST 0
+#endif
+
+//==========================================================
 // <q> DISABLE_SOFTDEVICE  - Disable SoftDevice (uses for a step by step debuging)
 #ifndef DISABLE_SOFTDEVICE
-#define DISABLE_SOFTDEVICE 0
+#define DISABLE_SOFTDEVICE 1
 #endif
 
 //==========================================================
