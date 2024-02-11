@@ -34,7 +34,7 @@
 
 #define CENTRAL_LINK_COUNT              0      //Number of central links used by the application. When changing this number remember to adjust the RAM settings
 #define PERIPHERAL_LINK_COUNT           1      //Number of peripheral links used by the application. When changing this number remember to adjust the RAM settings
-
+#define BATTERY_LOW_INDICATED_REF       1500    // A minimal voltage reference to indicate
 //------------------------------------------------------------------------------
 //        PRIVATE FUNCTIONS PROTOTYPES
 //------------------------------------------------------------------------------
@@ -74,14 +74,9 @@ static const char_desc_t ios_chars[] =
   },
   {
     .uuid = IOS_PULSE_CHAR,
-    .len =  {.init = 4, .max = 8, .var = true},
-    .prop = {.read = 1, .notify = 1},
-    .rd_access = SEC_JUST_WORKS,
-    .wr_access = SEC_NO_ACCESS,
+    .len =  {.init = 4, .max = 4, .var = false},
+    .prop = {.notify = 1},
     .cccd_wr_access = SEC_JUST_WORKS,
-    .wrCb = NULL,
-    .rdCb = NULL,
-    .is_defered_read = false,
   },
     {
     .uuid = IOS_BARS_CHAR,
@@ -120,6 +115,7 @@ static const char_desc_t ios_chars[] =
 
 BLE_IOS_DEF(main_ios, &base_uuid, INPUT_OUTPUT_SERV, ios_chars, sizeof(ios_chars)/sizeof(char_desc_t));
 APP_TIMER_DEF(sec_tmr);
+
 static ble_ctx_t ble_ctx =
 {
   .conn_handle = BLE_CONN_HANDLE_INVALID,
@@ -134,7 +130,7 @@ static void ios_set_sys_time(uint16_t conn_handle, uint16_t datalen, uint8_t *p_
   if (datalen == sizeof (uint64_t))
   {
     uint64_t utc;
-    memcpy(&utc, p_data, 8);
+    memcpy(&utc, p_data, datalen);
     app_time_Set_UTC(utc);
   }
 }
@@ -148,7 +144,7 @@ static void ios_sys_time_request(uint16_t conn_handle)
 }
 
 // ---------------------------------------------------------------------------
-static void bat_acqure(uint16_t mv, void *ctx)
+static void bat_mea_cb(uint16_t mv, void *ctx)
 {
   ble_ctx_t *context = (ble_ctx_t*)ctx;
 
@@ -157,7 +153,7 @@ static void bat_acqure(uint16_t mv, void *ctx)
     return; //don't send response if connection was lost or new connection established
   }
 
-  uint8_t unit = (mv - 1500) >> 3;  //1 unit = 8mV after 1500mV
+  uint8_t unit = (mv - BATTERY_LOW_INDICATED_REF) >> 3;  //1 unit = 8mV after BATTERY_LOW_INDICATED_REF mV
   NRF_LOG_INFO("Battery = %d mv, %d unit\n", mv, unit);
 
   ret_code_t ret_code = ble_ios_rd_reply(context->conn_handle, &unit, sizeof(unit));
@@ -169,9 +165,10 @@ static void ios_dev_stat_request(uint16_t conn_handle)
 {
   ble_ctx.auth_rd_conn_handle = conn_handle;
 
-  if (batMea_Start(bat_acqure, (void*)&ble_ctx) == false)
+  if (batMea_Start(bat_mea_cb, (void*)&ble_ctx) == false)
   {
-    bat_acqure(1500, (void*)&ble_ctx);
+    // if batMea module is already in measure state and busy
+    bat_mea_cb(BATTERY_LOW_INDICATED_REF, (void*)&ble_ctx);
   }
 }
 
@@ -407,7 +404,7 @@ void BLE_Init(void)
 #if !defined(DISABLE_SOFTDEVICE) || (DISABLE_SOFTDEVICE == 0)
   ble_stack_init();
 
-  bool erase_bonds = false;
+  bool erase_bonds = true;
   peer_manager_init(erase_bonds, &ble_ctx);
   if (erase_bonds == true)
   {
@@ -446,6 +443,6 @@ void ble_ios_pulse_transfer(uint32_t pulse)
   ret_code = ble_ios_on_output_change(ble_ctx.conn_handle, &main_ios, IOS_PULSE_CHAR, &pulse, sizeof(pulse));
   retCodeCheck(ret_code);
 
-  ret_code = ble_ios_output_set(ble_ctx.conn_handle, &main_ios, IOS_PULSE_CHAR, &pulse, sizeof(pulse));
-  retCodeCheck(ret_code);
+  //ret_code = ble_ios_output_set(ble_ctx.conn_handle, &main_ios, IOS_PULSE_CHAR, &pulse, sizeof(pulse));
+  //retCodeCheck(ret_code);
 }

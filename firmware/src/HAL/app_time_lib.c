@@ -22,7 +22,7 @@ typedef struct
       uint64_t  low:24;
       uint64_t  high:40;
     } field;
-    uint64_t time;        // system time in ticks (1/32768 sec)
+    uint64_t ticks;        // system time in ticks (1/32768 sec)
   } time;
   uint64_t offset;      // difference between system time and user (UTC) time
   bool     enabled;     // is user time enabled ?
@@ -94,11 +94,11 @@ bool app_time_Is_UTC_en(void)
 }
 
 //------------------------------------------------------------------------------
-bool app_time_Set_UTC(uint64_t utc_sec) //TODO probably not corresponded with function declaration
+bool app_time_Set_UTC(uint64_t utc_sec)
 {
   if (utc_sec)
   {
-    app_time_s.offset = (utc_sec << 15) - app_time_s.time.time;
+    app_time_s.offset = (utc_sec << 15) - app_time_s.time.ticks;
     app_time_s.enabled = true;
   }
   return app_time_s.enabled;
@@ -108,7 +108,7 @@ bool app_time_Set_UTC(uint64_t utc_sec) //TODO probably not corresponded with fu
 uint64_t app_time_Get_sys_time(void)
 {
   refresh_64bit_value();
-  return app_time_s.time.time;
+  return app_time_s.time.ticks;
 }
 
 //------------------------------------------------------------------------------
@@ -119,7 +119,7 @@ uint64_t app_time_Get_UTC(void)
   {
     retval = (app_time_Get_sys_time() + app_time_s.offset) >> 15;
   }
-  return retval;  //TODO probably not corresponded with function declaration
+  return retval;
 }
 
 //-----------------------------------------------------------------------------

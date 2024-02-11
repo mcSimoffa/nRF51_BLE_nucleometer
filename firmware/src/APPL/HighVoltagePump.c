@@ -246,7 +246,7 @@ static void OnCycCtrlTmr(nrf_timer_event_t event_type, void * p_context)
     {
       interval = hv_data.workTimer.work_pause;
       ++cnt;
-      NRF_LOG_INFO("NOT Enough (%d) HV\n", cnt);
+      //NRF_LOG_INFO("NOT Enough (%d) HV\n", cnt);
     }
 
     ret_code_t err_code = app_timer_start(mainHVtmr, interval, NULL);

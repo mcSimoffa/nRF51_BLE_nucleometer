@@ -31,12 +31,12 @@ bool app_time_Is_UTC_en(void);
 
 /*! ---------------------------------------------------------------------------
   \brief Setting UTC time
-  \param now_ticks[in] - 64 bit tick value (in 1/32768) of user time (UTC) for now
+  \param now[in] - 64 bit tick value in seconds of user time (UTC) for now
 
   \return true - UTC time was set successful
-  \return false - UTC time set fail (zero now_ticks)
+  \return false - UTC time set fail (zero now)
 */
-bool app_time_Set_UTC(uint64_t now_ticks);
+bool app_time_Set_UTC(uint64_t now);
 
 
 /*! ---------------------------------------------------------------------------
@@ -48,9 +48,9 @@ uint64_t app_time_Get_sys_time(void);
 
 
 /*! ---------------------------------------------------------------------------
-  \brief Getting user time (UTC) in 1/32768 ticks
+  \brief Getting user time (UTC) in seconds
 
-  \return user time from system start
+  \return UTC time or zero if it wasn't set
 */
 uint64_t app_time_Get_UTC(void);
 

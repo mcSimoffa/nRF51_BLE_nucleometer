@@ -8,7 +8,9 @@
 #include "adv.h"
 
 #define NRF_LOG_MODULE_NAME "PEER_MG"
+#define NRF_LOG_LEVEL         4
 #include "nrf_log.h"
+
 
 #define SEC_PARAM_BOND                  1     //Perform bonding.
 #define SEC_PARAM_MITM                  1     // Man In The Middle protection not required.

@@ -13,7 +13,14 @@
 #define NRF_LOG_DEBUG_COLOR   5
 #include "nrf_log.h"
 
-#define DEVICE_NAME         "NucMe"   //Name of device. Will be included in the advertising data.
+#ifdef J305
+#define DEVICE_NAME         "NucMe305"   //Name of device. Will be included in the advertising data.
+#elif defined(SBM20)
+#define DEVICE_NAME         "NucMe20"   //Name of device. Will be included in the advertising data.
+#else
+#error "Unknown configuration"
+#endif
+
 #define MANUFACTURER_NAME   "maximo"  //Manufacturer. Will be passed to Device Information Service.
 
 /*! \brief connection param guide
