@@ -45,9 +45,11 @@ static void OnPulsePinEvt(nrf_drv_gpiote_pin_t pin, nrf_gpiote_polarity_t action
   }
 }
 
-// ---------------------------------------------------------------------------
-// PULSE_PIN init
-static void cnt_gpio_init(void)
+
+// ----------------------------------------------------------------------------
+//    PUBLIC FUNCTION
+// ----------------------------------------------------------------------------
+void particle_cnt_Init(void)
 {
   nrf_drv_gpiote_in_config_t pulse_conf = GPIOTE_CONFIG_IN_SENSE_LOTOHI(false);
   pulse_conf.pull = NRF_GPIO_PIN_PULLDOWN;
@@ -55,15 +57,6 @@ static void cnt_gpio_init(void)
 
   err_code = nrf_drv_gpiote_in_init(PULSE_PIN, &pulse_conf, OnPulsePinEvt);
   ASSERT(err_code == NRF_SUCCESS);
-}
-
-
-// ----------------------------------------------------------------------------
-//    PUBLIC FUNCTION
-// ----------------------------------------------------------------------------
-void particle_cnt_Init(void)
-{
-  cnt_gpio_init();
 }
 
 // ---------------------------------------------------------------------------

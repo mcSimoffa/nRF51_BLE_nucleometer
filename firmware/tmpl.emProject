@@ -71,6 +71,7 @@
         <file file_name="src/APPL/adv_ctrl.c" />
         <file file_name="src/APPL/particle_watcher.c" />
         <file file_name="src/APPL/hw_test.c" />
+        <file file_name="src/APPL/realtime_particle_watcher.c" />
       </folder>
       <folder Name="HAL">
         <file file_name="src/HAL/app_time_lib.c" />
@@ -158,7 +159,8 @@
     </folder>
     <configuration
       Name="Proto_J305"
-      c_preprocessor_definitions="DEBUG;DEBUG_NRF;DEBUG_NRF_USER;TARGET_DEVID_0=0xac1c333a;TARGET_DEVID_1=0xebacdc2b;J305" />
+      c_preprocessor_definitions="DEBUG;DEBUG_NRF;DEBUG_NRF_USER;TARGET_DEVID_0=0xac1c333a;TARGET_DEVID_1=0xebacdc2b;J305"
+      linker_printf_width_precision_supported="Yes" />
   </project>
   <configuration
     Name="Proto_SBM20"

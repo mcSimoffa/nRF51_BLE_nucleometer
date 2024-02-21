@@ -3648,7 +3648,7 @@
 // <i> If higher resolution timestamp source is used it might be needed to increase that
 
 #ifndef NRF_LOG_TIMESTAMP_DIGITS
-#define NRF_LOG_TIMESTAMP_DIGITS 8
+#define NRF_LOG_TIMESTAMP_DIGITS 10
 #endif
 
 // <e> NRF_LOG_BACKEND_SERIAL_USES_UART - If enabled data is printed over UART

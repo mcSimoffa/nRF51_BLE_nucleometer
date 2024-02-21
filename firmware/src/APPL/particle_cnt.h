@@ -1,6 +1,9 @@
 #ifndef PARTICLE_CNT_H
 #define PARTICLE_CNT_H
 
+#include <stdint.h>
+#include <stdbool.h>
+
 /*! ---------------------------------------------------------------------------
   \brief Particle counter module init
  ----------------------------------------------------------------------------*/

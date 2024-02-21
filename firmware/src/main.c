@@ -14,8 +14,10 @@
 #include "particle_watcher.h"
 #include "sound.h"
 #include "hw_test.h"
+#include "realtime_particle_watcher.h"
 
-#define NRF_LOG_MODULE_NAME "APP"
+
+#define NRF_LOG_MODULE_NAME     app
 #define NRF_LOG_LEVEL           4
 #include "nrf_log.h"
 
@@ -52,9 +54,7 @@ void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
  ----------------------------------------------------------------------------*/
 static uint32_t log_time_provider() //TODO probably here should be not in millisecons
 {
-  timestr_t log_timestr;
-  app_time_Ticks_to_struct(app_time_Get_sys_time(), &log_timestr);
-  return (log_timestr.sec*1000 + log_timestr.ms);
+  return (uint32_t)app_time_Get_sys_time();
 }
 
 
@@ -91,7 +91,7 @@ int main(void)
 #endif
 
   button_Init();
-  BLE_Init();
+  BLE_Init(button_IsPressed(BUTTON_PIN));
   sound_Init();
 
   CPU_usage_Startup();
@@ -99,12 +99,14 @@ int main(void)
   HV_pump_Init();
   particle_cnt_Init();
   PWT_Init();
+  RPW_Init();
 
   sound_Startup();
   button_Startup();
   particle_cnt_Startup();
   HV_pump_Startup();
   PWT_Startup();
+  RPW_Startup();
 
   sound_hello();
 

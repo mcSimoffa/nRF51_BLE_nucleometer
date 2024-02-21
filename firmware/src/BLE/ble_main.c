@@ -18,6 +18,8 @@
 #include "batMea.h"
 #include "ble_ios.h"
 #include "particle_watcher.h"
+#include "realtime_particle_watcher.h"
+
 
 #include "ble_main.h"
 #define NRF_LOG_MODULE_NAME "BLEmain"
@@ -43,6 +45,7 @@ static void ios_sys_time_request(uint16_t conn_handle);
 static void ios_dev_stat_request(uint16_t conn_handle);
 static void ios_set_bar_num(uint16_t conn_handle, uint16_t datalen, uint8_t *p_data);
 static void ios_bar_request(uint16_t conn_handle);
+static void ios_instant_value_request(uint16_t conn_handle);
 
 //------------------------------------------------------------------------------
 //        PRIVATE VARIABLES
@@ -78,7 +81,16 @@ static const char_desc_t ios_chars[] =
     .prop = {.notify = 1},
     .cccd_wr_access = SEC_JUST_WORKS,
   },
-    {
+  {
+    .uuid = IOS_INSTANT_VALUE_CHAR,
+    .len =  {.init = 2, .max = 2, .var = false},
+    .prop = {.read = 1},
+    .rd_access = SEC_JUST_WORKS,
+    .cccd_wr_access = SEC_JUST_WORKS,
+    .rdCb = ios_instant_value_request,
+    .is_defered_read = true,
+  },
+   {
     .uuid = IOS_BARS_CHAR,
     .len =  {.init = 1, .max = 4, .var = true},
     .prop = {.read = 1, .write = 1},
@@ -199,6 +211,14 @@ static void OnTimerEvent(void * p_context)
   {
     pm_secure_initiate(ble_ctx.conn_handle);
   }
+}
+
+// ---------------------------------------------------------------------------
+static void ios_instant_value_request(uint16_t conn_handle)
+{
+  uint16_t val = RPW_GetInstant();
+  ret_code_t ret_code = ble_ios_rd_reply(conn_handle, &val, sizeof(val));
+  APP_ERROR_CHECK(ret_code);
 }
 
 
@@ -394,7 +414,7 @@ static void retCodeCheck(ret_code_t ret_code)
 //------------------------------------------------------------------------------
 //      PUBLIC FUNCTIONS
 //------------------------------------------------------------------------------
-void BLE_Init(void)
+void BLE_Init(bool erase_bonds)
 {
   adv_ctrl_Init(&ble_ctx);
 
@@ -404,7 +424,6 @@ void BLE_Init(void)
 #if !defined(DISABLE_SOFTDEVICE) || (DISABLE_SOFTDEVICE == 0)
   ble_stack_init();
 
-  bool erase_bonds = true;
   peer_manager_init(erase_bonds, &ble_ctx);
   if (erase_bonds == true)
   {

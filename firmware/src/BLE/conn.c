@@ -8,7 +8,7 @@
 #include "ble_main.h"
 #include "ble_conn_params.h"
 
-#define NRF_LOG_MODULE_NAME "CONN"
+#define NRF_LOG_MODULE_NAME   "conn"
 #define NRF_LOG_LEVEL         4
 #define NRF_LOG_DEBUG_COLOR   5
 #include "nrf_log.h"
@@ -27,8 +27,8 @@
  *  \link https://devzone.nordicsemi.com/guides/short-range-guides/b/hardware-and-layout/posts/nrf51-current-consumption-guide
 */
 #define MIN_CONN_INTERVAL   40  // Minimum acceptable connection interval (0.05 seconds), Connection interval uses 1.25 ms units.
-#define MAX_CONN_INTERVAL   400 // Maximum acceptable connection interval (0.5 second), Connection interval uses 1.25 ms units.
-#define SLAVE_LATENCY       2   // Slave latency.
+#define MAX_CONN_INTERVAL   100 // Maximum acceptable connection interval (0.5 second), Connection interval uses 1.25 ms units.
+#define SLAVE_LATENCY       0   // Slave latency.
 #define CONN_SUP_TIMEOUT    480 // 4.8sec in 10ms inits Connection supervisory timeout (4 seconds), Supervision Timeout uses 10 ms units.
 
 #define FIRST_CONN_PARAMS_UPDATE_DELAY  APP_TIMER_TICKS(4000, APP_TIMER_PRESCALER) /**< Time from initiating event (connect or start of notification) to first time sd_ble_gap_conn_param_update is called (5 seconds). */

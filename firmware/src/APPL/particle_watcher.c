@@ -8,7 +8,7 @@
 
 #include "particle_watcher.h"
 
-#define NRF_LOG_MODULE_NAME   "PWTCH"
+#define NRF_LOG_MODULE_NAME   "pwatcher"
 #define NRF_LOG_LEVEL         4
 #define NRF_LOG_DEBUG_COLOR   5
 #include "nrf_log.h"
