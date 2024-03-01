@@ -12,12 +12,11 @@
 #include "adv.h"
 #include "adv_ctrl.h"
 #include "conn.h"
-#include "bond_mgmt_srv.h"
-#include "pm.h"
+#include "nrf_soc.h"
 #include "pm.h"
 #include "batMea.h"
 #include "ble_ios.h"
-#include "particle_watcher.h"
+#include "event_queue.h"
 #include "realtime_particle_watcher.h"
 
 
@@ -42,10 +41,11 @@
 //------------------------------------------------------------------------------
 static void ios_set_sys_time(uint16_t conn_handle, uint16_t datalen, uint8_t *p_data);
 static void ios_sys_time_request(uint16_t conn_handle);
-static void ios_dev_stat_request(uint16_t conn_handle);
-static void ios_set_bar_num(uint16_t conn_handle, uint16_t datalen, uint8_t *p_data);
-static void ios_bar_request(uint16_t conn_handle);
 static void ios_instant_value_request(uint16_t conn_handle);
+static void ios_evq_request(uint16_t conn_handle);
+static void ios_evq_status_request(uint16_t conn_handle);
+static void ios_temperature_request(uint16_t conn_handle);
+static void ios_battery_request(uint16_t conn_handle);
 
 //------------------------------------------------------------------------------
 //        PRIVATE VARIABLES
@@ -66,7 +66,7 @@ static const char_desc_t ios_chars[] =
 {
   {
     .uuid = IOS_SYSTIME_CHAR,
-    .len = {.init = 4, .max = 8, .var = true},
+    .len = {.init = 8, .max = 8, .var = false},
     .prop = {.read = 1, .write = 1},
     .rd_access = SEC_JUST_WORKS,
     .wr_access = SEC_JUST_WORKS,
@@ -90,38 +90,37 @@ static const char_desc_t ios_chars[] =
     .rdCb = ios_instant_value_request,
     .is_defered_read = true,
   },
-   {
-    .uuid = IOS_BARS_CHAR,
-    .len =  {.init = 1, .max = 4, .var = true},
-    .prop = {.read = 1, .write = 1},
+  {
+    .uuid = IOS_EVQ_CHAR,
+    .len =  {.init = 4, .max = 4, .var = false},
+    .prop = {.read = 1},
     .rd_access = SEC_JUST_WORKS,
-    .wr_access = SEC_JUST_WORKS,
-    .cccd_wr_access = SEC_JUST_WORKS,
-    .wrCb = ios_set_bar_num,
-    .rdCb = ios_bar_request,
+    .rdCb = ios_evq_request,
     .is_defered_read = true,
   },
   {
-    .uuid = IOS_DEVSTAT_CHAR,
-    .len =  {.init = 1, .max = 3, .var = true},
-    .prop = {.read = 1, .write = 1},
+    .uuid = IOS_EVQ_STATUS_CHAR,
+    .len =  {.init = 10, .max = 10, .var = false},
+    .prop = {.read = 1},
     .rd_access = SEC_JUST_WORKS,
-    .wr_access = SEC_JUST_WORKS,
-    .cccd_wr_access = SEC_JUST_WORKS,
-    .wrCb = NULL,
-    .rdCb = ios_dev_stat_request,
+    .rdCb = ios_evq_status_request,
     .is_defered_read = true,
   },
   {
-    .uuid = IOS_HW_PARAM_CHAR,
-    .len =  {.init = 8, .max = 8, .var = false},
-    .prop = {.read = 1, .write = 1},
+    .uuid = IOS_TEMPERATURE_CHAR,
+    .len =  {.init = 2, .max = 2, .var = false},
+    .prop = {.read = 1},
     .rd_access = SEC_JUST_WORKS,
-    .wr_access = SEC_JUST_WORKS,
-    .cccd_wr_access = SEC_JUST_WORKS,
-    .wrCb = NULL,
-    .rdCb = NULL,
-    .is_defered_read = false,
+    .rdCb = ios_temperature_request,
+    .is_defered_read = true,
+  },
+  {
+    .uuid = IOS_BATTERY_CHAR,
+    .len =  {.init = 1, .max = 1, .var = false},
+    .prop = {.read = 1},
+    .rd_access = SEC_JUST_WORKS,
+    .rdCb = ios_battery_request,
+    .is_defered_read = true,
   },
 };
 
@@ -156,6 +155,30 @@ static void ios_sys_time_request(uint16_t conn_handle)
 }
 
 // ---------------------------------------------------------------------------
+static void ios_evq_request(uint16_t conn_handle)
+{
+  uint32_t cnt = EVQ_GetEvt();
+  ret_code_t ret_code = ble_ios_rd_reply(conn_handle, &cnt, sizeof(cnt));
+  APP_ERROR_CHECK(ret_code);
+}
+
+// ---------------------------------------------------------------------------
+static void ios_evq_status_request(uint16_t conn_handle)
+{
+  struct
+  {
+    uint16_t events;
+    uint64_t last_timestamp;
+  } __PACKED answer;
+
+  answer.events= EVQ_GetEventsAmount();
+  answer.last_timestamp = EVQ_GetCurrentEventTimestamp();
+
+  ret_code_t ret_code = ble_ios_rd_reply(conn_handle, &answer, sizeof(answer));
+  APP_ERROR_CHECK(ret_code);
+}
+
+// ---------------------------------------------------------------------------
 static void bat_mea_cb(uint16_t mv, void *ctx)
 {
   ble_ctx_t *context = (ble_ctx_t*)ctx;
@@ -173,7 +196,7 @@ static void bat_mea_cb(uint16_t mv, void *ctx)
 }
 
 // ---------------------------------------------------------------------------
-static void ios_dev_stat_request(uint16_t conn_handle)
+static void ios_battery_request(uint16_t conn_handle)
 {
   ble_ctx.auth_rd_conn_handle = conn_handle;
 
@@ -184,20 +207,14 @@ static void ios_dev_stat_request(uint16_t conn_handle)
   }
 }
 
-//------------------------------------------------------------------------------
-static void ios_set_bar_num(uint16_t conn_handle, uint16_t datalen, uint8_t *p_data)
-{
-  if (datalen == sizeof(uint8_t))
-  {
-    PWT_Set_active_tf(*p_data);
-  }
-}
-
 // ---------------------------------------------------------------------------
-static void ios_bar_request(uint16_t conn_handle)
+static void ios_temperature_request(uint16_t conn_handle)
 {
-  uint32_t bar_volume = PWT_GetBarVol();
-  ret_code_t ret_code = ble_ios_rd_reply(conn_handle, &bar_volume, sizeof(bar_volume));
+  int32_t temp=0;
+  sd_temp_get(&temp);
+  ASSERT((temp > INT16_MIN) && (temp < INT16_MAX));
+  int16_t short_temp = (int16_t)temp;
+  ret_code_t ret_code = ble_ios_rd_reply(conn_handle, &short_temp, sizeof(short_temp));
   APP_ERROR_CHECK(ret_code);
 }
 
@@ -320,43 +337,6 @@ static void sys_evt_dispatch(uint32_t sys_evt)
 }
 
 
-/**@brief Function for handling events from the BSP module.
- *
- * @param[in]   event   Event generated by button press.
- */
-/*static void bsp_event_handler(bsp_event_t event)
-{
-    uint32_t ret_code;
-    switch (event)
-    {
-        case BSP_EVENT_SLEEP:
-            sleep_mode_enter();
-            break;
-
-        case BSP_EVENT_DISCONNECT:
-            ret_code = sd_ble_gap_disconnect(m_conn_handle, BLE_HCI_REMOTE_USER_TERMINATED_CONNECTION);
-            if (ret_code != NRF_ERROR_INVALID_STATE)
-            {
-                APP_ERROR_CHECK(ret_code);
-            }
-            break;
-
-        case BSP_EVENT_WHITELIST_OFF:
-            if (m_conn_handle == BLE_CONN_HANDLE_INVALID)
-            {
-                ret_code = ble_advertising_restart_without_whitelist();
-                if (ret_code != NRF_ERROR_INVALID_STATE)
-                {
-                    APP_ERROR_CHECK(ret_code);
-                }
-            }
-            break;
-
-        default:
-            break;
-    }
-}
-*/
 
 /*! ---------------------------------------------------------------------------
  * \brief Function for initializing the BLE stack.

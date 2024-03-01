@@ -11,9 +11,11 @@ typedef struct
 #define IOS_SYSTIME_CHAR          0xFDF1
 #define IOS_PULSE_CHAR            0xFDF2
 #define IOS_INSTANT_VALUE_CHAR    0xFDF3
-#define IOS_BARS_CHAR             0xFDF4
-#define IOS_DEVSTAT_CHAR          0xFDF5
-#define IOS_HW_PARAM_CHAR         0xFDF6
+#define IOS_EVQ_CHAR              0xFDF4
+#define IOS_EVQ_STATUS_CHAR       0xFDF5
+#define IOS_TEMPERATURE_CHAR      0xFDF6
+#define IOS_BATTERY_CHAR          0xFDF7
+#define IOS_HW_PARAM_CHAR         0xFDF8
 
 void BLE_Init(bool erase_bonds);
 

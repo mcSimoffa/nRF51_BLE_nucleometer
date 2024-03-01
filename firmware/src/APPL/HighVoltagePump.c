@@ -24,11 +24,11 @@
 #define CYC_TIMER_WIDTH_BITS          16      //8 or 16
 
 //HV module default parameters
-#define PHASE_ON_NS       10000   //default time mosfet open phase
-#define PHASE_ON_TRY_NS   10000   //default time mosfet open phase in first cycle (to prevent overcahrge)
-#define DISCHARGE_TIME_NS 2000   //default recuperation phase time
+#define PHASE_ON_NS       15000   //default time mosfet open phase
+#define PHASE_ON_TRY_NS   15000   //default time mosfet open phase in first cycle (to prevent overcahrge)
+#define DISCHARGE_TIME_NS 1000   //default recuperation phase time
 #define WORK_PAUSE_MS     50     //default timespan between pulses in charging state
-#define STEADY_PAUSE_MS   5000    //default timespan between pulses in steady state
+#define STEADY_PAUSE_MS   10000    //default timespan between pulses in steady state
 
 // HV module constants
 #define FLY_BACK_TIME_NS    10000   //timespan to feedback voltage control
@@ -158,60 +158,29 @@ static void cycTimer_adjust(uint16_t cc1, uint16_t cc2, uint16_t cc3)
 
 }
 
-// ----------------------------------------------------------------------------
-static void lpcomp_ctrl(bool en)
-{
-  if (en)
-  {
-    nrf_lpcomp_enable();
-    nrf_lpcomp_task_trigger(NRF_LPCOMP_TASK_START);
-  }
-  else
-  {
-    nrf_lpcomp_disable();
-    nrf_lpcomp_task_trigger(NRF_LPCOMP_TASK_STOP);
-  }
-}
 
 // ****************************************************************************
 static void OnMainTmr(void* context)
 {
   (void)context;
 
-  // enable LPCOMP - first step
-  lpcomp_ctrl(true);
+  cycTimer_adjust(hv_data.cycTimer.CC1_try, hv_data.cycTimer.CC2_try, hv_data.cycTimer.CC3_try);
+  timer_anomaly_fix(cycCtrlTmr.p_reg, 1);
+  enough_hv_fb = false;
+  nrf_drv_timer_enable(&cycCtrlTmr);
   NRF_LOG_DEBUG("Main timer\n");
 }
 
 // ---------------------------------------------------------------------------
 static void OnLpcomp(nrf_lpcomp_event_t event)
 {
-  static uint8_t pulse_num = 0; //0 -first, 1 - second, 2 - another bigger pulses
-
-  if (event == NRF_LPCOMP_EVENT_READY)
-  {
-    // start work cycle timer - second step
-    if (pulse_num == 1)
-    {
-      cycTimer_adjust(hv_data.cycTimer.CC1_work, hv_data.cycTimer.CC2_work, hv_data.cycTimer.CC3_work);
-      pulse_num = 2;
-    }
-    else if (pulse_num == 0)
-    {
-      cycTimer_adjust(hv_data.cycTimer.CC1_try, hv_data.cycTimer.CC2_try, hv_data.cycTimer.CC3_try);
-      pulse_num = 1;
-    }
-    timer_anomaly_fix(cycCtrlTmr.p_reg, 1);
-    nrf_drv_timer_enable(&cycCtrlTmr);
-  }
-  else if (event == NRF_LPCOMP_EVENT_UP)
+  if (event == NRF_LPCOMP_EVENT_UP)
   {
     enough_hv_fb = true;
-    pulse_num = 0;
     NRF_LOG_DEBUG("LPC Up\n");
   }
   else
-    NRF_LOG_INFO("Another\n");
+    NRF_LOG_WARNING("Another LPCOMP event\n");
 
 }
 
@@ -222,21 +191,21 @@ static void OnCycCtrlTmr(nrf_timer_event_t event_type, void * p_context)
   uint32_t interval;
 
   if (event_type == NRF_TIMER_EVENT_COMPARE2)
-  {  
-    lpcomp_ctrl(false);
+  {
     if (enough_hv_fb)
     {
       nrf_gpio_pin_set(DCRG);
+      NRF_LOG_DEBUG("Discharge\n");
     }
   }
   else if (event_type == NRF_TIMER_EVENT_COMPARE3)
   {
     nrf_drv_timer_disable(&cycCtrlTmr);
     timer_anomaly_fix(cycCtrlTmr.p_reg, 0);
+    NRF_LOG_DEBUG("Stop timer\n");
     
     if (enough_hv_fb)
     {
-      enough_hv_fb = false;
       nrf_gpio_pin_clear(DCRG);
       cnt = 0;
       interval = hv_data.workTimer.steady_pause;
@@ -246,7 +215,7 @@ static void OnCycCtrlTmr(nrf_timer_event_t event_type, void * p_context)
     {
       interval = hv_data.workTimer.work_pause;
       ++cnt;
-      //NRF_LOG_INFO("NOT Enough (%d) HV\n", cnt);
+      NRF_LOG_INFO("NOT Enough (%d) HV\n", cnt);
     }
 
     ret_code_t err_code = app_timer_start(mainHVtmr, interval, NULL);
@@ -278,7 +247,7 @@ static void lpcomp_init(void)
 
   err_code = nrf_drv_lpcomp_init(&config, OnLpcomp);
   ASSERT(err_code == NRF_SUCCESS);
-  nrf_lpcomp_int_enable(LPCOMP_INTENSET_READY_Msk);
+  nrf_drv_lpcomp_enable();
 }
 
 // ---------------------------------------------------------------------------
@@ -321,7 +290,7 @@ static void cycTimer_init(void)
   ret_code_t err_code = nrf_drv_timer_init(&cycCtrlTmr, &timer_cfg, OnCycCtrlTmr);
   ASSERT(err_code == NRF_SUCCESS);
 
-  // setting timing for 2 steps   
+  // setting timing for 2 steps
   nrf_drv_timer_compare(&cycCtrlTmr, NRF_TIMER_CC_CHANNEL0, CC0, false);  // rising forming ___|---
   cycTimer_adjust(hv_data.cycTimer.CC1_try, hv_data.cycTimer.CC2_try, hv_data.cycTimer.CC3_try);
 }
@@ -408,5 +377,17 @@ void HV_pump_Startup(void)
 
   err_code = app_timer_start(mainHVtmr, MS_TO_TICK(HW_PW_UP_DELAYE_MS), NULL);
   ASSERT(err_code == NRF_SUCCESS);
+}
 
+void HV_instantKick(void)
+{
+  uint32_t interval = hv_data.workTimer.work_pause;
+  if (enough_hv_fb)
+  {
+    NRF_LOG_WARNING("Instant Kick HV pump\n");
+    ret_code_t err_code = app_timer_stop(mainHVtmr);
+    ASSERT(err_code == NRF_SUCCESS);
+    err_code = app_timer_start(mainHVtmr, interval, NULL);
+    ASSERT(err_code == NRF_SUCCESS);
+  }
 }

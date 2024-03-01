@@ -4,6 +4,7 @@
   <BookmarkItem objectName="" line="394" column="2" path="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/adv_ble_advertising" number="1" extra="uint32_t ble_advertising_init(ble_advdata_t const * p_advdata," color="5"/>
  </Bookmarks>
  <Breakpoints groups="Breakpoints" active_group="Breakpoints">
+  <BreakpointListItem trigger="" line="58" counter="0" hardwareBreakpoint="" isFunctionBreakpoint="false" action="" expression="" group="Breakpoints" type="Breakpoint" state="2" filename="C:/_forDevelop/nRF5_SDK_12.3.0_d7731ad/components/libraries/util/app_error_weak.c" useHWbreakpoint="false"/>
   <BreakpointListItem trigger="Write" line="0" counter="0" hardwareBreakpoint="Any" isFunctionBreakpoint="false" action="Stop" expression="options.ble_adv_fast_interval" group="Breakpoints" type="Breakpoint" state="3" filename="../firmware" useHWbreakpoint="true"/>
   <Exceptions set="HardFault"/>
  </Breakpoints>
@@ -60,10 +61,14 @@
  </TraceWindow>
  <Watch1>
   <Watches active="1" update="Never">
-   <Watchpoint expression="p_ble_evt" name="p_ble_evt" radix="-1" linenumber="279" filename="src/BLE/ble_main.c"/>
+   <Watchpoint expression="p_ble_evt" name="p_ble_evt" radix="-1" linenumber="316" filename="src/BLE/ble_main.c"/>
    <Watchpoint expression="p_conn_params" name="p_conn_params" radix="-1" linenumber="65" filename="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/common/ble_conn_params.c"/>
    <Watchpoint expression="m_current_conn_params" name="m_current_conn_params" radix="-1" linenumber="172" filename="C:/_forDevelop/DeviceDownload_nRF51822_S130_SDK12_3/nRF5_SDK_12.3.0_d7731ad/components/ble/common/ble_conn_params.c"/>
    <Watchpoint expression="b_data" name="b_data" radix="-1" linenumber="134" filename="src/BLE/pm.c"/>
+   <Watchpoint expression="temp" name="temp" radix="-1" linenumber="214" filename="src/BLE/ble_main.c"/>
+   <Watchpoint expression="slide_array" name="slide_array" radix="-1" linenumber="27" filename="src/APPL/realtime_particle_watcher.c"/>
+   <Watchpoint expression="sizeof(event_t)" name="sizeof(event_t)" radix="16" linenumber="0" filename="../firmware"/>
+   <Watchpoint expression="m_rb" name="m_rb" radix="-1" linenumber="29" filename="src/APPL/event_queue.c"/>
   </Watches>
  </Watch1>
  <Watch2>
@@ -76,16 +81,29 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="22" y="96" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="src/main.c" selected="1" top="76" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="42" y="100" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/ble_main.c" useBinaryEdit="0" left="0" path="src/BLE/conn.c" selected="0" top="84" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="24" y="422" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/main.c" useBinaryEdit="0" left="0" path="src/BLE/ble_main.c" selected="0" top="395" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="5" y="111" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/main.c" useBinaryEdit="0" left="0" path="src/APPL/particle_watcher.c" selected="0" top="42" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="10" y="937" useTextEdit="1" openedFrom="C:/_forDevelop/nRF5_SDK_12.3.0_d7731ad/components/drivers_nrf/lpcomp/nrf_drv_lpcomp.h" useBinaryEdit="0" left="0" path="config/sdk_config.h" selected="0" top="919" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="26" y="38" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/pm.c" useBinaryEdit="0" left="0" path="config/app_config.h" selected="0" top="0" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="8" y="268" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/adv.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/nRF5_SDK_12.3.0_d7731ad/components/softdevice/s130/headers/ble_gap.h" selected="0" top="246" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="611" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/adv.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/nRF5_SDK_12.3.0_d7731ad/components/ble/common/ble_advdata.c" selected="0" top="594" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="43" y="149" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/adv.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/nRF5_SDK_12.3.0_d7731ad/components/ble/common/ble_advdata.h" selected="0" top="130" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="44" y="135" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="src/BLE/adv.c" selected="0" top="110" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="8" y="3643" useTextEdit="1" openedFrom="C:/_forDevelop/nRF5_SDK_12.3.0_d7731ad/components/libraries/log/src/nrf_log_backend_serial.c" useBinaryEdit="0" left="0" path="config/sdk_config.h" selected="0" top="3625" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="28" y="14" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/pm.c" useBinaryEdit="0" left="0" path="config/app_config.h" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="80" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="src/main.c" selected="1" top="61" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="16" y="67" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/ble_main.c" useBinaryEdit="0" left="0" path="src/BLE/conn.c" selected="0" top="36" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="27" y="14" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/ble_main.c" useBinaryEdit="0" left="0" path="src/BLE/ble_main.h" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="22" y="426" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/ble_main.h" useBinaryEdit="0" left="0" path="src/BLE/ble_main.c" selected="0" top="401" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="19" y="150" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/BLE/ble_main.c" useBinaryEdit="0" left="0" path="src/ble_ios.c" selected="0" top="7" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="19" y="73" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/ble_ios.c" useBinaryEdit="0" left="0" path="src/ble_ios.h" selected="0" top="13" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="25" y="29" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="src/APPL/particle_cnt.c" selected="0" top="21" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="57" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/APPL/event_queue.c" useBinaryEdit="0" left="0" path="src/SSL/ringbuf.c" selected="0" top="44" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="3" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/SSL/ringbuf.c" useBinaryEdit="0" left="0" path="src/SSL/ringbuf.h" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="25" y="3" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/APPL/event_queue.h" useBinaryEdit="0" left="0" path="src/APPL/event_queue.c" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="16" y="14" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/APPL/event_queue.c" useBinaryEdit="0" left="0" path="src/APPL/event_queue.h" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="191" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="src/APPL/HighVoltagePump.c" selected="0" top="167" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="51" y="46" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/APPL/HighVoltagePump.c" useBinaryEdit="0" left="0" path="config/pinmap.h" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="24" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="src/APPL/realtime_particle_watcher.c" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="12" y="52" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/APPL/realtime_particle_watcher.c" useBinaryEdit="0" left="0" path="src/HAL/sound.c" selected="0" top="50" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="12" y="6" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="src/HAL/button.c" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="31" y="31" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/HAL/button.c" useBinaryEdit="0" left="0" path="src/HAL/button.h" selected="0" top="0" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="14" y="138" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="src/APPL/adv_ctrl.c" selected="0" top="138" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="3" y="57" useTextEdit="1" openedFrom="" useBinaryEdit="0" left="0" path="C:/_forDevelop/nRF5_SDK_12.3.0_d7731ad/components/libraries/util/app_error_weak.c" selected="0" top="26" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="22" y="195" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/APPL/adv_ctrl.c" useBinaryEdit="0" left="0" path="C:/_forDevelop/nRF5_SDK_12.3.0_d7731ad/components/libraries/util/app_error.h" selected="0" top="188" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="21" useTextEdit="1" openedFrom="D:/Old_Develops/BLE_nucleoMeter/firmware/src/APPL/HighVoltagePump.c" useBinaryEdit="0" left="0" path="src/APPL/HighVoltagePump.h" selected="0" top="0" codecName="Default"/>
  </Files>
  <ARMCrossStudioWindow activeProject="tmpl" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="Proto_J305" sessionSettings="" debugSearchFileMap="" fileDialogInitialDirectory="" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>

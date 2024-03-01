@@ -11,10 +11,10 @@
 #include "button.h"
 #include "ble_main.h"
 #include "batMea.h"
-#include "particle_watcher.h"
 #include "sound.h"
 #include "hw_test.h"
 #include "realtime_particle_watcher.h"
+#include "event_queue.h"
 
 
 #define NRF_LOG_MODULE_NAME     app
@@ -98,16 +98,15 @@ int main(void)
 
   HV_pump_Init();
   particle_cnt_Init();
-  PWT_Init();
   RPW_Init();
+  EVQ_Init();
 
   sound_Startup();
   button_Startup();
   particle_cnt_Startup();
   HV_pump_Startup();
-  PWT_Startup();
   RPW_Startup();
-
+  EVQ_Startup();
   sound_hello();
 
 
@@ -117,7 +116,6 @@ int main(void)
     batMea_Process();
     button_Process();
     particle_cnt_Process();
-    PWT_Process();
     BLE_Process();
 
     bool log_in_process = NRF_LOG_PROCESS();

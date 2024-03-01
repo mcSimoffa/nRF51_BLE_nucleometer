@@ -69,9 +69,12 @@
         <file file_name="src/APPL/HighVoltagePump.c" />
         <file file_name="src/APPL/particle_cnt.c" />
         <file file_name="src/APPL/adv_ctrl.c" />
-        <file file_name="src/APPL/particle_watcher.c" />
+        <file file_name="src/APPL/particle_watcher.c">
+          <configuration Name="Proto_J305" build_exclude_from_build="Yes" />
+        </file>
         <file file_name="src/APPL/hw_test.c" />
         <file file_name="src/APPL/realtime_particle_watcher.c" />
+        <file file_name="src/APPL/event_queue.c" />
       </folder>
       <folder Name="HAL">
         <file file_name="src/HAL/app_time_lib.c" />
@@ -135,7 +138,9 @@
       <file file_name="$(SDK12.3_DIR)/components/drivers_nrf/lpcomp/nrf_drv_lpcomp.c" />
     </folder>
     <folder Name="nRF Libraries">
-      <file file_name="$(SDK12.3_DIR)/components/libraries/util/app_error.c" />
+      <file file_name="$(SDK12.3_DIR)/components/libraries/util/app_error.c">
+        <configuration Name="Proto_J305" build_exclude_from_build="No" />
+      </file>
       <file file_name="$(SDK12.3_DIR)/components/libraries/util/app_error_weak.c" />
       <file file_name="$(SDK12.3_DIR)/components/libraries/timer/app_timer.c" />
       <file file_name="$(SDK12.3_DIR)/components/libraries/util/app_util_platform.c" />
@@ -159,7 +164,7 @@
     </folder>
     <configuration
       Name="Proto_J305"
-      c_preprocessor_definitions="DEBUG;DEBUG_NRF;DEBUG_NRF_USER;TARGET_DEVID_0=0xac1c333a;TARGET_DEVID_1=0xebacdc2b;J305"
+      c_preprocessor_definitions="TARGET_DEVID_0=0xac1c333a;TARGET_DEVID_1=0xebacdc2b;J305"
       linker_printf_width_precision_supported="Yes" />
   </project>
   <configuration

@@ -5,7 +5,7 @@
 #include "sys_alive.h"
 #include "ble_main.h"
 
-#define NRF_LOG_MODULE_NAME "PCNT"
+#define NRF_LOG_MODULE_NAME "pcnt"
 #define NRF_LOG_LEVEL       4
 #include "nrf_log.h"
 
